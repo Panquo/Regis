@@ -1,9 +1,5 @@
-import { cloneElement } from "react"
+import { cloneElement } from 'react';
 
-export const RouterContainer = (props:any)=>{
-    return(
-        <div>
-            {cloneElement(props.children)}
-        </div>
-    )
-}
+export const RouterContainer = (props: any) => {
+  return <div>{cloneElement(props.children)}</div>;
+};

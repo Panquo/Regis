@@ -4,5 +4,3 @@ export default interface TeamDTO {
   eliminated: boolean;
   score: number;
 }
-
-
