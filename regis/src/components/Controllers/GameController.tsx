@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   addDoc,
   collection,
@@ -8,9 +8,9 @@ import {
   orderBy,
   query,
   updateDoc,
-} from "firebase/firestore";
-import { db } from "../../firebase";
-import GameDTO from "../Classes/Game";
+} from 'firebase/firestore';
+import { db } from '../../firebase';
+import GameDTO from '../Classes/Game';
 
 type Props = {};
 
@@ -18,14 +18,14 @@ export const GameController = (props: Props) => {
   const [games, setGames] = useState<GameDTO[]>([]);
 
   const game: GameDTO = {
-    name: "QPUI",
+    name: 'QPUI',
     status: 0,
     rounds: [],
-    id: "",
+    id: '',
   };
 
   useEffect(() => {
-    const q = query(collection(db, "game"), orderBy("name", "asc"));
+    const q = query(collection(db, 'game'), orderBy('name', 'asc'));
     onSnapshot(q, (querySnapshot) => {
       setGames(
         querySnapshot.docs.map((doc) => ({
@@ -33,14 +33,14 @@ export const GameController = (props: Props) => {
           name: doc.data().name,
           status: doc.data().status,
           rounds: doc.data().rounds,
-        }))
+        })),
       );
     });
   }, []);
 
   function addGame() {
     try {
-      addDoc(collection(db, "game"), {
+      addDoc(collection(db, 'game'), {
         name: game.name,
         status: game.status,
         rounds: game.rounds,
@@ -51,7 +51,7 @@ export const GameController = (props: Props) => {
   }
 
   function updateGame(game: GameDTO) {
-    const taskDocRef = doc(db, "game", game.id);
+    const taskDocRef = doc(db, 'game', game.id);
     try {
       updateDoc(taskDocRef, {
         status: game.status,
@@ -63,7 +63,7 @@ export const GameController = (props: Props) => {
   }
 
   function deleteGame(id: string) {
-    const taskDocRef = doc(db, "game", id);
+    const taskDocRef = doc(db, 'game', id);
     try {
       deleteDoc(taskDocRef);
     } catch (err) {
@@ -82,7 +82,7 @@ export const GameController = (props: Props) => {
               onClick={() =>
                 updateGame({
                   id: item.id,
-                  name: "nom",
+                  name: 'nom',
                   status: 25,
                   rounds: game.rounds,
                 })

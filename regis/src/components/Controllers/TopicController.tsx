@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   addDoc,
   collection,
@@ -8,24 +8,24 @@ import {
   orderBy,
   query,
   updateDoc,
-} from "firebase/firestore";
-import { db } from "../../firebase";
+} from 'firebase/firestore';
+import { db } from '../../firebase';
 import TopicDTO from '../Classes/Topic';
 
-type Props = {}
+type Props = {};
 
 export const TopicController = (props: Props) => {
-    const [topics, setTopics] = useState<TopicDTO[]>([]);
+  const [topics, setTopics] = useState<TopicDTO[]>([]);
 
   const topic: TopicDTO = {
-    id:"",
+    id: '',
     name: 'banane',
     status: 0,
-    questions: []
+    questions: [],
   };
 
   useEffect(() => {
-    const q = query(collection(db, "topics"), orderBy("name", "asc"));
+    const q = query(collection(db, 'topics'), orderBy('name', 'asc'));
     onSnapshot(q, (querySnapshot) => {
       setTopics(
         querySnapshot.docs.map((doc) => ({
@@ -33,14 +33,14 @@ export const TopicController = (props: Props) => {
           name: doc.data().name,
           status: doc.data().status,
           questions: doc.data().questions,
-        }))
+        })),
       );
     });
   }, []);
 
   function addTopic() {
     try {
-      addDoc(collection(db, "topics"), {
+      addDoc(collection(db, 'topics'), {
         name: topic.name,
         status: topic.status,
         questions: topic.questions,
@@ -51,7 +51,7 @@ export const TopicController = (props: Props) => {
   }
 
   function updateTopic(topic: TopicDTO) {
-    const taskDocRef = doc(db, "topics", topic.id);
+    const taskDocRef = doc(db, 'topics', topic.id);
     try {
       updateDoc(taskDocRef, {
         status: topic.status,
@@ -63,7 +63,7 @@ export const TopicController = (props: Props) => {
   }
 
   function deleteTopic(id: string) {
-    const taskDocRef = doc(db, "topics", id);
+    const taskDocRef = doc(db, 'topics', id);
     try {
       deleteDoc(taskDocRef);
     } catch (err) {
@@ -72,22 +72,28 @@ export const TopicController = (props: Props) => {
   }
   return (
     <div>
-        <button onClick={addTopic}>AddTopic</button>
-        <ul>
-          {topics?.map((item: any) => (
-            <li>
-              {item.name}
-              {item.status}
-              <button onClick={() => updateTopic({
-                id: item.id,
-                name:"",
-                status:1,
-                questions:[]
-              })}>Update</button>
-              <button onClick={() => deleteTopic(item.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
+      <button onClick={addTopic}>AddTopic</button>
+      <ul>
+        {topics?.map((item: any) => (
+          <li>
+            {item.name}
+            {item.status}
+            <button
+              onClick={() =>
+                updateTopic({
+                  id: item.id,
+                  name: '',
+                  status: 1,
+                  questions: [],
+                })
+              }
+            >
+              Update
+            </button>
+            <button onClick={() => deleteTopic(item.id)}>Delete</button>
+          </li>
+        ))}
+      </ul>
     </div>
-  )
-}
+  );
+};
