@@ -1,0 +1,57 @@
+.wrapper {
+    height: 100vh;
+}
+
+.side-panel {
+    width: 40vh;
+}
+
+.content {
+    flex-grow: 1;
+}
+
+.soundboard {
+    flex-grow: 1;
+}
+
+.nav-panel {
+    height: 40vh;
+}
+
+.teams {
+    position: absolute;
+}
+
+.answered {
+    background-color: $dark-blue;
+}
+
+.not-answered {
+    background-color: $cyan;
+}
+
+.selected {
+    background-color: $blue;
+}
+
+.nav-question {
+    height: 10vh;
+    align-items: center;
+    span {
+        font-size: 24px;
+        font-family: "Source Code Pro", monospace;
+    }
+    .stream-board-list > button {
+        align-items: center;
+        margin: 20px;
+        border-radius: 20px;
+    }
+    .nav {
+        margin: 20px;
+        border-radius: 20px;
+    }
+}
+
+.table-content {
+    flex-grow: 1;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   addDoc,
   collection,
@@ -8,9 +8,9 @@ import {
   orderBy,
   query,
   updateDoc,
-} from 'firebase/firestore';
-import { db } from '../../firebase';
-import RoundDTO from '../Classes/Round';
+} from "firebase/firestore";
+import { db } from "../../firebase";
+import RoundDTO from "../Classes/Round";
 
 type Props = {};
 
@@ -18,14 +18,15 @@ export const RoundController = (props: Props) => {
   const [rounds, setRounds] = useState<RoundDTO[]>([]);
 
   const round: RoundDTO = {
-    id: '',
-    name: 'round',
+    id: "",
+    name: "round",
     status: 0,
     questions: [],
+    current: 0,
   };
 
   useEffect(() => {
-    const q = query(collection(db, 'round'), orderBy('name', 'asc'));
+    const q = query(collection(db, "round"), orderBy("name", "asc"));
     onSnapshot(q, (querySnapshot) => {
       setRounds(
         querySnapshot.docs.map((doc) => ({
@@ -33,14 +34,15 @@ export const RoundController = (props: Props) => {
           name: doc.data().name,
           status: doc.data().status,
           questions: doc.data().questions,
-        })),
+          current: doc.data().current,
+        }))
       );
     });
   }, []);
 
   function addRound(round: RoundDTO) {
     try {
-      addDoc(collection(db, 'round'), {
+      addDoc(collection(db, "round"), {
         name: round.name,
         status: round.status,
         questions: round.questions,
@@ -51,7 +53,7 @@ export const RoundController = (props: Props) => {
   }
 
   function updateRound(round: RoundDTO) {
-    const taskDocRef = doc(db, 'round', round.id);
+    const taskDocRef = doc(db, "round", round.id);
     try {
       updateDoc(taskDocRef, {
         status: round.status,
@@ -63,7 +65,7 @@ export const RoundController = (props: Props) => {
   }
 
   function deleteRound(id: string) {
-    const taskDocRef = doc(db, 'round', id);
+    const taskDocRef = doc(db, "round", id);
     try {
       deleteDoc(taskDocRef);
     } catch (err) {
@@ -78,18 +80,7 @@ export const RoundController = (props: Props) => {
           <li>
             {item.name}
             {item.status}
-            <button
-              onClick={() =>
-                updateRound({
-                  id: item.id,
-                  name: 'oué',
-                  status: 12,
-                  questions: round.questions,
-                })
-              }
-            >
-              Update
-            </button>
+            
             <button onClick={() => deleteRound(item.id)}>Delete</button>
           </li>
         ))}
