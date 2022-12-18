@@ -1,7 +1,10 @@
 import PropTypes from "prop-types";
 import {
   Button,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -19,6 +22,7 @@ import RoundDTO from "../../Classes/Round";
 import TeamDTO from "../../Classes/Team";
 import { updateQuestion } from "../../Services/QuestionService";
 import { updateRound } from "../../Services/RoundService";
+import { updateTeam } from "../../Services/TeamService";
 
 const Round1 = (props: any) => {
   const initState = {
@@ -28,14 +32,14 @@ const Round1 = (props: any) => {
   };
   const [selected, setSelected] = useState(0);
   const navigate = useNavigate();
-  let phase: number = 1;
+  const [phase,setPhase] = useState(1);
 
   const [teams, setTeams] = useState<TeamDTO[]>();
   const [rounds, setRounds] = useState<RoundDTO[]>();
   const [questions, setQuestions] = useState<QuestionDTO[]>();
   const [state, setState] = useState<{
     roundName: string;
-    questions: (QuestionDTO | undefined)[];
+    questions: QuestionDTO[];
     teams: TeamDTO[];
   }>(initState);
 
@@ -45,6 +49,11 @@ const Round1 = (props: any) => {
     initRounds();
     setSelected(0);
   }, []);
+
+  useEffect(()=>{
+    console.log(phase);
+    
+  },[phase])
 
   useEffect(() => {
     init();
@@ -107,26 +116,40 @@ const Round1 = (props: any) => {
       (item: RoundDTO) => item.id === "5Jv20rWadBAd4ZmKxNBq"
     );
 
-    const qsts =
-      rd?.questions.map((item: string) =>
-        questions?.find((question: QuestionDTO) => question.id === item)
-      ) || [];
-    const tms: TeamDTO[] = teams?.splice(4) || [];
-    setState({
-      roundName: rd?.name || "oups",
-      questions: qsts,
-      teams: tms,
-    });
-  }
+    const qst: QuestionDTO = {
+      id: "",
+      statement: "",
+      answer: "",
+      flavor: "",
+      points: 0,
+      teamId: "",
+      status: 0,
+    };
 
-  function handlePrevious() {
     if (questions) {
-        if (selected !== 0) {
-          setSelected(selected - 1);
-        }
+      const qsts =
+        rd?.questions.map(
+          (item: string) =>
+            questions.find((question: QuestionDTO) => question.id === item) ||
+            qst
+        ) || [];
+      const tms: TeamDTO[] = teams || [];
+      setState({
+        roundName: rd?.name || "oups",
+        questions: qsts,
+        teams: tms,
+      });
     }
   }
-  function handleNext() {
+
+  function handlePreviousQuestion() {
+    if (questions) {
+      if (selected !== 0) {
+        setSelected(selected - 1);
+      }
+    }
+  }
+  function handleNextQuestion() {
     if (questions) {
       if (selected !== questions?.length) {
         setSelected(selected + 1);
@@ -155,12 +178,40 @@ const Round1 = (props: any) => {
   function handleShowWinner() {
     if (questions) {
       let question = questions[selected];
-      if (question) {
+      if (question && question.teamId) {
         question.status = 3;
         updateQuestion(question);
+        updateTeams();
       }
     }
   }
+  function updateTeams() {
+    if (state.questions) {
+      for (let team of state.teams) {
+        team.score[0] = state.questions
+          .filter((item: QuestionDTO) => item.teamId === team.id)
+          .map((item: QuestionDTO) => item.points)
+          .reduce((acc, cur) => {
+            return acc + cur;
+          }, 0);
+        updateTeam(team)
+      }
+    }
+  }
+
+  function handlePreviousRound() {
+    if (phase===2) {
+      setPhase(1)
+    }
+  }
+  function handleNextRound() {
+    if (phase===1) {
+      setPhase(2)
+    }else{
+      navigate('/regis/round2')
+    }
+  }
+
   return (
     <>
       <div className="row wrapper">
@@ -175,7 +226,7 @@ const Round1 = (props: any) => {
             ))}
           </div>
 
-          <h1>Ici le {state.roundName}</h1>
+          <h1>Ici le {state.roundName} (Phase {phase})</h1>
           <div className="table-content grow1">
             <TableContainer component={Paper}>
               <Table>
@@ -208,6 +259,27 @@ const Round1 = (props: any) => {
                       <TableCell align="right">{question?.flavor}</TableCell>
                       <TableCell align="right">{question?.points}</TableCell>
                       <TableCell align="right">
+                        <InputLabel id="winnerTeam">Gagnant</InputLabel>
+                        <Select
+                          labelId="winnerTeam"
+                          value={
+                            state.teams.find(
+                              (item: TeamDTO) => question?.teamId === item.id
+                            )?.id
+                          }
+                          onChange={(event: any) => {
+                            if (question) {
+                              question.teamId = event.target.value;
+                              console.log(event);
+
+                              updateQuestion(question);
+                            }
+                          }}
+                        >
+                          {state.teams.map((item: TeamDTO) => (
+                            <MenuItem value={item.id}>{item.name}</MenuItem>
+                          ))}
+                        </Select>
                         {
                           state.teams.find(
                             (item: TeamDTO | undefined) =>
@@ -226,7 +298,7 @@ const Round1 = (props: any) => {
           <div className="nav-question row">
             <Button
               variant="contained"
-              onClick={handlePrevious}
+              onClick={handlePreviousQuestion}
               className="nav"
             >
               Question Précédente
@@ -242,14 +314,21 @@ const Round1 = (props: any) => {
                 Afficher Vainqueur
               </Button>
             </div>
-            <Button variant="contained" onClick={handleNext} className="nav">
-              Question Précédente
+            <Button variant="contained" onClick={handleNextQuestion} className="nav">
+              Question Suivante
             </Button>
           </div>
         </div>
         <div className="col side-panel">
           <div className="soundboard"></div>
-          <div className="nav-panel"></div>
+          <div className="nav-panel">
+            <Button onClick={handlePreviousRound}>
+              Manche Précédente
+            </Button>
+            <Button onClick={handleNextRound}>
+              Manche Suivante
+            </Button>
+          </div>
         </div>
       </div>
     </>

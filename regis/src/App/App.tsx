@@ -6,7 +6,7 @@ import { Presenter } from "../components/Pages/Presenter";
 import { Regis } from "../components/Pages/Regis/Regis";
 import { Show } from "../components/Pages/Show";
 import RegisR1 from "../components/Pages/Regis/Round1";
-import { Round2 as RegisR2 } from "../components/Pages/Regis/Round2";
+import RegisR2 from "../components/Pages/Regis/Round2";
 import { Round3 as RegisR3 } from "../components/Pages/Regis/Round3";
 function App() {
   return (

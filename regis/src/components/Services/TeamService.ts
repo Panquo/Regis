@@ -36,3 +36,4 @@ export function deleteTeam(id: string) {
     alert(err);
   }
 }
+

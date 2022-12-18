@@ -5,7 +5,7 @@ export default interface QuestionDTO {
     answer:string;
     flavor:string;
     points:number;
-    teamId:number;
+    teamId:string;
     status:number;
 }
 

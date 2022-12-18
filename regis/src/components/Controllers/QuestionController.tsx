@@ -22,7 +22,7 @@ export const QuestionController = (props: Props) => {
     statement: "ouioui",
     answer: "",
     points: 0,
-    teamId: 0,
+    teamId: "",
     status: 0,
     flavor: "",
   };
@@ -97,7 +97,7 @@ export const QuestionController = (props: Props) => {
                   statement: "banana",
                   answer: "",
                   points: 0,
-                  teamId: 0,
+                  teamId: "",
                   status: 0,
                   flavor: "",
                 })
