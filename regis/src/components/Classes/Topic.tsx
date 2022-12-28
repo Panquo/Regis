@@ -5,7 +5,7 @@ export default interface TopicDTO {
     name:string;
     status:number;
     questions:string[];
-    current:number;
+    current:string;
 }
 
 export interface Topic {
@@ -13,5 +13,13 @@ export interface Topic {
     name:string;
     status:number;
     questions:QuestionDTO[];
-    current:number;
+    current:string;
+}
+export class NTopic implements Topic {
+    id= "";
+    name= "";
+    status=0;
+    questions= [];
+    current="";
+
 }

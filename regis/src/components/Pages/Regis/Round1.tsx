@@ -17,7 +17,7 @@ import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../../firebase";
-import QuestionDTO, { Status } from "../../Classes/Question";
+import QuestionDTO, { NQuestion, Status } from "../../Classes/Question";
 import RoundDTO from "../../Classes/Round";
 import TeamDTO from "../../Classes/Team";
 import { updateQuestion } from "../../Services/QuestionService";
@@ -30,9 +30,9 @@ const Round1 = (props: any) => {
     questions: [],
     teams: [],
   };
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState("");
   const navigate = useNavigate();
-  const [phase,setPhase] = useState(1);
+  const [phase, setPhase] = useState(1);
 
   const [teams, setTeams] = useState<TeamDTO[]>();
   const [rounds, setRounds] = useState<RoundDTO[]>();
@@ -47,13 +47,12 @@ const Round1 = (props: any) => {
     initTeams();
     initQuestions();
     initRounds();
-    setSelected(0);
+    setSelected("");
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(phase);
-    
-  },[phase])
+  }, [phase]);
 
   useEffect(() => {
     init();
@@ -97,7 +96,7 @@ const Round1 = (props: any) => {
     });
   }
   function initRounds() {
-    const q = query(collection(db, "round"));
+    const q = query(collection(db, "rounds"));
     onSnapshot(q, (querySnapshot) => {
       setRounds(
         querySnapshot.docs.map((doc) => ({
@@ -142,24 +141,31 @@ const Round1 = (props: any) => {
     }
   }
 
+  function getIndexOfQuestion(id: string) {
+    const question = state.questions.find((item: any) => item.id === id);
+    if (question) return state.questions.indexOf(question);
+  }
+
   function handlePreviousQuestion() {
-    if (questions) {
-      if (selected !== 0) {
-        setSelected(selected - 1);
+    if (state.questions) {
+      const actQuestion = getIndexOfQuestion(selected) || 0;
+      if (actQuestion !== 0) {
+        setSelected(state.questions[actQuestion - 1].id);
       }
     }
   }
   function handleNextQuestion() {
-    if (questions) {
-      if (selected !== questions?.length) {
-        setSelected(selected + 1);
+    if (state.questions) {
+      const actQuestion = getIndexOfQuestion(selected) || 0;
+      if (actQuestion < state.questions.length) {
+        setSelected(state.questions[actQuestion + 1].id);
       }
     }
   }
 
   function handleShowQuestion() {
     if (questions) {
-      let question = questions[selected];
+      let question = state.questions[getIndexOfQuestion(selected) || 0];
       if (question) {
         question.status = 1;
         updateQuestion(question);
@@ -168,7 +174,7 @@ const Round1 = (props: any) => {
   }
   function handleShowAnswer() {
     if (questions) {
-      let question = questions[selected];
+      let question = state.questions[getIndexOfQuestion(selected) || 0];
       if (question) {
         question.status = 2;
         updateQuestion(question);
@@ -177,7 +183,7 @@ const Round1 = (props: any) => {
   }
   function handleShowWinner() {
     if (questions) {
-      let question = questions[selected];
+      let question = state.questions[getIndexOfQuestion(selected) || 0];
       if (question && question.teamId) {
         question.status = 3;
         updateQuestion(question);
@@ -194,21 +200,21 @@ const Round1 = (props: any) => {
           .reduce((acc, cur) => {
             return acc + cur;
           }, 0);
-        updateTeam(team)
+        updateTeam(team);
       }
     }
   }
 
   function handlePreviousRound() {
-    if (phase===2) {
-      setPhase(1)
+    if (phase === 2) {
+      setPhase(1);
     }
   }
   function handleNextRound() {
-    if (phase===1) {
-      setPhase(2)
-    }else{
-      navigate('/regis/round2')
+    if (phase === 1) {
+      setPhase(2);
+    } else {
+      navigate("/regis/round2");
     }
   }
 
@@ -226,7 +232,9 @@ const Round1 = (props: any) => {
             ))}
           </div>
 
-          <h1>Ici le {state.roundName} (Phase {phase})</h1>
+          <h1>
+            Ici le {state.roundName} (Phase {phase})
+          </h1>
           <div className="table-content grow1">
             <TableContainer component={Paper}>
               <Table>
@@ -247,7 +255,8 @@ const Round1 = (props: any) => {
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                       selected={
                         questions
-                          ? questions[selected].id === question?.id
+                          ? state.questions[getIndexOfQuestion(selected) || 0]
+                              .id === question?.id
                           : false
                       }
                       className={question?.status ? "answered" : "not-answered"}
@@ -276,6 +285,9 @@ const Round1 = (props: any) => {
                             }
                           }}
                         >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
                           {state.teams.map((item: TeamDTO) => (
                             <MenuItem value={item.id}>{item.name}</MenuItem>
                           ))}
@@ -314,7 +326,11 @@ const Round1 = (props: any) => {
                 Afficher Vainqueur
               </Button>
             </div>
-            <Button variant="contained" onClick={handleNextQuestion} className="nav">
+            <Button
+              variant="contained"
+              onClick={handleNextQuestion}
+              className="nav"
+            >
               Question Suivante
             </Button>
           </div>
@@ -322,12 +338,8 @@ const Round1 = (props: any) => {
         <div className="col side-panel">
           <div className="soundboard"></div>
           <div className="nav-panel">
-            <Button onClick={handlePreviousRound}>
-              Manche Précédente
-            </Button>
-            <Button onClick={handleNextRound}>
-              Manche Suivante
-            </Button>
+            <Button onClick={handlePreviousRound}>Manche Précédente</Button>
+            <Button onClick={handleNextRound}>Manche Suivante</Button>
           </div>
         </div>
       </div>

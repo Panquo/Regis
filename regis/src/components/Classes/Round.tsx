@@ -6,7 +6,7 @@ export default interface RoundDTO {
     name:string;
     status:number;
     questions:string[]
-    current:number;
+    current:string;
 }
 
 export interface Round {
@@ -15,5 +15,14 @@ export interface Round {
     status:number;
     questions?:QuestionDTO[],
     topics?:Topic[],
-    current:number;
+    current:string;
+}
+
+export class NRound implements Round {
+    id="";
+    name="";
+    status=0;
+    questions=[]
+    topics=[]
+    current="";
 }

@@ -8,7 +8,7 @@ export function addTeam(team:TeamDTO) {
   try {
     addDoc(collection(db, TABLE_NAME), {
       name: team.name,
-      eliminated: team.score,
+      eliminated: team.eliminated,
       score: team.score,
     }).then((result:any)=>console.log(result));
   } catch (err) {

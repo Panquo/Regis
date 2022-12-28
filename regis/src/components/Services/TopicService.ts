@@ -1,34 +1,36 @@
 import { addDoc, collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import TeamDTO from "../Classes/Team";
+import TopicDTO from "../Classes/Topic";
 
-const TABLE_NAME = "teams"
+const TABLE_NAME = "topics"
 
-export function addTeam(team:TeamDTO) {
+export function addTopic(topic:TopicDTO) {
   try {
     addDoc(collection(db, TABLE_NAME), {
-      name: team.name,
-      eliminated: team.score,
-      score: team.score,
+      name: topic.name,
+      status: topic.status,
+      questions: topic.questions,
+      current: topic.current,
     }).then((result:any)=>console.log(result));
   } catch (err) {
     alert(err);
   }
 }
 
-export function updateTeam(team: TeamDTO) {
-  const taskDocRef = doc(db, TABLE_NAME, team.id);
+export function updateTopic(topic: TopicDTO) {
+  const taskDocRef = doc(db, TABLE_NAME, topic.id);
   try {
     updateDoc(taskDocRef, {
-      eliminated: team.eliminated,
-      score: team.score,
+      status: topic.status,
+      current: topic.current,
     });
   } catch (err) {
     alert(err);
   }
 }
 
-export function deleteTeam(id: string) {
+export function deleteTopic(id: string) {
   const taskDocRef = doc(db, TABLE_NAME, id);
   try {
     deleteDoc(taskDocRef);

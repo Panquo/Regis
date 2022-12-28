@@ -22,7 +22,7 @@ export const RoundController = (props: Props) => {
     name: "round",
     status: 0,
     questions: [],
-    current: 0,
+    current: "",
   };
 
   useEffect(() => {

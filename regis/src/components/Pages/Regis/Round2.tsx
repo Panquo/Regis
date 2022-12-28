@@ -17,13 +17,14 @@ import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../../firebase";
-import QuestionDTO from "../../Classes/Question";
-import RoundDTO, { Round } from "../../Classes/Round";
+import QuestionDTO, { NQuestion } from "../../Classes/Question";
+import RoundDTO, { NRound, Round } from "../../Classes/Round";
 import TeamDTO from "../../Classes/Team";
-import TopicDTO, { Topic } from "../../Classes/Topic";
+import TopicDTO, { NTopic, Topic } from "../../Classes/Topic";
 import { updateQuestion } from "../../Services/QuestionService";
 import { updateRound } from "../../Services/RoundService";
 import { updateTeam } from "../../Services/TeamService";
+import { updateTopic } from "../../Services/TopicService";
 import { getScores } from "../../utils/TeamUtils";
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -38,8 +39,8 @@ const round: Round = {
   id: "",
   name: "",
   status: 0,
-  questions: [],
-  current: 0,
+  topics: [],
+  current: "",
 };
 
 const Round2 = (props: any) => {
@@ -47,7 +48,8 @@ const Round2 = (props: any) => {
     round: round,
     teams: [],
   };
-  const [selected, setSelected] = useState(0);
+  const [selectedQuestion, setSelectedQuestion] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState("");
   const navigate = useNavigate();
 
   const [teams, setTeams] = useState<TeamDTO[]>();
@@ -65,7 +67,7 @@ const Round2 = (props: any) => {
     initQuestions();
     initRounds();
     initTopics();
-    setSelected(0);
+    setSelectedQuestion("");
   }, []);
 
   useEffect(() => {
@@ -73,12 +75,18 @@ const Round2 = (props: any) => {
   }, [teams, questions, rounds]);
 
   useEffect(() => {
-    if (rounds) {
-      let round = rounds[0];
-      round.current = selected;
-      updateRound(round);
+    if (rounds && topics && state.round.topics) {
+      let round = rounds.find((item: any) => item.id === state.round.id);
+      let topic = topics.find((item: TopicDTO) => item.id === chosenTopic);
+      if (round && topic) {
+        round.current = chosenTopic || "";
+        setSelectedQuestion(topic.current);
+      }
+      console.log(state.round);
+      
+      updateRound(round || new NRound());
     }
-  }, [selected]);
+  }, [chosenTopic]);
 
   function initTeams() {
     const q = query(collection(db, "teams"), orderBy("name", "asc"));
@@ -124,7 +132,7 @@ const Round2 = (props: any) => {
     });
   }
   function initRounds() {
-    const q = query(collection(db, "round"));
+    const q = query(collection(db, "rounds"));
     onSnapshot(q, (querySnapshot) => {
       setRounds(
         querySnapshot.docs.map((doc) => ({
@@ -132,6 +140,7 @@ const Round2 = (props: any) => {
           name: doc.data().name,
           status: doc.data().status,
           questions: doc.data().questions,
+          topics: doc.data().topics,
           current: doc.data().current,
         }))
       );
@@ -140,30 +149,14 @@ const Round2 = (props: any) => {
 
   function init() {
     const rd = rounds?.find(
-      (item: RoundDTO) => item.id === "5Jv20rWadBAd4ZmKxNBq"
+      (item: RoundDTO) => item.id === "ZpImBTffpzTI2Tlv0AtE"
     );
-
-    const tpc: Topic = {
-      id: "",
-      name: "",
-      status: 0,
-      questions: [],
-      current: 0,
-    };
-    const qst: QuestionDTO = {
-      id: "",
-      statement: "",
-      answer: "",
-      flavor: "",
-      points: 0,
-      teamId: "",
-      status: 0,
-    };
 
     if (topics) {
       const tpcs =
         rd?.questions.map((item: string) => {
           const topic = topics.find((topic: TopicDTO) => topic.id === item);
+          console.log(topics, item, topic);
           if (topic) {
             const tpc = {
               ...topic,
@@ -171,12 +164,12 @@ const Round2 = (props: any) => {
                 (item: string) =>
                   questions?.find(
                     (question: QuestionDTO) => item === question.id
-                  ) || qst
+                  ) || new NQuestion()
               ),
             };
             return tpc;
           } else {
-            return tpc;
+            return new NTopic();
           }
         }) || [];
       const round: Round = {
@@ -184,7 +177,7 @@ const Round2 = (props: any) => {
         name: rd?.name || "",
         status: rd?.status || 0,
         topics: tpcs,
-        current: rd?.current || 0,
+        current: rd?.current || "",
       };
       const tms: TeamDTO[] = teams || [];
 
@@ -194,50 +187,69 @@ const Round2 = (props: any) => {
       });
     }
   }
+  function getIndexOfQuestion(id: string) {
+    if (state.round.topics) {
+      const index = getIndexOfTopic(chosenTopic || "");
+      const question = state.round.topics[index || 0].questions.find(
+        (item: any) => item.id === id
+      );
+      if (question)
+        return state.round.topics[index || 0].questions.indexOf(question);
+    }
+  }
+
+  function getIndexOfTopic(id: string) {
+    const topic = state.round.topics?.find((item: any) => item.id === id);
+    if (topic) return state.round.topics?.indexOf(topic);
+  }
 
   function handlePreviousQuestion() {
-    if (questions) {
-      if (selected !== 0) {
-        setSelected(selected - 1);
+    if (state.round.topics) {
+      const actQuestion = getIndexOfQuestion(selectedQuestion);
+      const actTopic = getIndexOfTopic(chosenTopic || "") || 0;
+      if (actQuestion && actQuestion !== 0) {
+        setSelectedQuestion(
+          state.round.topics[actTopic].questions[actQuestion - 1].id
+        );
       }
     }
   }
   function handleNextQuestion() {
-    if (questions) {
-      if (selected !== questions?.length) {
-        setSelected(selected + 1);
+    if (state.round.topics) {
+      const actQuestion = getIndexOfQuestion(selectedQuestion);
+      const actTopic = getIndexOfTopic(chosenTopic || "") || 0;
+      if (actQuestion && actQuestion < state.round.topics.length) {
+        setSelectedQuestion(
+          state.round.topics[actTopic].questions[actQuestion + 1].id
+        );
       }
     }
   }
 
-  function handleShowQuestion() {
-    if (questions) {
-      let question = questions[selected];
-      if (question) {
-        question.status = 1;
-        updateQuestion(question);
+  function handleShowTopic() {
+    if (topics) {
+      let topic = topics.find((item: TopicDTO) => item.id === chosenTopic);
+      if (topic) {
+        topic.status = 1;
+        updateTopic(topic);
       }
     }
+    setChosenTopic(selectedTopic);
+    setSelectedTopic("");
   }
-  function handleShowAnswer() {
-    if (questions) {
-      let question = questions[selected];
-      if (question) {
-        question.status = 2;
-        updateQuestion(question);
+
+  function handleNextTopic() {
+    if (topics) {
+      let topic = topics.find((item: TopicDTO) => item.id === chosenTopic);
+      if (topic) {
+        topic.status = 2;
+        updateTopic(topic)
+        updateTeams()
       }
     }
+    setChosenTopic(null)
   }
-  function handleShowWinner() {
-    if (questions) {
-      let question = questions[selected];
-      if (question && question.teamId) {
-        question.status = 3;
-        updateQuestion(question);
-        updateTeams();
-      }
-    }
-  }
+
   function updateTeams() {
     setTeams(
       teams?.map((team: TeamDTO) => ({
@@ -250,6 +262,10 @@ const Round2 = (props: any) => {
         ],
       }))
     );
+  }
+
+  function handleGridClick(item: any) {
+    setSelectedTopic(item.id);
   }
 
   function handlePreviousRound() {
@@ -297,11 +313,7 @@ const Round2 = (props: any) => {
                           sx={{
                             "&:last-child td, &:last-child th": { border: 0 },
                           }}
-                          selected={
-                            questions
-                              ? questions[selected].id === question?.id
-                              : false
-                          }
+                          selected={selectedQuestion === question?.id}
                           className={
                             question?.status ? "answered" : "not-answered"
                           }
@@ -319,36 +331,6 @@ const Round2 = (props: any) => {
                             {question?.points}
                           </TableCell>
                           <TableCell align="right">
-                            <InputLabel id="winnerTeam">Gagnant</InputLabel>
-                            <Select
-                              labelId="winnerTeam"
-                              value={
-                                state.teams.find(
-                                  (item: TeamDTO) =>
-                                    question?.teamId === item.id
-                                )?.id
-                              }
-                              onChange={(event: any) => {
-                                if (question) {
-                                  question.teamId = event.target.value;
-                                  console.log(event);
-
-                                  updateQuestion(question);
-                                }
-                              }}
-                            >
-                              {state.teams.map((item: TeamDTO) => (
-                                <MenuItem value={item.id}>{item.name}</MenuItem>
-                              ))}
-                            </Select>
-                            {
-                              state.teams.find(
-                                (item: TeamDTO | undefined) =>
-                                  item?.id === question?.id
-                              )?.name
-                            }
-                          </TableCell>
-                          <TableCell align="right">
                             {question?.status}
                           </TableCell>
                         </TableRow>
@@ -364,7 +346,18 @@ const Round2 = (props: any) => {
               >
                 {state.round.topics?.map((item: Topic) => {
                   return (
-                    <Grid xs={4}>
+                    <Grid
+                      className={
+                        chosenTopic === item.id
+                          ? "chosenTopic"
+                          : selectedTopic === item.id
+                          ? "selectedTopic"
+                          : ""
+                      }
+                      item
+                      xs={4}
+                      onClick={() => handleGridClick(item)}
+                    >
                       <Item>{item.name}</Item>
                     </Grid>
                   );
@@ -382,14 +375,11 @@ const Round2 = (props: any) => {
               Question Précédente
             </Button>
             <div className="grow1 row stream-board-list">
-              <Button variant="outlined" onClick={handleShowQuestion}>
-                Afficher Question
+              <Button variant="outlined" onClick={handleShowTopic}>
+                Afficher Theme
               </Button>
-              <Button variant="outlined" onClick={handleShowAnswer}>
-                Afficher Réponse
-              </Button>
-              <Button variant="outlined" onClick={handleShowWinner}>
-                Afficher Vainqueur
+              <Button variant="outlined" onClick={handleNextTopic}>
+                Thème Suivant
               </Button>
             </div>
             <Button

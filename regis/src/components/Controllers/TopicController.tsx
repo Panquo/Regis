@@ -22,7 +22,7 @@ export const TopicController = (props: Props) => {
     name: 'banane',
     status: 0,
     questions: [],
-    current:0
+    current:""
   };
 
   useEffect(() => {
