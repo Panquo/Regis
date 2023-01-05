@@ -31,7 +31,7 @@ const round: Round = {
   current: '',
 };
 
-const Round1 = (props: any) => {
+const Round1 = () => {
   const initState = {
     round: round,
     teams: [],
