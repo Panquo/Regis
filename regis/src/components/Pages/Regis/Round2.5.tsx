@@ -1,4 +1,4 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 import {
   Button,
   InputLabel,
@@ -11,25 +11,24 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from "@mui/material";
-import { withStyles } from "@mui/styles";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { db } from "../../../firebase";
-import QuestionDTO, { NQuestion, Status } from "../../Classes/Question";
-import RoundDTO, { Round } from "../../Classes/Round";
-import TeamDTO from "../../Classes/Team";
-import { updateQuestion } from "../../Services/QuestionService";
-import { updateRound } from "../../Services/RoundService";
-import { updateTeam } from "../../Services/TeamService";
+} from '@mui/material';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { db } from '../../../firebase';
+import QuestionDTO, { NQuestion, Status } from '../../Classes/Question';
+import RoundDTO, { Round } from '../../Classes/Round';
+import TeamDTO from '../../Classes/Team';
+import { updateQuestion } from '../../Services/QuestionService';
+import { updateRound } from '../../Services/RoundService';
+import { updateTeam } from '../../Services/TeamService';
 
 const round: Round = {
-  id: "",
-  name: "",
+  id: '',
+  name: '',
   status: 0,
   topics: [],
-  current: "",
+  current: '',
 };
 
 const Round1 = (props: any) => {
@@ -37,7 +36,7 @@ const Round1 = (props: any) => {
     round: round,
     teams: [],
   };
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState('');
   const navigate = useNavigate();
   const [phase, setPhase] = useState(1);
 
@@ -53,7 +52,7 @@ const Round1 = (props: any) => {
     initTeams();
     initQuestions();
     initRounds();
-    setSelected("");
+    setSelected('');
   }, []);
 
   useEffect(() => {
@@ -73,7 +72,7 @@ const Round1 = (props: any) => {
   }, [selected]);
 
   function initTeams() {
-    const q = query(collection(db, "teams"), orderBy("name", "asc"));
+    const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
     onSnapshot(q, (querySnapshot) => {
       setTeams(
         querySnapshot.docs.map((doc) => ({
@@ -81,12 +80,12 @@ const Round1 = (props: any) => {
           name: doc.data().name,
           eliminated: doc.data().eliminated,
           score: doc.data().score,
-        }))
+        })),
       );
     });
   }
   function initQuestions() {
-    const q = query(collection(db, "questions"));
+    const q = query(collection(db, 'questions'));
     onSnapshot(q, (querySnapshot) => {
       setQuestions(
         querySnapshot.docs.map((doc) => ({
@@ -97,12 +96,12 @@ const Round1 = (props: any) => {
           points: doc.data().points,
           teamId: doc.data().teamId,
           status: doc.data().status,
-        }))
+        })),
       );
     });
   }
   function initRounds() {
-    const q = query(collection(db, "rounds"));
+    const q = query(collection(db, 'rounds'));
     onSnapshot(q, (querySnapshot) => {
       setRounds(
         querySnapshot.docs.map((doc) => ({
@@ -111,44 +110,40 @@ const Round1 = (props: any) => {
           status: doc.data().status,
           questions: doc.data().questions,
           current: doc.data().current,
-        }))
+        })),
       );
     });
   }
 
   function init() {
-    const rd = rounds?.find(
-      (item: RoundDTO) => item.id === "5Jv20rWadBAd4ZmKxNBq"
-    );
+    const rd = rounds?.find((item: RoundDTO) => item.id === '5Jv20rWadBAd4ZmKxNBq');
 
     const qst: QuestionDTO = {
-      id: "",
-      statement: "",
-      answer: "",
-      flavor: "",
+      id: '',
+      statement: '',
+      answer: '',
+      flavor: '',
       points: 0,
-      teamId: "",
+      teamId: '',
       status: 0,
     };
 
     if (questions) {
       const qsts =
         rd?.questions.map(
-          (item: string) =>
-            questions.find((question: QuestionDTO) => question.id === item) ||
-            qst
+          (item: string) => questions.find((question: QuestionDTO) => question.id === item) || qst,
         ) || [];
       const tms: TeamDTO[] = teams || [];
       const round: Round = {
-        id: rd?.id || "",
-        name: rd?.name || "",
+        id: rd?.id || '',
+        name: rd?.name || '',
         status: rd?.status || 0,
         questions: qsts,
-        current: rd?.current || "",
+        current: rd?.current || '',
       };
-      
+
       setState({
-        round:round,
+        round: round,
         teams: tms,
       });
     }
@@ -227,18 +222,18 @@ const Round1 = (props: any) => {
     if (phase === 1) {
       setPhase(2);
     } else {
-      navigate("/regis/round2");
+      navigate('/regis/round2');
     }
   }
 
   return (
     <>
-      <div className="row wrapper">
-        <div className="col content">
+      <div className='row wrapper'>
+        <div className='col content'>
           <button onClick={() => navigate(-1)}>back</button>
-          <div className="teams">
+          <div className='teams'>
             {teams?.map((team: TeamDTO) => (
-              <div className="team-item">
+              <div className='team-item'>
                 <span>{team.name}</span>
                 <span>{team.score}</span>
               </div>
@@ -248,7 +243,7 @@ const Round1 = (props: any) => {
           <h1>
             Ici le {state.round.name} (Phase {phase})
           </h1>
-          <div className="table-content grow1">
+          <div className='table-content grow1'>
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
@@ -265,29 +260,27 @@ const Round1 = (props: any) => {
                   {state.round.questions?.map((question: QuestionDTO | undefined) => (
                     <TableRow
                       key={question?.id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       selected={
                         state.round.questions
-                          ? state.round.questions[getIndexOfQuestion(selected) || 0]
-                              .id === question?.id
+                          ? state.round.questions[getIndexOfQuestion(selected) || 0].id ===
+                            question?.id
                           : false
                       }
-                      className={question?.status ? "answered" : "not-answered"}
+                      className={question?.status ? 'answered' : 'not-answered'}
                     >
-                      <TableCell component="th" scope="row">
+                      <TableCell component='th' scope='row'>
                         {question?.statement}
                       </TableCell>
-                      <TableCell align="right">{question?.answer}</TableCell>
-                      <TableCell align="right">{question?.flavor}</TableCell>
-                      <TableCell align="right">{question?.points}</TableCell>
-                      <TableCell align="right">
-                        <InputLabel id="winnerTeam">Gagnant</InputLabel>
+                      <TableCell align='right'>{question?.answer}</TableCell>
+                      <TableCell align='right'>{question?.flavor}</TableCell>
+                      <TableCell align='right'>{question?.points}</TableCell>
+                      <TableCell align='right'>
+                        <InputLabel id='winnerTeam'>Gagnant</InputLabel>
                         <Select
-                          labelId="winnerTeam"
+                          labelId='winnerTeam'
                           value={
-                            state.teams.find(
-                              (item: TeamDTO) => question?.teamId === item.id
-                            )?.id
+                            state.teams.find((item: TeamDTO) => question?.teamId === item.id)?.id
                           }
                           onChange={(event: any) => {
                             if (question) {
@@ -298,7 +291,7 @@ const Round1 = (props: any) => {
                             }
                           }}
                         >
-                          <MenuItem value="">
+                          <MenuItem value=''>
                             <em>None</em>
                           </MenuItem>
                           {state.teams.map((item: TeamDTO) => (
@@ -306,13 +299,11 @@ const Round1 = (props: any) => {
                           ))}
                         </Select>
                         {
-                          state.teams.find(
-                            (item: TeamDTO | undefined) =>
-                              item?.id === question?.id
-                          )?.name
+                          state.teams.find((item: TeamDTO | undefined) => item?.id === question?.id)
+                            ?.name
                         }
                       </TableCell>
-                      <TableCell align="right">{question?.status}</TableCell>
+                      <TableCell align='right'>{question?.status}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -320,37 +311,29 @@ const Round1 = (props: any) => {
             </TableContainer>
           </div>
           <span>Stream</span>
-          <div className="nav-question row">
-            <Button
-              variant="contained"
-              onClick={handlePreviousQuestion}
-              className="nav"
-            >
+          <div className='nav-question row'>
+            <Button variant='contained' onClick={handlePreviousQuestion} className='nav'>
               Question Précédente
             </Button>
-            <div className="grow1 row stream-board-list">
-              <Button variant="outlined" onClick={handleShowQuestion}>
+            <div className='grow1 row stream-board-list'>
+              <Button variant='outlined' onClick={handleShowQuestion}>
                 Afficher Question
               </Button>
-              <Button variant="outlined" onClick={handleShowAnswer}>
+              <Button variant='outlined' onClick={handleShowAnswer}>
                 Afficher Réponse
               </Button>
-              <Button variant="outlined" onClick={handleShowWinner}>
+              <Button variant='outlined' onClick={handleShowWinner}>
                 Afficher Vainqueur
               </Button>
             </div>
-            <Button
-              variant="contained"
-              onClick={handleNextQuestion}
-              className="nav"
-            >
+            <Button variant='contained' onClick={handleNextQuestion} className='nav'>
               Question Suivante
             </Button>
           </div>
         </div>
-        <div className="col side-panel">
-          <div className="soundboard"></div>
-          <div className="nav-panel">
+        <div className='col side-panel'>
+          <div className='soundboard'></div>
+          <div className='nav-panel'>
             <Button onClick={handlePreviousRound}>Manche Précédente</Button>
             <Button onClick={handleNextRound}>Manche Suivante</Button>
           </div>
