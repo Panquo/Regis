@@ -32,7 +32,7 @@
     "prettier/prettier": "error",
     "no-console": ["warn", { "allow": ["warn", "error"] }],
     "@typescript-eslint/no-unused-vars": ["warn", { "ignoreRestSiblings": true, "args": "none" }],
-    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-imports": "warn",
     "no-warning-comments": ["warn", { "terms": ["todo", "fixme"], "location": "anywhere" }],
     "react/react-in-jsx-scope": "off",
     "spaced-comment": "error",

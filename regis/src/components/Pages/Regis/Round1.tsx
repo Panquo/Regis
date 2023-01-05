@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import {
   Button,
   InputLabel,
@@ -16,7 +15,7 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
-import QuestionDTO, { NQuestion, Status } from '../../Classes/Question';
+import QuestionDTO from '../../Classes/Question';
 import RoundDTO from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
@@ -59,7 +58,8 @@ const Round1 = (props: any) => {
 
   useEffect(() => {
     if (rounds) {
-      let round = rounds[0];
+      const round = rounds[0];
+
       round.current = selected;
       updateRound(round);
     }
@@ -67,6 +67,7 @@ const Round1 = (props: any) => {
 
   function initTeams() {
     const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
+
     onSnapshot(q, (querySnapshot) => {
       setTeams(
         querySnapshot.docs.map((doc) => ({
@@ -74,12 +75,15 @@ const Round1 = (props: any) => {
           name: doc.data().name,
           eliminated: doc.data().eliminated,
           score: doc.data().score,
+          phase: doc.data().phase,
         })),
       );
     });
   }
+
   function initQuestions() {
     const q = query(collection(db, 'questions'));
+
     onSnapshot(q, (querySnapshot) => {
       setQuestions(
         querySnapshot.docs.map((doc) => ({
@@ -94,8 +98,10 @@ const Round1 = (props: any) => {
       );
     });
   }
+
   function initRounds() {
     const q = query(collection(db, 'rounds'));
+
     onSnapshot(q, (querySnapshot) => {
       setRounds(
         querySnapshot.docs.map((doc) => ({
@@ -128,6 +134,7 @@ const Round1 = (props: any) => {
           (item: string) => questions.find((question: QuestionDTO) => question.id === item) || qst,
         ) || [];
       const tms: TeamDTO[] = teams || [];
+
       setState({
         roundName: rd?.name || 'oups',
         questions: qsts,
@@ -138,12 +145,14 @@ const Round1 = (props: any) => {
 
   function getIndexOfQuestion(id: string) {
     const question = state.questions.find((item: any) => item.id === id);
+
     if (question) return state.questions.indexOf(question);
   }
 
   function handlePreviousQuestion() {
     if (state.questions) {
       const actQuestion = getIndexOfQuestion(selected) || 0;
+
       if (actQuestion !== 0) {
         setSelected(state.questions[actQuestion - 1].id);
       }
@@ -152,6 +161,7 @@ const Round1 = (props: any) => {
   function handleNextQuestion() {
     if (state.questions) {
       const actQuestion = getIndexOfQuestion(selected) || 0;
+
       if (actQuestion < state.questions.length) {
         setSelected(state.questions[actQuestion + 1].id);
       }
@@ -160,7 +170,8 @@ const Round1 = (props: any) => {
 
   function handleShowQuestion() {
     if (questions) {
-      let question = state.questions[getIndexOfQuestion(selected) || 0];
+      const question = state.questions[getIndexOfQuestion(selected) || 0];
+
       if (question) {
         question.status = 1;
         updateQuestion(question);
@@ -169,7 +180,8 @@ const Round1 = (props: any) => {
   }
   function handleShowAnswer() {
     if (questions) {
-      let question = state.questions[getIndexOfQuestion(selected) || 0];
+      const question = state.questions[getIndexOfQuestion(selected) || 0];
+
       if (question) {
         question.status = 2;
         updateQuestion(question);
@@ -178,7 +190,8 @@ const Round1 = (props: any) => {
   }
   function handleShowWinner() {
     if (questions) {
-      let question = state.questions[getIndexOfQuestion(selected) || 0];
+      const question = state.questions[getIndexOfQuestion(selected) || 0];
+
       if (question && question.teamId) {
         question.status = 3;
         updateQuestion(question);
@@ -188,7 +201,7 @@ const Round1 = (props: any) => {
   }
   function updateTeams() {
     if (state.questions) {
-      for (let team of state.teams) {
+      for (const team of state.teams) {
         team.score[0] = state.questions
           .filter((item: QuestionDTO) => item.teamId === team.id)
           .map((item: QuestionDTO) => item.points)
@@ -220,7 +233,7 @@ const Round1 = (props: any) => {
           <button onClick={() => navigate(-1)}>back</button>
           <div className='teams'>
             {teams?.map((team: TeamDTO) => (
-              <div className='team-item'>
+              <div key={team.id} className='team-item'>
                 <span>{team.name}</span>
                 <span>{team.score}</span>
               </div>
@@ -281,7 +294,9 @@ const Round1 = (props: any) => {
                             <em>None</em>
                           </MenuItem>
                           {state.teams.map((item: TeamDTO) => (
-                            <MenuItem value={item.id}>{item.name}</MenuItem>
+                            <MenuItem key={item.id} value={item.id}>
+                              {item.name}
+                            </MenuItem>
                           ))}
                         </Select>
                         {
@@ -328,4 +343,5 @@ const Round1 = (props: any) => {
     </>
   );
 };
+
 export default Round1;
