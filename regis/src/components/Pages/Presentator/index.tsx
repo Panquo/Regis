@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { default as PresentatorRound1 } from './Round1';
 
-const Presentator = (props: any) => {
+const Presentator = () => {
   const navigate = useNavigate();
 
   return (

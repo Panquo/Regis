@@ -153,16 +153,16 @@ const Round2 = (props: any) => {
 
     if (topics) {
       const tpcs =
-        rd?.questions.map((item: string) => {
-          const topic = topics.find((topic: TopicDTO) => topic.id === item);
+        rd?.questions.map((questionId: string) => {
+          const topic = topics.find((topic: TopicDTO) => topic.id === questionId);
 
-          console.log(topics, item, topic);
+          console.log(topics, questionId, topic);
           if (topic) {
             const tpc = {
               ...topic,
               questions: topic.questions.map(
-                (item: string) =>
-                  questions?.find((question: QuestionDTO) => item === question.id) ||
+                (topicQuestionId: string) =>
+                  questions?.find((question: QuestionDTO) => topicQuestionId === question.id) ||
                   new NQuestion(),
               ),
             };
