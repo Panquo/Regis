@@ -49,6 +49,10 @@ const Round1 = (props: any) => {
   }, []);
 
   useEffect(() => {
+    console.log(phase);
+  }, [phase]);
+
+  useEffect(() => {
     init();
   }, [teams, questions, rounds]);
 
