@@ -1,28 +1,34 @@
-import QuestionDTO from "./Question";
-import { Topic } from "./Topic";
+import QuestionDTO from './Question';
+import { Topic } from './Topic';
 
-export default interface RoundDTO {
-    id:string;
-    name:string;
-    status:number;
-    questions:string[]
-    current:string;
+export default RoundDTO;
+export { type Round, NRound };
+
+type QuestionID = string;
+type TopicID = string;
+
+interface RoundDTO {
+  id: string;
+  name: string;
+  status: number;
+  questions: string[];
+  current: QuestionID;
 }
 
-export interface Round {
-    id:string;
-    name:string;
-    status:number;
-    questions?:QuestionDTO[],
-    topics?:Topic[],
-    current:string;
+interface Round {
+  id: string;
+  name: string;
+  status: number;
+  questions?: QuestionDTO[];
+  topics?: Topic[];
+  current: QuestionID | TopicID;
 }
 
-export class NRound implements Round {
-    id="";
-    name="";
-    status=0;
-    questions=[]
-    topics=[]
-    current="";
+class NRound implements Round {
+  id = '';
+  name = '';
+  status = 0;
+  questions = [];
+  topics = [];
+  current = '';
 }

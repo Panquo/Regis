@@ -18,7 +18,7 @@ const round: Round = {
   current: '',
 };
 
-const Round1 = (props: any) => {
+const Round1 = () => {
   const initState = {
     round: round,
     teams: [],
@@ -65,6 +65,7 @@ const Round1 = (props: any) => {
           life: doc.data().life,
           eliminated: doc.data().eliminated,
           score: doc.data().score,
+          phase: doc.data().phase,
         })),
       );
     });

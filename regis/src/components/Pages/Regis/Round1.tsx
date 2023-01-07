@@ -46,10 +46,6 @@ const Round1 = (props: any) => {
   }, []);
 
   useEffect(() => {
-    console.log(phase);
-  }, [phase]);
-
-  useEffect(() => {
     init();
   }, [teams, questions, rounds]);
 
@@ -72,10 +68,12 @@ const Round1 = (props: any) => {
           name: doc.data().name,
           eliminated: doc.data().eliminated,
           score: doc.data().score,
+          phase: doc.data().phase,
         })),
       );
     });
   }
+
   function initQuestions() {
     const q = query(collection(db, 'questions'));
 
@@ -93,6 +91,7 @@ const Round1 = (props: any) => {
       );
     });
   }
+
   function initRounds() {
     const q = query(collection(db, 'rounds'));
 
@@ -128,9 +127,6 @@ const Round1 = (props: any) => {
           (item: string) => questions.find((question: QuestionDTO) => question.id === item) || qst,
         ) || [];
       const tms: TeamDTO[] = teams || [];
-
-      console.log(tms);
-
       setState({
         roundName: rd?.name || 'oups',
         questions: qsts,

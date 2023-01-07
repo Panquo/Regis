@@ -5,10 +5,14 @@ import { Choice } from '../components/Pages/Choice';
 import { Presenter } from '../components/Pages/Presenter';
 import { Regis } from '../components/Pages/Regis/Regis';
 import { Show } from '../components/Pages/Show';
+
 import RegisR1 from '../components/Pages/Regis/Round1';
 import RegisR2 from '../components/Pages/Regis/Round2';
-import RegisR25 from '../components/Pages/Regis/Round2.5';
+import RegisR25 from '../components/Pages/Regis/Round2.5'
 import { Round3 as RegisR3 } from '../components/Pages/Regis/Round3';
+
+import { Presentator, PresentatorRound1 } from '../components/Pages/Presentator';
+
 function App() {
   return (
     <>
@@ -16,7 +20,10 @@ function App() {
         <Routes>
           <Route path='/'>
             <Route index element={<Choice />} />
-            <Route path='pres' element={<Presenter />} />
+            <Route path='presentator'>
+              <Route index element={<Presentator />} />
+              <Route path='round1' element={<PresentatorRound1 />} />
+            </Route>
             <Route path='regis'>
               <Route index element={<Regis />} />
               <Route path='round1' element={<RegisR1 />} />

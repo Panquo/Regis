@@ -43,7 +43,6 @@ const Round2 = () => {
     round: round,
     teams: [],
   };
-
   const [selectedQuestion, setSelectedQuestion] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
   const navigate = useNavigate();
@@ -95,6 +94,7 @@ const Round2 = () => {
           name: doc.data().name,
           eliminated: doc.data().eliminated,
           score: doc.data().score,
+          phase: doc.data().phase,
         })),
       );
     });
@@ -154,15 +154,15 @@ const Round2 = () => {
 
     if (topics) {
       const tpcs =
-        rd?.questions.map((item: string) => {
-          const topic = topics.find((topic: TopicDTO) => topic.id === item);
+        rd?.questions.map((questionId: string) => {
+          const topic = topics.find((topic: TopicDTO) => topic.id === questionId);
 
           if (topic) {
             const tpc = {
               ...topic,
               questions: topic.questions.map(
-                (item: string) =>
-                  questions?.find((question: QuestionDTO) => item === question.id) ||
+                (topicQuestionId: string) =>
+                  questions?.find((question: QuestionDTO) => topicQuestionId === question.id) ||
                   new NQuestion(),
               ),
             };
@@ -208,10 +208,7 @@ const Round2 = () => {
       const actTopic = getIndexOfTopic(chosenTopic || '') || 0;
 
       if (actQuestion && actQuestion !== 0) {
-        const slct = state.round.topics[actTopic].questions[actQuestion - 1].id;
-
-        console.log(slct);
-        setSelectedQuestion(slct);
+        setSelectedQuestion(state.round.topics[actTopic].questions[actQuestion - 1].id);
       }
     }
   }
@@ -220,16 +217,12 @@ const Round2 = () => {
       const actQuestion = getIndexOfQuestion(selectedQuestion);
       const actTopic = getIndexOfTopic(chosenTopic || '') || 0;
 
-      console.log(actQuestion, selectedQuestion);
       if (
         actQuestion !== null &&
         actQuestion !== undefined &&
         actQuestion < state.round.topics.length
       ) {
-        const slct = state.round.topics[actTopic].questions[actQuestion + 1].id;
-
-        console.log(slct);
-        setSelectedQuestion(slct);
+        setSelectedQuestion(state.round.topics[actTopic].questions[actQuestion + 1].id);
       }
     }
   }
@@ -238,7 +231,6 @@ const Round2 = () => {
     if (topics) {
       const topic = topics.find((item: TopicDTO) => item.id === selectedTopic);
 
-      console.log(selectedTopic);
       if (topic) {
         topic.status = 1;
         topic.current = topic.questions[0];
@@ -293,6 +285,7 @@ const Round2 = () => {
   function handlePreviousRound() {
     navigate('/regis/round1');
   }
+
   function handleNextRound() {
     navigate('/regis/round25');
   }
