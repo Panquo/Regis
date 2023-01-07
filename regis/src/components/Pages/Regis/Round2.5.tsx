@@ -13,7 +13,6 @@ import { updateTeam } from '../../Services/TeamService';
 const round: Round = {
   id: '',
   name: '',
-  status: 0,
   topics: [],
   current: '',
 };
@@ -99,7 +98,6 @@ const Round1 = () => {
       const round: Round = {
         id: rd?.id || '',
         name: rd?.name || '',
-        status: rd?.status || 0,
         questions: qsts,
         current: rd?.current || '',
       };

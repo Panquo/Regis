@@ -8,7 +8,6 @@ export function addRound(round: RoundDTO) {
   try {
     addDoc(collection(db, TABLE_NAME), {
       name: round.name,
-      status: round.status,
       questions: round.questions,
     });
   } catch (err) {

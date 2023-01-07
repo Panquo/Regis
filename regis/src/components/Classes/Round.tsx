@@ -11,7 +11,6 @@ type TopicID = string;
 interface RoundDTO {
   id: string;
   name: string;
-  status: number;
   questions: string[];
   current: QuestionID;
 }
@@ -19,7 +18,6 @@ interface RoundDTO {
 interface Round {
   id: string;
   name: string;
-  status: number;
   questions?: QuestionDTO[];
   topics?: Topic[];
   current: QuestionID | TopicID;
