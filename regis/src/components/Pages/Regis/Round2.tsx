@@ -19,8 +19,8 @@ import RoundDTO, { NRound, Round } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
 import TopicDTO, { NTopic, Topic } from '../../Classes/Topic';
 import { updateRound } from '../../Services/RoundService';
+import { updateTeam } from '../../Services/TeamService';
 import { updateTopic } from '../../Services/TopicService';
-import { getScores } from '../../utils/TeamUtils';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -38,7 +38,7 @@ const round: Round = {
   current: '',
 };
 
-const Round2 = (props: any) => {
+const Round2 = () => {
   const initState = {
     round: round,
     teams: [],
@@ -67,7 +67,7 @@ const Round2 = (props: any) => {
 
   useEffect(() => {
     init();
-  }, [teams, questions, rounds]);
+  }, [teams, questions, rounds, topics]);
 
   useEffect(() => {
     if (rounds && topics && state.round.topics) {
@@ -131,6 +131,7 @@ const Round2 = (props: any) => {
       );
     });
   }
+
   function initRounds() {
     const q = query(collection(db, 'rounds'));
 
@@ -156,7 +157,6 @@ const Round2 = (props: any) => {
         rd?.questions.map((questionId: string) => {
           const topic = topics.find((topic: TopicDTO) => topic.id === questionId);
 
-          console.log(topics, questionId, topic);
           if (topic) {
             const tpc = {
               ...topic,
@@ -217,7 +217,11 @@ const Round2 = (props: any) => {
       const actQuestion = getIndexOfQuestion(selectedQuestion);
       const actTopic = getIndexOfTopic(chosenTopic || '') || 0;
 
-      if (actQuestion && actQuestion < state.round.topics.length) {
+      if (
+        actQuestion !== null &&
+        actQuestion !== undefined &&
+        actQuestion < state.round.topics.length
+      ) {
         setSelectedQuestion(state.round.topics[actTopic].questions[actQuestion + 1].id);
       }
     }
@@ -225,10 +229,14 @@ const Round2 = (props: any) => {
 
   function handleShowTopic() {
     if (topics) {
-      const topic = topics.find((item: TopicDTO) => item.id === chosenTopic);
+      const topic = topics.find((item: TopicDTO) => item.id === selectedTopic);
 
       if (topic) {
         topic.status = 1;
+        topic.current = topic.questions[0];
+        setSelectedQuestion(topic.current);
+        console.log(topic);
+
         updateTopic(topic);
       }
     }
@@ -250,16 +258,28 @@ const Round2 = (props: any) => {
   }
 
   function updateTeams() {
-    setTeams(
-      teams?.map((team: TeamDTO) => ({
-        ...team,
-        score: [getScores(team.id, state.round), team.score[1], team.score[2], team.score[3]],
-      })),
-    );
+    if (state.round && state.round.topics)
+      for (const team of state.teams) {
+        team.score[1] = state.round.topics
+          .map((top: Topic) =>
+            top.questions
+              .filter((item: QuestionDTO) => item.teamId === team.id)
+              .map((item: QuestionDTO) => {
+                const pts = item.points;
+
+                console.log(pts, item);
+                return pts;
+              })
+              .reduce((acc, cur) => acc + cur, 0),
+          )
+          .reduce((acc, cur) => acc + cur, 0);
+
+        updateTeam(team);
+      }
   }
 
   function handleGridClick(item: any) {
-    setSelectedTopic(item.id);
+    if (item.status !== 2) setSelectedTopic(item.id);
   }
 
   function handlePreviousRound() {
@@ -267,7 +287,7 @@ const Round2 = (props: any) => {
   }
 
   function handleNextRound() {
-    navigate('/regis/round3');
+    navigate('/regis/round25');
   }
 
   return (
@@ -317,6 +337,7 @@ const Round2 = (props: any) => {
                           <TableCell align='right'>{question?.answer}</TableCell>
                           <TableCell align='right'>{question?.flavor}</TableCell>
                           <TableCell align='right'>{question?.points}</TableCell>
+                          <TableCell align='right'>{question?.teamId}</TableCell>
                           <TableCell align='right'>{question?.status}</TableCell>
                         </TableRow>
                       ))}
@@ -330,8 +351,8 @@ const Round2 = (props: any) => {
                     <Grid
                       key={item.id}
                       className={
-                        chosenTopic === item.id
-                          ? 'chosenTopic'
+                        item.status === 2
+                          ? 'answeredTopic'
                           : selectedTopic === item.id
                           ? 'selectedTopic'
                           : ''
@@ -349,20 +370,28 @@ const Round2 = (props: any) => {
           </div>
           <span>Stream</span>
           <div className='nav-question row'>
-            <Button variant='contained' onClick={handlePreviousQuestion} className='nav'>
-              Question Précédente
-            </Button>
-            <div className='grow1 row stream-board-list'>
-              <Button variant='outlined' onClick={handleShowTopic}>
-                Afficher Theme
-              </Button>
-              <Button variant='outlined' onClick={handleNextTopic}>
-                Thème Suivant
-              </Button>
-            </div>
-            <Button variant='contained' onClick={handleNextQuestion} className='nav'>
-              Question Suivante
-            </Button>
+            {chosenTopic ? (
+              <>
+                <Button variant='contained' onClick={handlePreviousQuestion} className='nav'>
+                  Question Précédente
+                </Button>
+                <div className='grow1 row stream-board-list'>
+                  <Button variant='outlined' onClick={handleNextTopic}>
+                    Thème Suivant
+                  </Button>
+                </div>
+
+                <Button variant='contained' onClick={handleNextQuestion} className='nav'>
+                  Question Suivante
+                </Button>
+              </>
+            ) : (
+              <div className='grow1 row stream-board-list'>
+                <Button variant='outlined' onClick={handleShowTopic}>
+                  Afficher Theme
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className='col side-panel'>

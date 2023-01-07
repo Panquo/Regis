@@ -18,14 +18,25 @@ export function addTeam(team: TeamDTO) {
 
 export function updateTeam(team: TeamDTO) {
   const taskDocRef = doc(db, TABLE_NAME, team.id);
-
-  try {
-    updateDoc(taskDocRef, {
-      eliminated: team.eliminated,
-      score: team.score,
-    });
-  } catch (err) {
-    alert(err);
+  if (team.life != undefined && team.life != undefined) {
+    try {
+      updateDoc(taskDocRef, {
+        life: team.life,
+        eliminated: team.eliminated,
+        score: team.score,
+      });
+    } catch (err) {
+      alert(err);
+    }
+  } else {
+    try {
+      updateDoc(taskDocRef, {
+        eliminated: team.eliminated,
+        score: team.score,
+      });
+    } catch (err) {
+      alert(err);
+    }
   }
 }
 

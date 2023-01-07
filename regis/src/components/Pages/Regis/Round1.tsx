@@ -1,9 +1,6 @@
 import {
   Button,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Table,
   TableBody,
   TableCell,
@@ -31,7 +28,7 @@ const Round1 = (props: any) => {
   const [selected, setSelected] = useState('');
   const navigate = useNavigate();
   const [phase, setPhase] = useState(1);
-
+  //  TODO update score on phase end
   const [teams, setTeams] = useState<TeamDTO[]>();
   const [rounds, setRounds] = useState<RoundDTO[]>();
   const [questions, setQuestions] = useState<QuestionDTO[]>();
@@ -130,7 +127,6 @@ const Round1 = (props: any) => {
           (item: string) => questions.find((question: QuestionDTO) => question.id === item) || qst,
         ) || [];
       const tms: TeamDTO[] = teams || [];
-
       setState({
         roundName: rd?.name || 'oups',
         questions: qsts,
@@ -154,6 +150,7 @@ const Round1 = (props: any) => {
       }
     }
   }
+
   function handleNextQuestion() {
     if (state.questions) {
       const actQuestion = getIndexOfQuestion(selected) || 0;
@@ -174,6 +171,7 @@ const Round1 = (props: any) => {
       }
     }
   }
+
   function handleShowAnswer() {
     if (questions) {
       const question = state.questions[getIndexOfQuestion(selected) || 0];
@@ -270,36 +268,7 @@ const Round1 = (props: any) => {
                       <TableCell align='right'>{question?.answer}</TableCell>
                       <TableCell align='right'>{question?.flavor}</TableCell>
                       <TableCell align='right'>{question?.points}</TableCell>
-                      <TableCell align='right'>
-                        <InputLabel id='winnerTeam'>Gagnant</InputLabel>
-                        <Select
-                          labelId='winnerTeam'
-                          value={
-                            state.teams.find((item: TeamDTO) => question?.teamId === item.id)?.id
-                          }
-                          onChange={(event: any) => {
-                            if (question) {
-                              question.teamId = event.target.value;
-                              console.log(event);
-
-                              updateQuestion(question);
-                            }
-                          }}
-                        >
-                          <MenuItem value=''>
-                            <em>None</em>
-                          </MenuItem>
-                          {state.teams.map((item: TeamDTO) => (
-                            <MenuItem key={item.id} value={item.id}>
-                              {item.name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {
-                          state.teams.find((item: TeamDTO | undefined) => item?.id === question?.id)
-                            ?.name
-                        }
-                      </TableCell>
+                      <TableCell align='right'>{question?.teamId}</TableCell>
                       <TableCell align='right'>{question?.status}</TableCell>
                     </TableRow>
                   ))}

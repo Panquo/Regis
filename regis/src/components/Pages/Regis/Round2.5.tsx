@@ -1,22 +1,9 @@
-import PropTypes from 'prop-types';
-import {
-  Button,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from '@mui/material';
+import { Button } from '@mui/material';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
-import QuestionDTO, { NQuestion, Status } from '../../Classes/Question';
+import QuestionDTO from '../../Classes/Question';
 import RoundDTO, { Round } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
@@ -38,7 +25,6 @@ const Round1 = () => {
   };
   const [selected, setSelected] = useState('');
   const navigate = useNavigate();
-  const [phase, setPhase] = useState(1);
 
   const [teams, setTeams] = useState<TeamDTO[]>();
   const [rounds, setRounds] = useState<RoundDTO[]>();
@@ -56,16 +42,13 @@ const Round1 = () => {
   }, []);
 
   useEffect(() => {
-    console.log(phase);
-  }, [phase]);
-
-  useEffect(() => {
     init();
   }, [teams, questions, rounds]);
 
   useEffect(() => {
     if (rounds) {
-      let round = rounds[0];
+      const round = rounds[0];
+
       round.current = selected;
       updateRound(round);
     }
@@ -73,11 +56,13 @@ const Round1 = () => {
 
   function initTeams() {
     const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
+
     onSnapshot(q, (querySnapshot) => {
       setTeams(
         querySnapshot.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name,
+          life: doc.data().life,
           eliminated: doc.data().eliminated,
           score: doc.data().score,
           phase: doc.data().phase,
@@ -87,6 +72,7 @@ const Round1 = () => {
   }
   function initQuestions() {
     const q = query(collection(db, 'questions'));
+
     onSnapshot(q, (querySnapshot) => {
       setQuestions(
         querySnapshot.docs.map((doc) => ({
@@ -103,6 +89,7 @@ const Round1 = () => {
   }
   function initRounds() {
     const q = query(collection(db, 'rounds'));
+
     onSnapshot(q, (querySnapshot) => {
       setRounds(
         querySnapshot.docs.map((doc) => ({
@@ -159,6 +146,7 @@ const Round1 = () => {
   function handlePreviousQuestion() {
     if (state.round.questions) {
       const actQuestion = getIndexOfQuestion(selected) || 0;
+
       if (actQuestion !== 0) {
         setSelected(state.round.questions[actQuestion - 1].id);
       }
@@ -220,15 +208,16 @@ const Round1 = () => {
   }
 
   function handlePreviousRound() {
-    if (phase === 2) {
-      setPhase(1);
-    }
+    navigate('/regis/round2');
   }
   function handleNextRound() {
-    if (phase === 1) {
-      setPhase(2);
-    } else {
-      navigate('/regis/round2');
+    navigate('/regis/round3');
+  }
+
+  function handleRemoveLife(team: TeamDTO) {
+    if (team.life) {
+      team.life -= 1;
+      updateTeam(team);
     }
   }
 
@@ -239,82 +228,23 @@ const Round1 = () => {
           <button onClick={() => navigate(-1)}>back</button>
           <div className='teams'>
             {teams?.map((team: TeamDTO) => (
-              <div className='team-item'>
+              <div key={team.id} className='team-item'>
                 <span>{team.name}</span>
                 <span>{team.score}</span>
               </div>
             ))}
           </div>
 
-          <h1>
-            Ici le {state.round.name} (Phase {phase})
-          </h1>
+          <h1>Ici le {state.round.name}</h1>
           <div className='table-content grow1'>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Question</TableCell>
-                    <TableCell>Réponse</TableCell>
-                    <TableCell>Saveur</TableCell>
-                    <TableCell>Points</TableCell>
-                    <TableCell>Team</TableCell>
-                    <TableCell>Answered</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {state.round.questions?.map((question: QuestionDTO | undefined) => (
-                    <TableRow
-                      key={question?.id}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      selected={
-                        state.round.questions
-                          ? state.round.questions[getIndexOfQuestion(selected) || 0].id ===
-                            question?.id
-                          : false
-                      }
-                      className={question?.status ? 'answered' : 'not-answered'}
-                    >
-                      <TableCell component='th' scope='row'>
-                        {question?.statement}
-                      </TableCell>
-                      <TableCell align='right'>{question?.answer}</TableCell>
-                      <TableCell align='right'>{question?.flavor}</TableCell>
-                      <TableCell align='right'>{question?.points}</TableCell>
-                      <TableCell align='right'>
-                        <InputLabel id='winnerTeam'>Gagnant</InputLabel>
-                        <Select
-                          labelId='winnerTeam'
-                          value={
-                            state.teams.find((item: TeamDTO) => question?.teamId === item.id)?.id
-                          }
-                          onChange={(event: any) => {
-                            if (question) {
-                              question.teamId = event.target.value;
-                              console.log(event);
-
-                              updateQuestion(question);
-                            }
-                          }}
-                        >
-                          <MenuItem value=''>
-                            <em>None</em>
-                          </MenuItem>
-                          {state.teams.map((item: TeamDTO) => (
-                            <MenuItem value={item.id}>{item.name}</MenuItem>
-                          ))}
-                        </Select>
-                        {
-                          state.teams.find((item: TeamDTO | undefined) => item?.id === question?.id)
-                            ?.name
-                        }
-                      </TableCell>
-                      <TableCell align='right'>{question?.status}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <div>
+              {state.teams.map((item: TeamDTO) => (
+                <div key={item.id}>
+                  <span>Vies : {item.life}</span>
+                  <Button onClick={() => handleRemoveLife(item)}>-</Button>
+                </div>
+              ))}
+            </div>
           </div>
           <span>Stream</span>
           <div className='nav-question row'>
@@ -348,4 +278,5 @@ const Round1 = () => {
     </>
   );
 };
+
 export default Round1;
