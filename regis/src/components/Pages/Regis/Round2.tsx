@@ -112,6 +112,7 @@ const Round2 = (props: any) => {
           points: doc.data().points,
           teamId: doc.data().teamId,
           status: doc.data().status,
+          index: doc.data().index,
         })),
       );
     });

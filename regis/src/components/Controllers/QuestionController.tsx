@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   addDoc,
   collection,
@@ -8,27 +8,27 @@ import {
   orderBy,
   query,
   updateDoc,
-} from "firebase/firestore";
-import { db } from "../../firebase";
-import QuestionDTO from "../Classes/Question";
+} from 'firebase/firestore';
+import { db } from '../../firebase';
+import QuestionDTO from '../Classes/Question';
 
-type Props = {};
-
-export const QuestionController = (props: Props) => {
+export const QuestionController = () => {
   const [questions, setQuestions] = useState<QuestionDTO[]>([]);
 
   const question: QuestionDTO = {
-    id: "",
-    statement: "ouioui",
-    answer: "",
+    id: '',
+    statement: 'ouioui',
+    answer: '',
     points: 0,
-    teamId: "",
+    teamId: '',
     status: 0,
-    flavor: "",
+    flavor: '',
+    index: -1,
   };
 
   useEffect(() => {
-    const q = query(collection(db, "questions"), orderBy("statement", "asc"));
+    const q = query(collection(db, 'questions'), orderBy('statement', 'asc'));
+
     onSnapshot(q, (querySnapshot) => {
       setQuestions(
         querySnapshot.docs.map((doc) => ({
@@ -40,14 +40,15 @@ export const QuestionController = (props: Props) => {
           teamId: doc.data().teamId,
           status: doc.data().status,
           flavor: doc.data().flavor,
-        }))
+          index: doc.data().index,
+        })),
       );
     });
   }, []);
 
   function addQuestion() {
     try {
-      addDoc(collection(db, "questions"), {
+      addDoc(collection(db, 'questions'), {
         statement: question.statement,
         answer: question.answer,
         points: question.points,
@@ -60,7 +61,8 @@ export const QuestionController = (props: Props) => {
   }
 
   function updateQuestion(question: QuestionDTO) {
-    const taskDocRef = doc(db, "questions", question.id);
+    const taskDocRef = doc(db, 'questions', question.id);
+
     try {
       updateDoc(taskDocRef, {
         statement: question.statement,
@@ -75,7 +77,8 @@ export const QuestionController = (props: Props) => {
   }
 
   function deleteQuestion(id: string) {
-    const taskDocRef = doc(db, "questions", id);
+    const taskDocRef = doc(db, 'questions', id);
+
     try {
       deleteDoc(taskDocRef);
     } catch (err) {
@@ -87,19 +90,20 @@ export const QuestionController = (props: Props) => {
       <button onClick={addQuestion}>AddQuestion</button>
       <ul>
         {questions?.map((item: any) => (
-          <li>
+          <li key={item.id}>
             {item.name}
             {item.statement}
             <button
               onClick={() =>
                 updateQuestion({
                   id: item.id,
-                  statement: "banana",
-                  answer: "",
+                  statement: 'banana',
+                  answer: '',
                   points: 0,
-                  teamId: "",
+                  teamId: '',
                   status: 0,
-                  flavor: "",
+                  flavor: '',
+                  index: -1,
                 })
               }
             >

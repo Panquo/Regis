@@ -8,6 +8,7 @@ interface QuestionDTO {
   points: number;
   teamId: string;
   status: number;
+  index: number;
 }
 
 export class NQuestion implements QuestionDTO {
@@ -18,6 +19,7 @@ export class NQuestion implements QuestionDTO {
   points = 0;
   teamId = '';
   status = 0;
+  index = -1;
 }
 
 export enum Status {

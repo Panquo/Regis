@@ -94,6 +94,7 @@ const Round1 = (props: any) => {
           points: doc.data().points,
           teamId: doc.data().teamId,
           status: doc.data().status,
+          index: doc.data().index,
         })),
       );
     });
@@ -126,6 +127,7 @@ const Round1 = (props: any) => {
       points: 0,
       teamId: '',
       status: 0,
+      index: -1,
     };
 
     if (questions) {

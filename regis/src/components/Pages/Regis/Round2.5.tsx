@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import {
   Button,
   InputLabel,
@@ -16,7 +15,7 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
-import QuestionDTO, { NQuestion, Status } from '../../Classes/Question';
+import QuestionDTO from '../../Classes/Question';
 import RoundDTO, { Round } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
@@ -65,7 +64,8 @@ const Round1 = () => {
 
   useEffect(() => {
     if (rounds) {
-      let round = rounds[0];
+      const round = rounds[0];
+
       round.current = selected;
       updateRound(round);
     }
@@ -73,6 +73,7 @@ const Round1 = () => {
 
   function initTeams() {
     const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
+
     onSnapshot(q, (querySnapshot) => {
       setTeams(
         querySnapshot.docs.map((doc) => ({
@@ -87,6 +88,7 @@ const Round1 = () => {
   }
   function initQuestions() {
     const q = query(collection(db, 'questions'));
+
     onSnapshot(q, (querySnapshot) => {
       setQuestions(
         querySnapshot.docs.map((doc) => ({
@@ -97,12 +99,14 @@ const Round1 = () => {
           points: doc.data().points,
           teamId: doc.data().teamId,
           status: doc.data().status,
+          index: doc.data().index,
         })),
       );
     });
   }
   function initRounds() {
     const q = query(collection(db, 'rounds'));
+
     onSnapshot(q, (querySnapshot) => {
       setRounds(
         querySnapshot.docs.map((doc) => ({
@@ -127,6 +131,7 @@ const Round1 = () => {
       points: 0,
       teamId: '',
       status: 0,
+      index: -1,
     };
 
     if (questions) {
@@ -159,6 +164,7 @@ const Round1 = () => {
   function handlePreviousQuestion() {
     if (state.round.questions) {
       const actQuestion = getIndexOfQuestion(selected) || 0;
+
       if (actQuestion !== 0) {
         setSelected(state.round.questions[actQuestion - 1].id);
       }
@@ -239,7 +245,7 @@ const Round1 = () => {
           <button onClick={() => navigate(-1)}>back</button>
           <div className='teams'>
             {teams?.map((team: TeamDTO) => (
-              <div className='team-item'>
+              <div className='team-item' key={team.id}>
                 <span>{team.name}</span>
                 <span>{team.score}</span>
               </div>
@@ -301,7 +307,9 @@ const Round1 = () => {
                             <em>None</em>
                           </MenuItem>
                           {state.teams.map((item: TeamDTO) => (
-                            <MenuItem value={item.id}>{item.name}</MenuItem>
+                            <MenuItem key={item.id} value={item.id}>
+                              {item.name}
+                            </MenuItem>
                           ))}
                         </Select>
                         {
@@ -348,4 +356,5 @@ const Round1 = () => {
     </>
   );
 };
+
 export default Round1;
