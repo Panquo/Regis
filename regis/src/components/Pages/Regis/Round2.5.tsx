@@ -31,7 +31,7 @@ const round: Round = {
   current: '',
 };
 
-const Round1 = (props: any) => {
+const Round1 = () => {
   const initState = {
     round: round,
     teams: [],
@@ -80,6 +80,7 @@ const Round1 = (props: any) => {
           name: doc.data().name,
           eliminated: doc.data().eliminated,
           score: doc.data().score,
+          phase: doc.data().phase,
         })),
       );
     });
@@ -151,6 +152,7 @@ const Round1 = (props: any) => {
 
   function getIndexOfQuestion(id: string) {
     const question = state.round.questions?.find((item: any) => item.id === id);
+
     if (question) return state.round.questions?.indexOf(question);
   }
 
@@ -165,6 +167,7 @@ const Round1 = (props: any) => {
   function handleNextQuestion() {
     if (state.round.questions) {
       const actQuestion = getIndexOfQuestion(selected) || 0;
+
       if (actQuestion < state.round.questions.length) {
         setSelected(state.round.questions[actQuestion + 1].id);
       }
@@ -173,7 +176,8 @@ const Round1 = (props: any) => {
 
   function handleShowQuestion() {
     if (state.round.questions) {
-      let question = state.round.questions[getIndexOfQuestion(selected) || 0];
+      const question = state.round.questions[getIndexOfQuestion(selected) || 0];
+
       if (question) {
         question.status = 1;
         updateQuestion(question);
@@ -182,7 +186,8 @@ const Round1 = (props: any) => {
   }
   function handleShowAnswer() {
     if (state.round.questions) {
-      let question = state.round.questions[getIndexOfQuestion(selected) || 0];
+      const question = state.round.questions[getIndexOfQuestion(selected) || 0];
+
       if (question) {
         question.status = 2;
         updateQuestion(question);
@@ -191,7 +196,8 @@ const Round1 = (props: any) => {
   }
   function handleShowWinner() {
     if (state.round.questions) {
-      let question = state.round.questions[getIndexOfQuestion(selected) || 0];
+      const question = state.round.questions[getIndexOfQuestion(selected) || 0];
+
       if (question && question.teamId) {
         question.status = 3;
         updateQuestion(question);
@@ -201,7 +207,7 @@ const Round1 = (props: any) => {
   }
   function updateTeams() {
     if (state.round.questions) {
-      for (let team of state.teams) {
+      for (const team of state.teams) {
         team.score[0] = state.round.questions
           .filter((item: QuestionDTO) => item.teamId === team.id)
           .map((item: QuestionDTO) => item.points)
