@@ -12,7 +12,7 @@ interface TeamDTO {
 }
 
 export const extractTeam = (doc: DocumentData): TeamDTO => {
-  const { name, eliminated, score, phase } = doc.data();
+  const { name, eliminated, score, phase, life } = doc.data() satisfies TeamDTO;
 
   return {
     id: doc.id,
@@ -20,5 +20,6 @@ export const extractTeam = (doc: DocumentData): TeamDTO => {
     eliminated,
     score,
     phase,
+    life,
   };
 };

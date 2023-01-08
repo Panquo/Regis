@@ -14,9 +14,9 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
-import QuestionDTO, { NQuestion } from '../../Classes/Question';
-import RoundDTO, { NRound, Round } from '../../Classes/Round';
-import TeamDTO from '../../Classes/Team';
+import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
+import RoundDTO, { extractRound, NRound, Round } from '../../Classes/Round';
+import TeamDTO, { extractTeam } from '../../Classes/Team';
 import TopicDTO, { NTopic, Topic } from '../../Classes/Topic';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
@@ -88,33 +88,14 @@ const Round2 = () => {
     const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
-      setTeams(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          eliminated: doc.data().eliminated,
-          score: doc.data().score,
-          phase: doc.data().phase,
-        })),
-      );
+      setTeams(querySnapshot.docs.map(extractTeam));
     });
   }
   function initQuestions() {
     const q = query(collection(db, 'questions'));
 
     onSnapshot(q, (querySnapshot) => {
-      setQuestions(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          statement: doc.data().statement,
-          answer: doc.data().answer,
-          flavor: doc.data().flavor,
-          points: doc.data().points,
-          teamId: doc.data().teamId,
-          status: doc.data().status,
-          index: doc.data().index,
-        })),
-      );
+      setQuestions(querySnapshot.docs.map(extractQuestion));
     });
   }
   function initTopics() {
@@ -137,16 +118,7 @@ const Round2 = () => {
     const q = query(collection(db, 'rounds'));
 
     onSnapshot(q, (querySnapshot) => {
-      setRounds(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          status: doc.data().status,
-          questions: doc.data().questions,
-          topics: doc.data().topics,
-          current: doc.data().current,
-        })),
-      );
+      setRounds(querySnapshot.docs.map(extractRound));
     });
   }
 

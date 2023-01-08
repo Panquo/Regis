@@ -12,9 +12,9 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
-import QuestionDTO from '../../Classes/Question';
-import RoundDTO from '../../Classes/Round';
-import TeamDTO from '../../Classes/Team';
+import QuestionDTO, { extractQuestion } from '../../Classes/Question';
+import RoundDTO, { extractRound } from '../../Classes/Round';
+import TeamDTO, { extractTeam } from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
@@ -66,15 +66,7 @@ const Round1 = () => {
     const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
-      setTeams(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          eliminated: doc.data().eliminated,
-          score: doc.data().score,
-          phase: doc.data().phase,
-        })),
-      );
+      setTeams(querySnapshot.docs.map(extractTeam));
     });
   }
 
@@ -82,18 +74,7 @@ const Round1 = () => {
     const q = query(collection(db, 'questions'));
 
     onSnapshot(q, (querySnapshot) => {
-      setQuestions(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          statement: doc.data().statement,
-          answer: doc.data().answer,
-          flavor: doc.data().flavor,
-          points: doc.data().points,
-          teamId: doc.data().teamId,
-          status: doc.data().status,
-          index: doc.data().index,
-        })),
-      );
+      setQuestions(querySnapshot.docs.map(extractQuestion));
     });
   }
 
@@ -101,15 +82,7 @@ const Round1 = () => {
     const q = query(collection(db, 'rounds'));
 
     onSnapshot(q, (querySnapshot) => {
-      setRounds(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          status: doc.data().status,
-          questions: doc.data().questions,
-          current: doc.data().current,
-        })),
-      );
+      setRounds(querySnapshot.docs.map(extractRound));
     });
   }
 
@@ -133,6 +106,7 @@ const Round1 = () => {
           (item: string) => questions.find((question: QuestionDTO) => question.id === item) || qst,
         ) || [];
       const tms: TeamDTO[] = teams || [];
+
       setState({
         roundName: rd?.name || 'oups',
         questions: qsts,

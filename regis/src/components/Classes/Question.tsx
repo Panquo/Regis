@@ -31,7 +31,8 @@ export enum Status {
 }
 
 export const extractQuestion = (doc: DocumentData): QuestionDTO => {
-  const { statement, answer, flavor, points, teamId, status, index } = doc.data();
+  const { statement, answer, flavor, points, teamId, status, index } =
+    doc.data() satisfies QuestionDTO;
 
   return {
     id: doc.id,

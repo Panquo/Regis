@@ -35,7 +35,7 @@ class NRound implements Round {
 }
 
 export const extractRound = (doc: DocumentData): RoundDTO => {
-  const { name, status, questions, current } = doc.data();
+  const { name, status, questions, current } = doc.data() satisfies RoundDTO;
 
   return {
     id: doc.id,
