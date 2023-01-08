@@ -40,7 +40,7 @@ const Round3 = () => {
   const [currentTopic, setCurrentTopic] = useState<TopicDTO>(new NTopic());
 
   const initRound = () => {
-    const q = query(collection(db, 'rounds'), where('index', '==', 2));
+    const q = query(collection(db, 'rounds'), where('index', '==', 3));
 
     onSnapshot(q, (querySnapshot) => {
       const doc = querySnapshot.docs[0];
