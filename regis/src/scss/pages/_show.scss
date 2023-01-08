@@ -89,6 +89,23 @@
         background-color: #253a57;
       }
     }
+    .team-life {
+      height: 60px;
+      width: 120px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      .life {
+        font-size: 50px;
+        border-radius: 7.5px;
+      }
+      .life-left {
+        color: rgb(206, 25, 25);
+      }
+      .life-empty {
+        color: #253a57;
+      }
+    }
   }
 }
 

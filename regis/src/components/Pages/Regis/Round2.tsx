@@ -194,6 +194,16 @@ const Round2 = () => {
       updateTeam(team);
     }
   }
+  function eliminateTeams() {
+    const scores = allTeams.sort((team1, team2) =>
+      team1.score[1] < team2.score[1] ? 1 : team1.score[1] > team2.score[1] ? -1 : 0,
+    );
+    const eliminated = scores.splice(0, 2);
+
+    for (const team of eliminated) {
+      updateTeam({ ...team, eliminated: true });
+    }
+  }
 
   function handleGridClick(topic: TopicDTO) {
     if (topic.status !== 2) setSelectedTopic(topic.id);
@@ -204,6 +214,7 @@ const Round2 = () => {
   }
 
   function handleNextRound() {
+    eliminateTeams();
     navigate('/regis/round25');
   }
 

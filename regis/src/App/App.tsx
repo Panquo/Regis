@@ -15,7 +15,7 @@ import {
   PresentatorRound2,
   PresentatorRound2Topic,
 } from '../components/Pages/Presentator';
-import { Stream, StreamRound1, StreamRound2 } from '../components/Pages/Stream';
+import { Stream, StreamRound1, StreamRound2, StreamRound25 } from '../components/Pages/Stream';
 
 function App() {
   return (
@@ -43,7 +43,7 @@ function App() {
               <Route index element={<Stream />} />
               <Route path='round1' element={<StreamRound1 />} />
               <Route path='round2' element={<StreamRound2 />} />
-              <Route path='round25' />
+              <Route path='round25' element={<StreamRound25 />} />
               <Route path='round3' />
             </Route>
           </Route>
