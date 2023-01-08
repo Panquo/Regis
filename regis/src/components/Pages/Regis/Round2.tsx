@@ -33,7 +33,6 @@ const Item = styled(Paper)(({ theme }) => ({
 const round: Round = {
   id: '',
   name: '',
-  status: 0,
   topics: [],
   current: '',
 };
@@ -148,7 +147,6 @@ const Round2 = () => {
       const round: Round = {
         id: rd?.id || '',
         name: rd?.name || '',
-        status: rd?.status || 0,
         topics: tpcs,
         current: rd?.current || '',
       };
