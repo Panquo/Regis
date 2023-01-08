@@ -1,13 +1,15 @@
-import { ButtonBase, Grid, IconButton, Typography } from '@mui/material';
-import { Box, Stack } from '@mui/system';
 import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { db } from '../../../firebase';
-import QuestionDTO, { NQuestion } from '../../Classes/Question';
-import RoundDTO, { NRound } from '../../Classes/Round';
-import TeamDTO from '../../Classes/Team';
+import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
+import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
+import TeamDTO, { extractTeam } from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
+
+import { ButtonBase, Grid, IconButton, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/system';
 import TrophyIcon from '@mui/icons-material/EmojiEvents';
 import HomeIcon from '@mui/icons-material/Home';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -38,13 +40,7 @@ const Round1 = () => {
     onSnapshot(q, (querySnapshot) => {
       const doc = querySnapshot.docs[0];
 
-      setRound({
-        id: doc.id,
-        name: doc.data().name,
-        status: doc.data().status,
-        questions: doc.data().questions,
-        current: doc.data().current,
-      });
+      setRound(extractRound(doc));
     });
   };
 
@@ -52,15 +48,7 @@ const Round1 = () => {
     const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
-      setAllTeams(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          eliminated: doc.data().eliminated,
-          score: doc.data().score,
-          phase: doc.data().phase,
-        })),
-      );
+      setAllTeams(querySnapshot.docs.map(extractTeam));
     });
   };
 
@@ -71,16 +59,7 @@ const Round1 = () => {
     );
 
     onSnapshot(q, (querySnapshot) => {
-      const questions = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        statement: doc.data().statement,
-        answer: doc.data().answer,
-        flavor: doc.data().flavor,
-        points: doc.data().points,
-        teamId: doc.data().teamId,
-        status: doc.data().status,
-        index: doc.data().index,
-      }));
+      const questions = querySnapshot.docs.map(extractQuestion);
 
       setAllQuestions(questions.sort((q1, q2) => q1.index - q2.index));
     });

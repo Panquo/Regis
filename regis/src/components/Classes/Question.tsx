@@ -1,3 +1,5 @@
+import { DocumentData } from 'firebase/firestore';
+
 export default QuestionDTO;
 
 interface QuestionDTO {
@@ -27,3 +29,18 @@ export enum Status {
   'selected' = 1,
   'answered' = 2,
 }
+
+export const extractQuestion = (doc: DocumentData): QuestionDTO => {
+  const { statement, answer, flavor, points, teamId, status, index } = doc.data();
+
+  return {
+    id: doc.id,
+    statement,
+    answer,
+    flavor,
+    points,
+    teamId,
+    status,
+    index,
+  };
+};
