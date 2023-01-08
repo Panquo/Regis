@@ -21,7 +21,6 @@ export function updateRound(round: RoundDTO) {
 
   try {
     updateDoc(taskDocRef, {
-      status: round.status,
       questions: round.questions,
     });
   } catch (err) {
