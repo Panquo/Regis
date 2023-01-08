@@ -1,10 +1,16 @@
 .selectedTopic {
-    background-color: white;
+  div {
+    background-color: yellow;
+  }
 }
 .chosenTopic {
+  div {
     background-color: green;
+  }
 }
 
 .answeredTopic {
+  div {
     background-color: grey;
+  }
 }

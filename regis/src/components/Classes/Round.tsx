@@ -13,6 +13,7 @@ interface RoundDTO {
   name: string;
   questions?: QuestionID[];
   topics?: TopicID[];
+  phase?: number;
   current: QuestionID | TopicID;
 }
 
@@ -21,6 +22,7 @@ interface Round {
   name: string;
   questions?: QuestionDTO[];
   topics?: Topic[];
+  phase?: number;
   current: QuestionID | TopicID;
 }
 
@@ -28,16 +30,18 @@ class NRound implements Round {
   id = '';
   name = '';
   questions = [];
+  phase = 1;
   topics = [];
   current = '';
 }
 
 export const extractRound = (doc: DocumentData): RoundDTO => {
-  const { name, questions, topics, current } = doc.data() satisfies RoundDTO;
+  const { name, questions, topics, phase, current } = doc.data() satisfies RoundDTO;
 
   return {
     id: doc.id,
     name,
+    phase,
     questions,
     topics,
     current,
