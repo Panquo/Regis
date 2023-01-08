@@ -102,7 +102,7 @@ const Round1 = () => {
 
     if (questions) {
       const qsts =
-        rd?.questions.map(
+        rd?.questions?.map(
           (item: string) => questions.find((question: QuestionDTO) => question.id === item) || qst,
         ) || [];
       const tms: TeamDTO[] = teams || [];

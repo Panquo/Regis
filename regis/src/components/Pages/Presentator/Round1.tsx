@@ -77,7 +77,7 @@ const Round1 = () => {
   }, []);
 
   useEffect(() => {
-    if (currentRound.questions.length) {
+    if (currentRound.questions?.length) {
       initQuestions(currentRound);
     }
   }, [currentRound]);

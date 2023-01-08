@@ -156,7 +156,7 @@ const Round3 = () => {
 
     if (topics) {
       const tpcs =
-        rd?.questions.map((questionId: string) => {
+        rd?.questions?.map((questionId: string) => {
           const topic = topics.find((topic: TopicDTO) => topic.id === questionId);
 
           console.log(topics, questionId, topic);
