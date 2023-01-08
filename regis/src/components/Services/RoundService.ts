@@ -20,7 +20,20 @@ export function updateRound(round: RoundDTO) {
 
   try {
     updateDoc(taskDocRef, {
-      questions: round.questions,
+      ...(round.questions && { questions: round.questions }),
+      ...(round.topics && { topics: round.topics }),
+      current: round.current,
+    });
+  } catch (err) {
+    alert(err);
+  }
+}
+export function updatePhaseRound(phase: number, round: RoundDTO) {
+  const taskDocRef = doc(db, TABLE_NAME, round.id);
+
+  try {
+    updateDoc(taskDocRef, {
+      phase: phase,
     });
   } catch (err) {
     alert(err);
