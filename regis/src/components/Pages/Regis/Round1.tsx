@@ -22,7 +22,7 @@ import { updateQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 
-const Round1 = (props: any) => {
+const Round1 = () => {
   const initState = {
     roundName: 'damn',
     questions: [],
