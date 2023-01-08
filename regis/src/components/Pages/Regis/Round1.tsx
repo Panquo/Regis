@@ -130,6 +130,14 @@ const Round1 = () => {
     }
   }
 
+  function eliminateTeams() {
+    for (const team of allTeams) {
+      team.score[0] === 3
+        ? updateTeam({ ...team, eliminated: false })
+        : updateTeam({ ...team, eliminated: true });
+    }
+  }
+
   function handlePreviousRound() {
     if (currentRound.phase === 2) {
       updatePhaseRound(1, currentRound);
@@ -139,6 +147,7 @@ const Round1 = () => {
     if (currentRound.phase === 1) {
       updatePhaseRound(2, currentRound);
     } else {
+      eliminateTeams();
       navigate('/regis/round2');
     }
   }
