@@ -19,7 +19,7 @@ import { updateQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 
-const Round1 = (props: any) => {
+const Round1 = () => {
   const initState = {
     roundName: 'damn',
     questions: [],
@@ -44,6 +44,10 @@ const Round1 = (props: any) => {
     initRounds();
     setSelected('');
   }, []);
+
+  useEffect(() => {
+    console.log(phase);
+  }, [phase]);
 
   useEffect(() => {
     init();
@@ -87,6 +91,7 @@ const Round1 = (props: any) => {
           points: doc.data().points,
           teamId: doc.data().teamId,
           status: doc.data().status,
+          index: doc.data().index,
         })),
       );
     });
@@ -119,6 +124,7 @@ const Round1 = (props: any) => {
       points: 0,
       teamId: '',
       status: 0,
+      index: -1,
     };
 
     if (questions) {

@@ -1,3 +1,4 @@
+import { DocumentData } from 'firebase/firestore';
 import QuestionDTO from './Question';
 import { Topic } from './Topic';
 
@@ -32,3 +33,15 @@ class NRound implements Round {
   topics = [];
   current = '';
 }
+
+export const extractRound = (doc: DocumentData): RoundDTO => {
+  const { name, status, questions, current } = doc.data();
+
+  return {
+    id: doc.id,
+    name,
+    status,
+    questions,
+    current,
+  };
+};

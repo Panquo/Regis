@@ -1,8 +1,8 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase";
-import QuestionDTO from "../Classes/Question";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import QuestionDTO from '../Classes/Question';
 
-const TABLE_NAME = "questions"
+const TABLE_NAME = 'questions';
 
 export function addQuestion(question: QuestionDTO) {
   try {
@@ -20,6 +20,7 @@ export function addQuestion(question: QuestionDTO) {
 
 export function updateQuestion(question: QuestionDTO) {
   const taskDocRef = doc(db, TABLE_NAME, question.id);
+
   try {
     updateDoc(taskDocRef, {
       statement: question.statement,
@@ -35,6 +36,7 @@ export function updateQuestion(question: QuestionDTO) {
 
 export function deleteQuestion(id: string) {
   const taskDocRef = doc(db, TABLE_NAME, id);
+
   try {
     deleteDoc(taskDocRef);
   } catch (err) {

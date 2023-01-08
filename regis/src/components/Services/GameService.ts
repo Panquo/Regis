@@ -1,8 +1,8 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../firebase";
-import GameDTO from "../Classes/Game";
+import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import GameDTO from '../Classes/Game';
 
-const TABLE_NAME = "games"
+const TABLE_NAME = 'games';
 
 export function addGame(game: GameDTO) {
   try {
@@ -18,6 +18,7 @@ export function addGame(game: GameDTO) {
 
 export function updateGame(game: GameDTO) {
   const taskDocRef = doc(db, TABLE_NAME, game.id);
+
   try {
     updateDoc(taskDocRef, {
       status: game.status,
@@ -30,6 +31,7 @@ export function updateGame(game: GameDTO) {
 
 export function deleteGame(id: string) {
   const taskDocRef = doc(db, TABLE_NAME, id);
+
   try {
     deleteDoc(taskDocRef);
   } catch (err) {

@@ -1,4 +1,16 @@
-import { Button } from '@mui/material';
+import {
+  Button,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -83,6 +95,7 @@ const Round1 = () => {
           points: doc.data().points,
           teamId: doc.data().teamId,
           status: doc.data().status,
+          index: doc.data().index,
         })),
       );
     });
@@ -114,6 +127,7 @@ const Round1 = () => {
       points: 0,
       teamId: '',
       status: 0,
+      index: -1,
     };
 
     if (questions) {
