@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 import { default as StreamRound1 } from './Round1';
+import { default as StreamRound2 } from './Round2';
 
 const Stream = () => {
   const navigate = useNavigate();
@@ -17,4 +18,4 @@ const Stream = () => {
   );
 };
 
-export { Stream, StreamRound1 };
+export { Stream, StreamRound1, StreamRound2 };

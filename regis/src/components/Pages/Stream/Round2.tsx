@@ -17,7 +17,7 @@ import { db } from '../../../firebase';
 import QuestionDTO, { extractQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
-import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
+import TopicDTO, { NTopic } from '../../Classes/Topic';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import { updateTopic } from '../../Services/TopicService';
@@ -70,7 +70,13 @@ const Round2 = () => {
     );
 
     onSnapshot(q, (querySnapshot) => {
-      const topics: TopicDTO[] = querySnapshot.docs.map(extractTopic);
+      const topics: TopicDTO[] = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name,
+        status: doc.data().status,
+        questions: doc.data().questions,
+        current: doc.data().current,
+      }));
 
       if (currentRound.current) {
         setCurrentTopic(
@@ -144,8 +150,6 @@ const Round2 = () => {
   }
 
   function handleShowTopic() {
-    console.log(currentRound);
-
     updateRound({ ...currentRound, current: selectedTopic });
     if (allTopics) {
       const topic = allTopics.find((item: TopicDTO) => item.id === selectedTopic);
@@ -161,9 +165,6 @@ const Round2 = () => {
   }
 
   function handleNextTopic() {
-    console.log(currentRound);
-
-    updateRound({ ...currentRound, current: '' });
     if (allTopics) {
       const topic = allTopics.find((item: TopicDTO) => item.id === chosenTopic);
 
@@ -209,113 +210,50 @@ const Round2 = () => {
 
   return (
     <>
-      <div className='row wrapper'>
-        <div className='col content'>
-          <button onClick={() => navigate(-1)}>back</button>
-          <div className='teams'>
-            {allTeams?.map((team: TeamDTO) => (
-              <div key={team.id} className='team-item'>
-                <span>{team.name}</span>
-                <span>{team.score}</span>
+      <div className='display-teams-stream'>
+        {currentTeams.map((item: TeamDTO) => {
+          return (
+            <div
+              key={item.id}
+              className={`team-item col ${item.score[0] === 3 ? 'team-selected' : ''}`}
+            >
+              <div className='team-name-div'>
+                <span className='team-name'>{item.name}</span>
               </div>
-            ))}
-          </div>
-
-          <h1>Ici le {currentRound.name}</h1>
-          <div className='table-content grow1'>
-            {chosenTopic ? (
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Question</TableCell>
-                      <TableCell>Réponse</TableCell>
-                      <TableCell>Saveur</TableCell>
-                      <TableCell>Points</TableCell>
-                      <TableCell>Team</TableCell>
-                      <TableCell>Answered</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {currentQuestions.map((question: QuestionDTO | undefined) => (
-                      <TableRow
-                        key={question?.id}
-                        sx={{
-                          '&:last-child td, &:last-child th': { border: 0 },
-                        }}
-                        selected={currentQuestions[currentQuestionIndex].id === question?.id}
-                        className={question?.status ? 'answered' : 'not-answered'}
-                      >
-                        <TableCell component='th' scope='row'>
-                          {question?.statement}
-                        </TableCell>
-                        <TableCell align='right'>{question?.answer}</TableCell>
-                        <TableCell align='right'>{question?.flavor}</TableCell>
-                        <TableCell align='right'>{question?.points}</TableCell>
-                        <TableCell align='right'>{question?.teamId}</TableCell>
-                        <TableCell align='right'>{question?.status}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            ) : (
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                {allTopics.map((item: TopicDTO) => {
-                  return (
-                    <Grid
-                      key={item.id}
-                      className={
-                        item.status === 2
-                          ? 'answeredTopic'
-                          : selectedTopic === item.id
-                          ? 'selectedTopic'
-                          : ''
-                      }
-                      item
-                      xs={4}
-                      onClick={() => handleGridClick(item)}
-                    >
-                      <Item>{item.name}</Item>
-                    </Grid>
-                  );
+              <div className='team-score'>
+                {Array.from({ length: item.score[0] }, (_, index) => {
+                  return <div key={index} className='valid-point point' />;
                 })}
-              </Grid>
-            )}
-          </div>
-          <span>Stream</span>
-          <div className='nav-question row'>
-            {chosenTopic ? (
-              <>
-                <Button variant='contained' onClick={handlePreviousQuestion} className='nav'>
-                  Question Précédente
-                </Button>
-                <div className='grow1 row stream-board-list'>
-                  <Button variant='outlined' onClick={handleNextTopic}>
-                    Thème Suivant
-                  </Button>
-                </div>
-
-                <Button variant='contained' onClick={handleNextQuestion} className='nav'>
-                  Question Suivante
-                </Button>
-              </>
-            ) : (
-              <div className='grow1 row stream-board-list'>
-                <Button variant='outlined' onClick={handleShowTopic}>
-                  Afficher Theme
-                </Button>
+                {Array.from({ length: 3 - item.score[0] }, (_, index) => {
+                  return <div key={index} className='empty-point point' />;
+                })}
               </div>
-            )}
-          </div>
-        </div>
-        <div className='col side-panel'>
-          <div className='soundboard'></div>
-          <div className='nav-panel'>
-            <Button onClick={handlePreviousRound}>Manche Précédente</Button>
-            <Button onClick={handleNextRound}>Manche Suivante</Button>
-          </div>
-        </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className='display-topics-stream'>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          {allTopics.map((item: TopicDTO) => {
+            return (
+              <Grid
+                key={item.id}
+                className={
+                  item.status === 2
+                    ? 'answeredTopic'
+                    : selectedTopic === item.id
+                    ? 'selectedTopic'
+                    : ''
+                }
+                item
+                xs={4}
+              >
+                <Item>{item.name}</Item>
+              </Grid>
+            );
+          })}
+        </Grid>
+        {currentRound.current ? <div>Round</div> : null}
       </div>
     </>
   );
