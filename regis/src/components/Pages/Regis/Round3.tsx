@@ -19,7 +19,7 @@ import { db } from '../../../firebase';
 import QuestionDTO, { NQuestion } from '../../Classes/Question';
 import RoundDTO, { NRound, Round } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
-import TopicDTO, { NTopic, Topic } from '../../Classes/Topic';
+import TopicDTO, { extractTopic, NTopic, Topic } from '../../Classes/Topic';
 import { updateRound } from '../../Services/RoundService';
 import { updateTopic } from '../../Services/TopicService';
 import { getScores } from '../../utils/TeamUtils';
@@ -114,15 +114,7 @@ const Round3 = () => {
     const q = query(collection(db, 'topics'));
 
     onSnapshot(q, (querySnapshot) => {
-      setTopics(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          status: doc.data().status,
-          questions: doc.data().questions,
-          current: doc.data().current,
-        })),
-      );
+      setTopics(querySnapshot.docs.map(extractTopic));
     });
   }
   function initRounds() {

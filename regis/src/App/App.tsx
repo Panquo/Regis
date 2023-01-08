@@ -9,7 +9,12 @@ import RegisR2 from '../components/Pages/Regis/Round2';
 import RegisR25 from '../components/Pages/Regis/Round2.5';
 import RegisR3 from '../components/Pages/Regis/Round3';
 
-import { Presentator, PresentatorRound1 } from '../components/Pages/Presentator';
+import {
+  Presentator,
+  PresentatorRound1,
+  PresentatorRound2,
+  PresentatorRound2Topic,
+} from '../components/Pages/Presentator';
 import { Stream, StreamRound1 } from '../components/Pages/Stream';
 
 function App() {
@@ -22,6 +27,10 @@ function App() {
             <Route path='presentator'>
               <Route index element={<Presentator />} />
               <Route path='round1' element={<PresentatorRound1 />} />
+              <Route path='round2'>
+                <Route index element={<PresentatorRound2 />} />
+                <Route path='topic/:topicId' element={<PresentatorRound2Topic />} />
+              </Route>
             </Route>
             <Route path='regis'>
               <Route index element={<Regis />} />
