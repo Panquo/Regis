@@ -90,6 +90,21 @@
   }
 }
 
+.display-topics-stream {
+  position: absolute;
+  right: 20vw;
+  left: 20vw;
+  bottom: 60px;
+  padding: 30px;
+  background-image: radial-gradient(ellipse at left top, #dab239 20%, #d3a92a 100%);
+  box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial,
+    sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+}
+
 .display-current-question {
   position: absolute;
   right: 20vw;
