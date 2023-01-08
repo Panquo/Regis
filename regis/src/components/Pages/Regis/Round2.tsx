@@ -17,7 +17,7 @@ import { db } from '../../../firebase';
 import QuestionDTO, { extractQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
-import TopicDTO, { NTopic } from '../../Classes/Topic';
+import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import { updateTopic } from '../../Services/TopicService';
@@ -70,13 +70,7 @@ const Round2 = () => {
     );
 
     onSnapshot(q, (querySnapshot) => {
-      const topics: TopicDTO[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().name,
-        status: doc.data().status,
-        questions: doc.data().questions,
-        current: doc.data().current,
-      }));
+      const topics: TopicDTO[] = querySnapshot.docs.map(extractTopic);
 
       if (currentRound.current) {
         setCurrentTopic(
