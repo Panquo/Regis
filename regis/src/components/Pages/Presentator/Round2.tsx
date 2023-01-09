@@ -1,4 +1,4 @@
-import { ButtonBase, Grid, IconButton, Typography } from '@mui/material';
+import { ButtonBase, Grid, IconButton, MenuItem, Select, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
@@ -8,8 +8,10 @@ import TopicDTO, { extractTopic } from '../../Classes/Topic';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 
 import SchoolIcon from '@mui/icons-material/School';
-import TeamDTO, { extractTeam } from '../../Classes/Team';
-import TrophyIcon from '@mui/icons-material/EmojiEvents';
+import TeamDTO, { extractTeam, NTeam } from '../../Classes/Team';
+
+import GroupIcon from '@mui/icons-material/Group';
+import { updateTopic } from '../../Services/TopicService';
 
 const Round2 = () => {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ const Round2 = () => {
   const [allTeams, setAllTeams] = useState<TeamDTO[]>([]);
 
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
+  const [currentTeam, setTeam] = useState<TeamDTO>(new NTeam());
 
   const initRound = () => {
     const q = query(collection(db, 'rounds'), where('index', '==', 2));
@@ -87,10 +90,34 @@ const Round2 = () => {
         </Grid>
       </Grid>
 
+      <Grid item justifyContent='center' alignItems='center' sx={{ display: 'flex', flex: 1 }}>
+        <Select
+          label='Équipe'
+          value={currentTeam.id}
+          onChange={(event) => {
+            const team = allTeams.find((team) => team.id === event?.target.value);
+
+            setTeam(team || new NTeam());
+          }}
+          sx={{
+            width: 400,
+            backgroundColor: 'lightgray',
+            borderRadius: 4,
+            fontSize: 20,
+          }}
+        >
+          {allTeams?.map((team) => (
+            <MenuItem key={team.id} value={team.id}>
+              {team.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </Grid>
+
       <Grid item container direction='column' alignItems='stretch' sx={{ gap: 2, paddingX: 4 }}>
         {allTopics?.map((topic) => (
           <Grid item key={topic.id} sx={{ display: 'flex', gap: 2 }}>
-            <TopicDisplay {...{ topic, allTeams }} />
+            <TopicDisplay {...{ topic, allTeams, currentTeam }} />
           </Grid>
         ))}
       </Grid>
@@ -99,7 +126,7 @@ const Round2 = () => {
 };
 
 const TopicDisplay = (props: any) => {
-  const { topic, allTeams } = props;
+  const { topic, allTeams, currentTeam } = props;
   const navigate = useNavigate();
 
   const wasPlayed = topic.teamId !== '';
@@ -109,12 +136,15 @@ const TopicDisplay = (props: any) => {
     <>
       <ButtonBase
         key={topic.id}
-        disabled={wasPlayed}
-        onClick={() => navigate(`topic/${topic.id}`)}
+        disabled={wasPlayed || currentTeam.id === ''}
+        onClick={() => {
+          updateTopic({ ...topic, teamId: currentTeam.id }); // TODO: topic upate doesn't work
+          navigate(`${currentTeam.id}/topic/${topic.id}`);
+        }}
         sx={{
           fontSize: 25,
           fontFamily: 'Ubuntu',
-          padding: 3,
+          padding: 2.5,
           borderRadius: 4,
           gap: 2,
           display: 'flex',
@@ -143,13 +173,17 @@ const TeamDisplay = (props: any) => {
         backgroundColor: '#DAB239',
         fontSize: 20,
         fontFamily: 'Ubuntu',
-        padding: 3,
+        padding: 2.5,
         borderRadius: 4,
         width: 250,
         gap: 2,
+        justifyContent: 'left',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
       }}
     >
-      <TrophyIcon sx={{ fontSize: 25 }} />
+      <GroupIcon sx={{ fontSize: 25 }} />
       {team.name}
     </ButtonBase>
   );

@@ -3,7 +3,7 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
-import QuestionDTO, { extractQuestion } from '../../Classes/Question';
+import QuestionDTO, { AnswerStatus, extractQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, Round } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
@@ -87,6 +87,7 @@ const Round1 = () => {
       teamId: '',
       status: 0,
       index: -1,
+      answerStatus: AnswerStatus['not-answered'],
     };
 
     if (questions) {

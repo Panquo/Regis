@@ -29,7 +29,7 @@ function App() {
               <Route path='round1' element={<PresentatorRound1 />} />
               <Route path='round2'>
                 <Route index element={<PresentatorRound2 />} />
-                <Route path='topic/:topicId' element={<PresentatorRound2Topic />} />
+                <Route path=':teamId/topic/:topicId' element={<PresentatorRound2Topic />} />
               </Route>
             </Route>
             <Route path='regis'>
