@@ -16,11 +16,13 @@ const Round1 = () => {
   const [allQuestions, setAllQuestions] = useState<QuestionDTO[]>([]);
 
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
   const currentQuestion: QuestionDTO = useMemo(() => {
-    return allQuestions[currentQuestionIndex] || new NQuestion();
-  }, [allQuestions, currentQuestionIndex]);
+    return (
+      allQuestions.find((question: QuestionDTO) => question.id === currentRound.current) ||
+      new NQuestion()
+    );
+  }, [allQuestions, currentRound.current]);
 
   const initRound = () => {
     const q = query(collection(db, 'rounds'), where('index', '==', 1));

@@ -16,7 +16,7 @@ import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question'
 import RoundDTO, { NRound } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
-import { updatePhaseRound } from '../../Services/RoundService';
+import { updatePhaseRound, updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 
 const Round1 = () => {
@@ -101,6 +101,7 @@ const Round1 = () => {
   function handleResetQuestion() {
     currentQuestion.status = 0;
     updateQuestion(currentQuestion);
+    updateRound({ ...currentRound, current: currentQuestion.id });
   }
   function handleShowQuestion() {
     currentQuestion.status = 1;

@@ -6,20 +6,12 @@ import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question'
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import TopicDTO, { NTopic } from '../../Classes/Topic';
+import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
-const Round2 = () => {
+const Round3 = () => {
   const [allTopics, setAllTopics] = useState<TopicDTO[]>([]);
   const [allTeams, setAllTeams] = useState<TeamDTO[]>([]);
   const [allQuestions, setAllQuestions] = useState<QuestionDTO[][]>([]);
-  const [currentQuestion, setCurrentQuestion] = useState<QuestionDTO>(new NQuestion());
 
   const [teamsQuestion, setTeamsQuestion] = useState<
     {
@@ -32,6 +24,20 @@ const Round2 = () => {
 
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
   const [currentTopic, setCurrentTopic] = useState<TopicDTO>(new NTopic());
+
+  const currentQuestion: QuestionDTO = useMemo(() => {
+    const curr =
+      currentQuestions.find((question: QuestionDTO) => {
+        const result = question.id === currentTopic.current;
+
+        console.log(result);
+        return result;
+      }) || new NQuestion();
+
+    console.log(curr);
+
+    return curr;
+  }, [currentQuestions, currentTopic.current]);
 
   const initRound = () => {
     const q = query(collection(db, 'rounds'), where('index', '==', 3));
@@ -86,9 +92,12 @@ const Round2 = () => {
       );
 
       onSnapshot(q, (querySnapshot) => {
-        questions.push(querySnapshot.docs.map(extractQuestion));
+        const result = querySnapshot.docs.map(extractQuestion);
+
+        questions.push(result);
       });
     }
+
     setAllQuestions(questions);
   };
   const initCurrentQuestions = (currentTopic: TopicDTO) => {
@@ -99,11 +108,6 @@ const Round2 = () => {
 
     onSnapshot(q, (querySnapshot) => {
       const result = querySnapshot.docs.map(extractQuestion);
-      const curr = result.find((question: QuestionDTO) => question.id === currentTopic.current);
-
-      if (curr) {
-        setCurrentQuestion(curr);
-      }
 
       setTeamsQuestion(
         result.map((question: QuestionDTO) => ({
@@ -111,6 +115,7 @@ const Round2 = () => {
           team: currentTeams.find((team: TeamDTO) => team.id === question.teamId),
         })),
       );
+      console.log(result);
 
       setCurrentQuestions(result);
     });
@@ -120,14 +125,10 @@ const Round2 = () => {
     initAllQuestions(allTopics);
   }, [allTopics]);
   useEffect(() => {
-    console.log(currentTopic);
-
     if (currentTopic.questions?.length) {
       initCurrentQuestions(currentTopic);
     }
-  }, [currentTopic]);
-
-  console.log(teamsQuestion);
+  }, [allQuestions, currentTopic]);
 
   const currentTeams = useMemo(() => {
     return allTeams.filter((team) => !team.eliminated);
@@ -139,8 +140,6 @@ const Round2 = () => {
   }, []);
 
   useEffect(() => {
-    console.log(currentRound);
-
     if (currentRound.topics?.length) {
       initTopics(currentRound);
     }
@@ -165,17 +164,37 @@ const Round2 = () => {
       {currentRound.current ? (
         <>
           {currentTopic.current ? (
-            <div className='display-round3-question'>
-              <div className='display-round-3-topic-div'>
-                <span className='display-round-3-topic'>{currentTopic.name}</span>
+            currentQuestion.status === 1 ? (
+              <div className='display-round3-question'>
+                <div className='display-round-3-topic-div'>
+                  <span className='display-round-3-topic'>{currentTopic.name}</span>
+                </div>
+                <div className='display-round-3-strength-div'>
+                  <span className='display-round-3-strength'>{`Question ${
+                    currentQuestions.indexOf(currentQuestion) + 1
+                  }`}</span>
+                </div>
+                <span className='display-round-3-statement'>{currentQuestion.statement}</span>
               </div>
-              <div className='display-round-3-strength-div'>
-                <span className='display-round-3-strength'>{`Question ${
-                  currentQuestions.indexOf(currentQuestion) + 1
-                }`}</span>
+            ) : currentQuestion.status === 2 ? (
+              <div className='display-round3-question'>
+                <div className='display-round-3-topic-div'>
+                  <span className='display-round-3-topic'>{currentTopic.name}</span>
+                </div>
+                <div className='display-round-3-strength-div'>
+                  <span className='display-round-3-strength'>{`Question ${
+                    currentQuestions.indexOf(currentQuestion) + 1
+                  }`}</span>
+                </div>
+                <span className='question-statement'>{currentQuestion.statement}</span>
+                <div className='question-answer-div'>
+                  <span className='question-answer'>
+                    <VerifiedRoundedIcon className='answer-icon' />
+                    {currentQuestion.answer}
+                  </span>
+                </div>
               </div>
-              <span className='display-round-3-statement'>{currentQuestion.statement}</span>
-            </div>
+            ) : null
           ) : (
             <div className='display-round3-topic'>
               <div className='display-round-3'>
@@ -213,4 +232,4 @@ const Round2 = () => {
   );
 };
 
-export default Round2;
+export default Round3;
