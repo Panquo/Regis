@@ -9,8 +9,9 @@ interface QuestionDTO {
   flavor: string;
   points: number;
   teamId: string;
-  status: number;
+  status: Status;
   index: number;
+  answerStatus: AnswerStatus;
 }
 
 export class NQuestion implements QuestionDTO {
@@ -22,6 +23,13 @@ export class NQuestion implements QuestionDTO {
   teamId = '';
   status = 0;
   index = -1;
+  answerStatus = 0;
+}
+
+export enum AnswerStatus {
+  'not-answered' = 0,
+  'answered-right' = 1,
+  'answered-wrong' = 2,
 }
 
 export enum Status {
@@ -31,7 +39,7 @@ export enum Status {
 }
 
 export const extractQuestion = (doc: DocumentData): QuestionDTO => {
-  const { statement, answer, flavor, points, teamId, status, index } =
+  const { statement, answer, flavor, points, teamId, status, index, answerStatus } =
     doc.data() satisfies QuestionDTO;
 
   return {
@@ -43,5 +51,6 @@ export const extractQuestion = (doc: DocumentData): QuestionDTO => {
     teamId,
     status,
     index,
+    answerStatus,
   };
 };

@@ -24,6 +24,7 @@ export function updateTopic(topic: TopicDTO) {
     updateDoc(taskDocRef, {
       status: topic.status,
       current: topic.current,
+      teamId: topic.teamId,
     });
   } catch (err) {
     alert(err);

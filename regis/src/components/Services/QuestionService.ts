@@ -12,6 +12,7 @@ export function addQuestion(question: QuestionDTO) {
       points: question.points,
       teamId: question.teamId,
       status: question.status,
+      answerStatus: question.answerStatus,
     });
   } catch (err) {
     alert(err);
@@ -28,6 +29,7 @@ export function updateQuestion(question: QuestionDTO) {
       points: question.points,
       teamId: question.teamId,
       status: question.status,
+      answerStatus: question.answerStatus,
     });
   } catch (err) {
     alert(err);

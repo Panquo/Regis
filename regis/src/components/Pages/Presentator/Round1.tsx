@@ -26,7 +26,7 @@ const Round1 = () => {
 
   const [currentPhase, setPhase] = useState<1 | 2>(1);
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(1);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
   const currentQuestion: QuestionDTO = useMemo(() => {
     return (
@@ -145,7 +145,7 @@ const Round1 = () => {
           <IconButton
             size='large'
             onClick={() => setCurrentQuestionIndex(currentQuestion?.index - 1)}
-            disabled={currentQuestion?.index === 1}
+            disabled={currentQuestion?.index === 0}
             sx={{ color: 'white' }}
           >
             <NavigateBeforeIcon sx={{ fontSize: 40 }} />
@@ -185,7 +185,7 @@ const Round1 = () => {
           <IconButton
             size='large'
             onClick={() => setCurrentQuestionIndex(currentQuestion?.index + 1)}
-            disabled={currentQuestion?.index === currentRound?.questions?.length}
+            disabled={currentQuestion?.index + 1 === currentRound?.questions?.length}
             sx={{ color: 'white' }}
           >
             <HelpOutlineIcon sx={{ fontSize: 40 }} />
