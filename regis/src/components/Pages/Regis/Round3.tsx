@@ -279,20 +279,28 @@ const Round3 = () => {
           </div>
           <span>Stream</span>
           <div className='nav-question row'>
-            <Button variant='contained' onClick={handlePreviousQuestion} className='nav'>
-              Question Précédente
-            </Button>
-            <div className='grow1 row stream-board-list'>
-              <Button variant='outlined' onClick={handleShowTopic}>
-                Afficher Theme
-              </Button>
-              <Button variant='outlined' onClick={handleNextTopic}>
-                Thème Suivant
-              </Button>
-            </div>
-            <Button variant='contained' onClick={handleNextQuestion} className='nav'>
-              Question Suivante
-            </Button>
+            {chosenTopic ? (
+              <>
+                <Button variant='contained' onClick={handlePreviousQuestion} className='nav'>
+                  Question Précédente
+                </Button>
+                <div className='grow1 row stream-board-list'>
+                  <Button variant='outlined' onClick={handleNextTopic}>
+                    Thème Suivant
+                  </Button>
+                </div>
+
+                <Button variant='contained' onClick={handleNextQuestion} className='nav'>
+                  Question Suivante
+                </Button>
+              </>
+            ) : (
+              <div className='grow1 row stream-board-list'>
+                <Button variant='outlined' onClick={handleShowTopic}>
+                  Afficher Theme
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className='col side-panel'>
