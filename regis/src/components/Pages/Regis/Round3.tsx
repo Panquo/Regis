@@ -16,7 +16,7 @@ import { collection, documentId, onSnapshot, orderBy, query, where } from 'fireb
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
-import QuestionDTO, { extractQuestion } from '../../Classes/Question';
+import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
@@ -153,8 +153,8 @@ const Round3 = () => {
       const topic = allTopics.find((item: TopicDTO) => item.id === selectedTopic);
 
       if (topic) {
-        topic.status = 1;
-        topic.current = topic.questions[0];
+        topic.status = 1; // TODO: Use Enum value
+        topic.current = topic.questions[0].id;
         updateTopic(topic);
       }
     }
@@ -167,7 +167,7 @@ const Round3 = () => {
       const topic = allTopics.find((item: TopicDTO) => item.id === chosenTopic);
 
       if (topic) {
-        topic.status = 2;
+        topic.status = 2; // TODO: Use Enum value
         updateTopic(topic);
         updateTeams();
       }
@@ -177,24 +177,24 @@ const Round3 = () => {
   }
 
   function handleResetQuestion() {
-    currentQuestion.status = 0;
+    currentQuestion.status = 0; // TODO: Use Enum value
     updateQuestion(currentQuestion);
     updateTopic({ ...currentTopic, current: currentQuestion.id });
   }
   function handleShowQuestion() {
-    currentQuestion.status = 1;
+    currentQuestion.status = 1; // TODO: Use Enum value
     updateQuestion(currentQuestion);
   }
 
   function handleShowAnswer() {
-    currentQuestion.status = 2;
+    currentQuestion.status = 2; // TODO: Use Enum value
     updateQuestion(currentQuestion);
   }
   function handleShowWinner() {
     updateTeams();
   }
   function handleHideQuestion() {
-    currentQuestion.status = 3;
+    currentQuestion.status = 3; // TODO: Use Enum value
     updateQuestion(currentQuestion);
   }
 

@@ -85,22 +85,14 @@ const Round2 = () => {
   return (
     <>
       <div className='display-teams-stream'>
-        {currentTeams.map((item: TeamDTO) => {
+        {currentTeams.map((team: TeamDTO) => {
           return (
-            <div
-              key={item.id}
-              className={`team-item col ${item.score[0] === 3 ? 'team-selected' : ''}`}
-            >
+            <div key={team.id} className={'team-item col '}>
               <div className='team-name-div'>
-                <span className='team-name'>{item.name}</span>
+                <span className='team-name'>{team.name}</span>
               </div>
               <div className='team-score'>
-                {Array.from({ length: item.score[0] }, (_, index) => {
-                  return <div key={index} className='valid-point point' />;
-                })}
-                {Array.from({ length: 3 - item.score[0] }, (_, index) => {
-                  return <div key={index} className='empty-point point' />;
-                })}
+                <div className='team-round3'>{team.score[1]}</div>
               </div>
             </div>
           );
