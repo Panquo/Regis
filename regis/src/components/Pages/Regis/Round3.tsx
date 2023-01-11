@@ -70,8 +70,6 @@ const Round3 = () => {
     const topics = await Promise.all(
       currentRound.topics!.map((topicId: string) => fetchTopic(topicId)),
     );
-
-    setAllTopics(topics);
   };
 
   const initAllQuestions = (allTopics: TopicDTO[]) => {
@@ -150,7 +148,7 @@ const Round3 = () => {
 
       if (topic) {
         topic.status = 1; // TODO: Use Enum value
-        topic.current = (topic.questions[0] as QuestionDTO).id;
+        topic.current = topic.questions[0];
         updateTopic(topic);
       }
     }
