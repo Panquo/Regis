@@ -10,6 +10,7 @@ interface TopicDTO {
   status: number;
   questions: string[];
   current: string;
+  gold?: boolean;
 }
 
 interface Topic {
