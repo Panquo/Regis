@@ -2,7 +2,7 @@ import { Grid, Paper, styled } from '@mui/material';
 import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { db } from '../../../firebase';
-import QuestionDTO, { extractQuestion } from '../../Classes/Question';
+import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import TopicDTO, { NTopic } from '../../Classes/Topic';
@@ -19,6 +19,7 @@ const Round2 = () => {
   const [allTopics, setAllTopics] = useState<TopicDTO[]>([]);
   const [allTeams, setAllTeams] = useState<TeamDTO[]>([]);
   const [allQuestions, setAllQuestions] = useState<QuestionDTO[][]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionDTO>(new NQuestion());
 
   const [teamsQuestion, setTeamsQuestion] = useState<
     {
@@ -98,8 +99,11 @@ const Round2 = () => {
 
     onSnapshot(q, (querySnapshot) => {
       const result = querySnapshot.docs.map(extractQuestion);
+      const curr = result.find((question: QuestionDTO) => question.id === currentTopic.current);
 
-      console.log(result);
+      if (curr) {
+        setCurrentQuestion(curr);
+      }
 
       setTeamsQuestion(
         result.map((question: QuestionDTO) => ({
@@ -141,7 +145,6 @@ const Round2 = () => {
       initTopics(currentRound);
     }
   }, [currentRound]);
-
   return (
     <>
       <div className='display-teams-stream'>
@@ -153,12 +156,7 @@ const Round2 = () => {
                   <span className='team-name'>{team.name}</span>
                 </div>
                 <div className='team-score'>
-                  {Array.from({ length: team.score[0] }, (_, index) => {
-                    return <div key={index} className='valid-point point' />;
-                  })}
-                  {Array.from({ length: 3 - team.score[0] }, (_, index) => {
-                    return <div key={index} className='empty-point point' />;
-                  })}
+                  <div className='team-round3'>{team.score[3]}</div>
                 </div>
               </div>
             );
@@ -166,14 +164,28 @@ const Round2 = () => {
       </div>
       {currentRound.current ? (
         <>
-          <div className='display-topics-stream'>
-            <div className='stream-current-topic'>
-              <div>{currentTopic.name}</div>
+          {currentTopic.current ? (
+            <div className='display-round3-question'>
+              <div className='display-round-3-topic-div'>
+                <span className='display-round-3-topic'>{currentTopic.name}</span>
+              </div>
+              <div className='display-round-3-strength-div'>
+                <span className='display-round-3-strength'>{`Question ${
+                  currentQuestions.indexOf(currentQuestion) + 1
+                }`}</span>
+              </div>
+              <span className='display-round-3-statement'>{currentQuestion.statement}</span>
             </div>
-            <div className='stream-current-topic-top'>
-              <div>{currentTopic.name}</div>
+          ) : (
+            <div className='display-round3-topic'>
+              <div className='display-round-3'>
+                <div>{currentTopic.name}</div>
+              </div>
+              <div className='display-round-3-top'>
+                <div>{currentTopic.name}</div>
+              </div>
             </div>
-          </div>
+          )}
           <div className='display-gauge-stream'>
             {Array.from({ length: 6 }, (_, index) => {
               return (
