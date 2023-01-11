@@ -20,6 +20,7 @@ import QuestionDTO, { extractQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
+import { updateQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import { updateTopic } from '../../Services/TopicService';
@@ -37,7 +38,14 @@ const Round3 = () => {
 
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-  const [currentTopic, setCurrentTopic] = useState<TopicDTO>(new NTopic());
+  const [currentTopicIndex, setCurrentTopicIndex] = useState<number>(0);
+
+  const currentQuestion: QuestionDTO = useMemo(() => {
+    return currentQuestions[currentQuestionIndex] || new NQuestion();
+  }, [allQuestions, currentQuestionIndex]);
+  const currentTopic: TopicDTO = useMemo(() => {
+    return allTopics[currentTopicIndex] || new NTopic();
+  }, [allQuestions, currentTopicIndex]);
 
   const initRound = () => {
     const q = query(collection(db, 'rounds'), where('index', '==', 3));
@@ -66,11 +74,6 @@ const Round3 = () => {
     onSnapshot(q, (querySnapshot) => {
       const topics: TopicDTO[] = querySnapshot.docs.map(extractTopic);
 
-      if (currentRound.current) {
-        setCurrentTopic(
-          topics.find((topic: TopicDTO) => topic.id === currentRound.current) || new NTopic(),
-        );
-      }
       setAllTopics(topics);
     });
   };
@@ -85,9 +88,13 @@ const Round3 = () => {
       );
 
       onSnapshot(q, (querySnapshot) => {
-        questions.push(querySnapshot.docs.map(extractQuestion));
+        const result = querySnapshot.docs.map(extractQuestion);
+
+        console.log(result);
+        questions.push(result);
       });
     }
+
     setAllQuestions(questions);
   };
   const initCurrentQuestions = (currentTopic: TopicDTO) => {
@@ -112,19 +119,22 @@ const Round3 = () => {
   }, []);
 
   useEffect(() => {
-    console.log(currentRound);
-
     if (currentRound.topics?.length) {
       initTopics(currentRound);
     }
   }, [currentRound]);
 
+  function handlePreviousTopic() {
+    setCurrentTopicIndex(currentTopicIndex - 1);
+  }
+  function handleNextTopic() {
+    setCurrentTopicIndex(currentTopicIndex + 1);
+  }
+
   useEffect(() => {
     initAllQuestions(allTopics);
   }, [allTopics]);
   useEffect(() => {
-    console.log(currentTopic);
-
     if (currentTopic.questions?.length) {
       initCurrentQuestions(currentTopic);
     }
@@ -152,7 +162,7 @@ const Round3 = () => {
     setSelectedTopic('');
   }
 
-  function handleNextTopic() {
+  function handleNewTopic() {
     if (allTopics) {
       const topic = allTopics.find((item: TopicDTO) => item.id === chosenTopic);
 
@@ -163,6 +173,29 @@ const Round3 = () => {
       }
     }
     setChosenTopic(null);
+    updateRound({ ...currentRound, current: '' });
+  }
+
+  function handleResetQuestion() {
+    currentQuestion.status = 0;
+    updateQuestion(currentQuestion);
+    updateTopic({ ...currentTopic, current: currentQuestion.id });
+  }
+  function handleShowQuestion() {
+    currentQuestion.status = 1;
+    updateQuestion(currentQuestion);
+  }
+
+  function handleShowAnswer() {
+    currentQuestion.status = 2;
+    updateQuestion(currentQuestion);
+  }
+  function handleShowWinner() {
+    updateTeams();
+  }
+  function handleHideQuestion() {
+    currentQuestion.status = 3;
+    updateQuestion(currentQuestion);
   }
 
   function updateTeams() {
@@ -281,23 +314,57 @@ const Round3 = () => {
           <div className='nav-question row'>
             {chosenTopic ? (
               <>
-                <Button variant='contained' onClick={handlePreviousQuestion} className='nav'>
-                  Question Précédente
-                </Button>
-                <div className='grow1 row stream-board-list'>
-                  <Button variant='outlined' onClick={handleNextTopic}>
-                    Thème Suivant
-                  </Button>
+                <div className='nav-question col'>
+                  <div className='grow1 row stream-board-list'>
+                    <Button variant='outlined' onClick={handleResetQuestion}>
+                      Reset Question
+                    </Button>
+                    <Button variant='outlined' onClick={handleShowQuestion}>
+                      Afficher Question
+                    </Button>
+                    <Button variant='outlined' onClick={handleShowAnswer}>
+                      Afficher Réponse
+                    </Button>
+                    <Button variant='outlined' onClick={handleShowWinner}>
+                      Afficher Vainqueur
+                    </Button>
+                    <Button variant='outlined' onClick={handleHideQuestion}>
+                      Cacher Question
+                    </Button>
+                  </div>
+                  <div className='grow1 row'>
+                    <Button
+                      variant='contained'
+                      onClick={handlePreviousQuestion}
+                      className='nav'
+                      disabled={currentQuestionIndex === 0}
+                    >
+                      Question Précédente
+                    </Button>
+                    <Button variant='outlined' onClick={handleNewTopic} className='nav'>
+                      Nouveau Thème
+                    </Button>
+                    <Button
+                      variant='contained'
+                      onClick={handleNextQuestion}
+                      className='nav'
+                      disabled={currentQuestionIndex === currentQuestions.length - 1}
+                    >
+                      Question Suivante
+                    </Button>
+                  </div>
                 </div>
-
-                <Button variant='contained' onClick={handleNextQuestion} className='nav'>
-                  Question Suivante
-                </Button>
               </>
             ) : (
               <div className='grow1 row stream-board-list'>
+                <Button variant='outlined' onClick={handlePreviousTopic}>
+                  Thème précédent
+                </Button>
                 <Button variant='outlined' onClick={handleShowTopic}>
-                  Afficher Theme
+                  Afficher Thème
+                </Button>
+                <Button variant='outlined' onClick={handleNextTopic}>
+                  Thème suivant
                 </Button>
               </div>
             )}
