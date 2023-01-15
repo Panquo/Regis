@@ -1,0 +1,588 @@
+round: 2
+
+topics:
+  - 
+    name: Bon appétit bien sûr
+
+    questions: 
+      -
+        statement: De qui le gloubi-boulga est-il le plat préféré ?
+        answer: Casimir
+      -
+        statement: La banane est un fruit. Vrai ou faux ?
+        answer: Faux
+      -
+        statement: Combien de trous possède un biscuit Petit Lu ?
+        answer: 24 pour les 24h de la journée
+      -
+        statement: Quel plat est servi à Anton Ego dans le film Disney du même nom ?
+        answer: De la ratatouille
+      -
+        statement: Dans quel pays consomme-t-on 26.3kg de fromage par an et par habitant en moyenne ?
+        answer: La France
+      -
+        statement: Quel est le record du nombre de hot dog mangé en 10 minutes ?
+        answer: 69
+      -
+        statement: Quelle ville française est réputée pour ses nougats ?
+        answer: Montélimar
+      -
+        statement: Quelle échelle permet de mesurer la force des piments ?
+        answer: Scoville
+      -
+        statement: De quel animal emblématique Maïté lui "suce-t-il le derrière" ?
+        answer: L'ortolan
+      -
+        statement: Où ont été inventés les sushis au saumon ?
+        answer: En Norvège
+      -
+        statement: Quelle est la nationalité du champion du monde de pâté croûte en 2017 ?
+        answer: Japonaise
+      -
+        statement: Où a été inventée la pizza hawaïenne ?
+        answer: Au Canada
+      -
+        statement: Qui est l'homologue de Philippe Etchebest dans la version anglaise de Cauchemar en cuisine
+        answer: Gordon Ramsay
+      -
+        statement: À quel parfum sont les sucettes d'Annie dans la chanson de France Gall ?
+        answer: À l'anis
+      -
+        statement: En quelle année a ouvert le premier McDo ?
+        answer: 1955
+      -
+        statement: Qu’est-ce que le Pumpernickel ?
+        answer: Du pain de seigle
+      -
+        statement: Quelle est l'arbre donnant des coings ?
+        answer: Le cognassier
+      -
+        statement: À quel ingrédient doit-on la couleur de la soupe russe le bortsch ?
+        answer: Betterave
+      -
+        statement: Qu’est-ce que le koulitch ?
+        answer: Une brioche de Pâques
+      -
+        statement: Combien de temps faut-il pour cuire un œuf mollet ?
+        answer: 6 minutes
+  
+  -
+    name: Jeux Vidéo
+
+    questions:
+      -
+        statement: Combien y a-t-il de dragons nommés dans Skyrim ?
+        answer: 16
+      -
+        statement: En quelle année est sortie la Nintendo DS en Europe ?
+        answer: 2005
+      -
+        statement: Quelle est la couleur de Kirby ?
+        answer: Rose
+      -
+        statement: De quel jeu vient l’expression The cake is a lie ?
+        answer: Portal
+      -
+        statement: Qui interprète la chanson Video Games sortie en 2012 ?
+        answer: Lana Del Rey
+      -
+        statement: Quelle police de caractères est utilisée par le frère de Sans dans Undertale ?
+        answer: Papyrus
+      -
+        statement: Quelle est la couleur des yeux de Lara Croft ?
+        answer: Marrons
+      -
+        statement: Dans quel type de jeu peut-on explorer des donjons générés aléatoirement ?
+        answer: Roguelike
+      -
+        statement: Quel outil est utilisé pour escalader dans Getting over it ?
+        answer: Marteau
+      -
+        statement: Quel cri emblématique de Skyrim est aussi appelé “déferlement” ?
+        answer: Fus Ro Dah
+      -
+        statement: Quel sniper de csgo tue en un coup sur le corps ?
+        answer: AWP
+      -
+        statement: Quel champion de League Of Legends dit “Ce soir, on chasse !” ?
+        answer: Rengar
+      -
+        statement: Quel est le nom associé au jeu Assassin’s Creed IV (4) ?
+        answer: Black Flag
+      -
+        statement: Dans le jeu The Binding Of Isaac, avec quoi tape Isaac ?
+        answer: Ses larmes
+      -
+        statement: En quelle année est sorti GTA V sur PC ?
+        answer: 2015
+      -
+        statement: Quelle activité illégale est opérée dans le jeu Payday ?
+        answer: Des braquages
+      -
+        statement: Quel est le nom du jeu qui consiste à jouer au foot avec des voitures ?
+        answer: Rocket League
+      -
+        statement: Quel jeu de course est mis à l’honneur par Zérator lors d’une compétition annuelle ?
+        answer: Trackmania
+      -
+        statement: Quel jeu créé par Ankama est aussi une série du même nom ?
+        answer: Wakfu
+      -
+        statement: Dans quel jeu peut-on entendre “Red sus” ?
+        answer: Among Us
+  
+  - 
+    name: Mites et religions
+
+    questions:
+      -
+        statement: Combien de paires de pattes possède un insecte ?
+        answer: 3
+      -
+        statement: Dans quel habitat vivent des lapins sauvages ?
+        answer: Un terrier
+      -
+        statement: La punaise est un coléoptère. Vrai ou faux ?
+        answer: Faux (hétéroptère)
+      -
+        statement: Dans le film du studio Ghibli, quels insectes sont dans le tombeau ?
+        answer: Des lucioles
+      -
+        statement: De quelle religion est originaire le svastika ?
+        answer: L'hindouïsme
+      -
+        statement: Selon son étymologie, qu’apporte Lucifer ?
+        answer: La lumière (ou le matin, la vérité)
+      -
+        statement: Quel est le fondateur du taoïsme ?
+        answer: Lao-Tseu
+      -
+        statement: Quel est l’équivalent romain du dieu grec Poséidon ?
+        answer: Neptune
+      -
+        statement: Qu’est-ce que le papillon avant la chrysalide ?
+        answer: La chenille
+      -
+        statement: Quel est le prénom de notre divinité co-présentatrice ?
+        answer: Antoine
+      -
+        statement: De quoi est composé le collier de la déesse Kali ?
+        answer: De têtes / parties du corps
+      -
+        statement: Combien d’espèces d’insectes vivent en Antarctique ?
+        answer: 1
+      -
+        statement: Combien y a-t-il de dieux grecs ?
+        answer: 12
+      -
+        statement: Quel est le seul insecte qui peut tourner la tête à 180° ?
+        answer: La mante religieuse
+      -
+        statement: Quel est le nom de famille de Judas, le traître de Jésus ?
+        answer: Iscariote
+      -
+        statement: Les insectes sont-ils vertébrés ou invertébrés ?
+        answer: Invertébrés
+      -
+        statement: Quel pourcentage de la biodiversité animale représentent les insectes ?
+        answer: 85%
+      -
+        statement: Quel est l’animal sacré, vénéré depuis 2000 ans, en Inde ?
+        answer: La vache
+      -
+        statement: De qui le Coran regroupe-t-il les paroles ?
+        answer: Allah
+      -
+        statement: Citez le nom d’un des fleuves des Enfers dans la mythologie grecque ?
+        answer: Styx / Léthé / L’Achéron / Phlégéthon / Cocyte
+
+  - 
+    name: Bac et brevet
+
+    questions:
+      -
+        statement: Quel objet a inventé Earl Tupper en 1946 ?
+        answer: Le tupperware
+      -
+        statement: Pendant quelle décennie a été brevetée La Barbie ?
+        answer: Années 60
+      -
+        statement: Que signifie l’expression “Avoir le bocal” ?
+        answer: Avoir la grosse tête, être prétentieux
+      -
+        statement: Le YoYo a été breveté, vrai ou faux ?
+        answer: Vrai
+      -
+        statement: Quel est l’objet de la quête des chevaliers de la Table ronde ?
+        answer: Le Graal
+      -
+        statement: Quelle entreprise a breveté une cage pour ses employés ?
+        answer: Amazon
+      -
+        statement: Quel brevet intitulé “bijou” en français a été déposé par l’allemande Johanna Gabriel ?
+        answer: Un collier de pâtes
+      -
+        statement: Qu’est-ce qu’une tasse à moustache ?
+        answer: Une tasse qui empêche le liquide de toucher la moustache du buveur
+      -
+        statement: Que signifie l’expression “Pas de bol” ?
+        answer: Pas de chance
+      -
+        statement: Quel récipient possède un nom signifiant “motte de terre” en grec ?
+        answer: Le bol
+      -
+        statement: Quel est le nom de l’entreprise qui vend des gobelets réutilisables pour les festivals ?
+        answer: Ecocup
+      -
+        statement: Le Bunsen a été inventé par le chimiste Robert Bunsen. Vrai ou faux ?
+        answer: Faux
+      -
+        statement: En quel siècle est sortie la première bouteille en verre de Coca ?
+        answer: 19ème
+      -
+        statement: Comment s'appelle le couvercle ou pastille permetant de conserver des yaourts ?
+        answer: L'opercule
+      -
+        statement: Quelle invention insolite permet de garder sa bière fraîche sans système de refroidissement ?
+        answer: L'ombrelle à bière
+      -
+        statement: Quelle ville française est homonyme d'un petit récipient ?
+        answer: Pau
+      -
+        statement: À qui doit-on le dosage parfait de la vodka en 1893 ?
+        answer: Dmitri Mendeleïev
+      -
+        statement: En quelle année Louis Pasteur crée-t-il le vaccin contre la rage ?
+        answer: 1885
+      -
+        statement: Quel partie d'une batterie peut être grosse ou claire ?
+        answer: Caisse
+      -
+        statement: Quelle est la contenance d'un Jéroboam ?
+        answer: 3 litres
+  
+  - 
+    name: Bac à sable
+
+    questions:
+      -
+        statement: Quel est le mâle de l’oie ?
+        answer: Le jars
+      -
+        statement: Dans la cour de récré, que sont les mammouths et les callots ?
+        answer: Des billes
+      -
+        statement: Quels sont les deux os longs de l’avant-bras ?
+        answer: Radius et cubitus
+      -
+        statement: De quel animal le blanchon est-il l’enfant ?
+        answer: Le phoque
+      -
+        statement: Quel est l’arrondi de 7.546 au centième près ?
+        answer: 7.55
+      -
+        statement: Comment dit-on Angleterre en anglais ?
+        answer: England
+      -
+        statement: Qu’est-ce qu'un atoll ?
+        answer: Un récif de corail
+      -
+        statement: Quelle est la 5ème planète de notre système solaire ?
+        answer: Jupiter
+      -
+        statement: Combien d’arêtes possède un parallélépipède rectangle ?
+        answer: 12
+      -
+        statement: Quel est le nom courant du chlorure de sodium ?
+        answer: Le sel
+      -
+        statement: Quel fruit porte le même nom qu’un instrument de dentiste ?
+        answer: La fraise
+      -
+        statement: Quel roi de France régnait au château de Versailles ?
+        answer: Louis XIV (14)
+      -
+        statement: De quelle race sont les chauves-souris ?
+        answer: Des mammifères
+      -
+        statement: Quelle est l’unité de l’intensité électrique ?
+        answer: Ampère
+      -
+        statement: Quelle est la capitale de la Croatie ?
+        answer: Zagreb
+      -
+        statement: Comment s’appelle l'inventeur du tableau périodique des éléments ?
+        answer: Dmitri Mendeleïev
+      -
+        statement: Quand s’est déroulée la bataille de Gergovie opposant César et Vercingétorix ?
+        answer: 52 avant JC
+      -
+        statement: En quelle année “spoiler” intègre-t-il le Petit Robert ?
+        answer: 2007
+      -
+        statement: À qui doit-on la création de la police Comic sans MS ?
+        answer: Vincent Connare
+      -
+        statement: Quel est le nom du cri de la chauve-souris ?
+        answer: Le grincement
+
+  -
+    name: Netflix and chili
+
+    questions:
+      -
+        statement: En quelle année est sortie la première saison de la Casa de Papel ?
+        answer: 2017
+      -
+        statement: En quelle année est apparue l'expression "Netflix and Chill" ?
+        answer: 2009
+      -
+        statement: Qui incarne Assane Diop dans la série française Lupin ?
+        answer: Omar Sy
+      -
+        statement: À quel réalisateur doit-on les films Psychose et Sueurs froides ?
+        answer: Alfred Hitchcock
+      -
+        statement: Comment se prénomme Dr House incarné par Hugh Laurie dans la série du même nom ?
+        answer: Gregory
+      -
+        statement: En Suisse, quelle est la langue la plus parlée dans la région du Tessin ?
+        answer: L'italien
+      -
+        statement: Comment dit-on bonjour en hawaïen ?
+        answer: Aloha
+      -
+        statement: Par combien de muscles est actionnée la langue humaine ?
+        answer: 17
+      -
+        statement: Dans quel film peut-on entendre la réplique "La vie c'est comme une boite de chocolat" ?
+        answer: Forrest Gump
+      -
+        statement: Quel acteur incarne Thor dans l'univers Marvel ?
+        answer: Chris Hemsworth
+      -
+        statement: L'anglais est une langue latine. Vrai ou faux ?
+        answer: Faux (germanique)
+      -
+        statement: Quel art de vivre danois décrit un sentiment intime et chaleureux ?
+        answer: Hygge
+      -
+        statement: De quoi est composé le dalgona (ou poppgi) rendu célèbre par la série Squid Game ?
+        answer: Sucre
+      -
+        statement: Quel plat est dégusté dans la scène mythique de La Belle et le Clochard ?
+        answer: Spaghetti
+      -
+        statement: Quelle expression italienne décrit des pâtes fermes sous la dent ?
+        answer: Al dente
+      -
+        statement: Quel nom porte l'intelligence artificielle du WHOOPS dans les Totally Spies ?
+        answer: GLADIS
+      -
+        statement: Dans la série Sense8, combien de personnages ont des expériences liées ?
+        answer: 8
+      -
+        statement: Quel film réalise le second meilleur box-office mondial entre Avatar et Titanic ?
+        answer: Avengers Endgame
+      -
+        statement: Que désigne l'appellation gringo ?
+        answer: Un étranger
+      -
+        statement: Comment dit-on merci japonais ?
+        answer: Arigatou
+  
+  - 
+    name: Sport
+
+    questions:
+      -
+        statement: Au tennis de table, quel est le nom donné au coup joué du côté droit pour un droitier ?
+        answer: Coup droit
+      -
+        statement: Que concerne la loi 11 du football ?
+        answer: Le hors jeu
+      -
+        statement: Quelle est traditionnellement la première épreuve d’un concours complet d’équitation ?
+        answer: Le dressage
+      -
+        statement: En comptant 2024, combien de fois Paris a-t-elle accueilli les JO ?
+        answer: 3
+      -
+        statement: Quel est le meilleur temps d’Usain Bolt au 100 mètres ?
+        answer: 9s58
+      -
+        statement: Au tennis, que vient après 0, 15 et 30 ?
+        answer: 40
+      -
+        statement: Quelle nage ventrale possède le même nom qu’un animal ?
+        answer: Le papillon
+      -
+        statement: Quelle est la circonférence d’un ballon de volley-ball ?
+        answer: Entre 65 et 67cm
+      -
+        statement: Au handball, combien de pas sans dribbler sont autorisés ?
+        answer: 3
+      -
+        statement: Au basket, combien de pas sans dribbler sont autorisés ?
+        answer: 2
+      -
+        statement: Comment appelle-t-on les distinctions pour débutants au tir à l’arc ?
+        answer: Les plumes
+      -
+        statement: Quel est le nom du tablier (oui ça se dit comme ça) aux échecs ?
+        answer: Un échiquier
+      -
+        statement: Quel type d’arme accompagne l’épée et le sabre à l’escrime ?
+        answer: Le fleuret
+      -
+        statement: Quel club de golf utilise-t-on une fois sur le green pour mettre la balle dans le trou ?
+        answer: Le putter
+      -
+        statement: Dans quelle discipline peut-on voir des anneaux et des barres parallèles ?
+        answer: La gymnastique
+      -
+        statement: Qui sont les champions du monde en titre du Hockey sur glace masculin ?
+        answer: Le Canada 
+      -
+        statement: Quel geste technique permet une victoire directe au Judo ?
+        answer: Le ippon
+      -
+        statement: Quel nageur américain détient le plus grand nombre de médaille d'or ?
+        answer: Michael Phelps
+      -
+        statement: Quel est, d’après Médiamétrie, le seul sport à être davantage regardé par les femmes que par les hommes ?
+        answer: Le patinage artistique
+      -
+        statement: De quelle année date le record du monde de Duplantis au saut à la perche, avec ses 6,18m ?
+        answer: 2020
+  
+  - 
+    name: Face à Tamère
+
+    questions:
+      -
+        statement: Quel maire de Levallois-Perret est impliqué dans l'affaire de fraude Bygmalion en 2012 ?
+        answer: Patrick balkany
+      -
+        statement: Quelle personnalité apparaissant dans La Roue de la Fortune a réalisé des publicités pour les canapés Château d’Ax ?
+        answer: Victoria Silvstedt
+      -
+        statement: De quelle couleur est le canapé des Simpsons ?
+        answer: Marron
+      -
+        statement: Combien y a-t-il de E dans “Mer Méditerranée" ?
+        answer: 5
+      -
+        statement: Quelle mer est citée par un candidat culte de Questions pour un champion ?
+        answer: La mer noire
+      -
+        statement: Qui est la petite-fille de l’arrière-grand-père de mon frère ?
+        answer: Ta mère (ou ta tante)
+      -
+        statement: Quel bras de mer porte le nom d’une partie de mon T-shirt ?
+        answer: La Manche
+      -
+        statement: Cette année, quand aura lieu la fête des mères ?
+        answer: dimanche 29 mai
+      -
+        statement: Qui a perdu son chat ?
+        answer: La mère Michèle
+      -
+        statement: Qui lui a répondu ?
+        answer: Le père Lustucru
+      -
+        statement: Qui interprète Face à la mer en 2004 ?
+        answer: Calogero ft Passi
+      -
+        statement: Quelle religieuse a été Prix Nobel de la Paix en 1979 ?
+        answer: Mère Teresa
+      -
+        statement: Quel est le verlan de merci ?
+        answer: Cimer
+      -
+        statement: Dans la mythologie grecque, quelle créature est mi-lion mi-chèvre à queue de serpent ?
+        answer: La chimère
+      -
+        statement: Combien y a-t-il de territoires d’outre-mer français ?
+        answer: 12
+      -
+        statement: Quel type d’implant est situé au niveau du sein ?
+        answer: Mammaire
+      -
+        statement: En mer, quelle direction désigne babord ?
+        answer: La gauche
+      -
+        statement: Quel goût a le pamplemousse ?
+        answer: Amer
+      -
+        statement: Comment se prénomment les présentateurs de Tamère en stream ?
+        answer: Merlin, Yann et Antoine
+      -
+        statement: Quelle est la femelle du phoque ?
+        answer: La phoquesse
+  
+  - 
+    name: Acronymes
+
+    questions:
+      -
+        statement: Que signifie SDF ?
+        answer: Sans domicile fixe
+      -
+        statement: Quel est l'acronyme d'un Fournisseur De Poutre ?
+        answer: FDP
+      -
+        statement: Que signifie OPA ?
+        answer: Ordre Public d'Achat
+      -
+        statement: Que signifie CILF ?
+        answer: Conseil International de la Langue Française
+      -
+        statement: Que signifie UNICEF ?
+        answer: United Nations International Children’s Emergency Fund
+      -
+        statement: Quel est l'acronyme d'un Pacte Civil de Solidarité ?
+        answer: PACS
+      -
+        statement: Que signifie VTT ?
+        answer: Vélo Tout Terrain
+      -
+        statement: Quel est l'acronyme d'une Habitation à Loyer Modéré ?
+        answer: HLM
+      -
+        statement: Que signifie FBI ?
+        answer: Federal Bureau of Investigation
+      -
+        statement: Que signifie NSFW ?
+        answer: Not Safe For Work
+      -
+        statement: Quel est l'acronyme de "On s'en fout" ?
+        answer: OSEF
+      -
+        statement: Que signifie YOLO ?
+        answer: You Only Live Once
+      -
+        statement: Quel est l'acronyme de Association américaine contre les acronymes aux États-Unis ?
+        answer: AAAA
+      -
+        statement: Quel est l'acronyme de Polystyrène ?
+        answer: PE
+      -
+        statement: Que signifie BO ?
+        answer: Bande Originale
+      -
+        statement: Que signifie GIGN ?
+        answer: Groupe d’Intervention de la Gendarmerie Nationale
+      -
+        statement: Que signifie EDF ?
+        answer: Électricité de France
+      -
+        statement: Quel est l'acronyme de Hors Service ?
+        answer: HS
+      -
+        statement: Que signifie PV ?
+        answer: Procès Verbal
+      -
+        statement: Quel est l'acronyme du Quotient Intellectuel ?
+        answer: QI
+

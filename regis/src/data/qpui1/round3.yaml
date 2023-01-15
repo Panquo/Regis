@@ -1,0 +1,210 @@
+round: 3
+
+topics:
+  - 
+    name: Bon appétit bien sûr
+
+    questions: 
+      -
+        statement: De qui le gloubi-boulga est-il le plat préféré ?
+        answer: Casimir
+      -
+        statement: La banane est un fruit. Vrai ou faux ?
+        answer: Faux
+      -
+        statement: Combien de trous possède un biscuit Petit Lu ?
+        answer: 24 pour les 24h de la journée
+      -
+        statement: Quel plat est servi à Anton Ego dans le film Disney du même nom ?
+        answer: De la ratatouille
+      -
+        statement: Dans quel pays consomme-t-on 26.3kg de fromage par an et par habitant en moyenne ?
+        answer: La France
+      -
+        statement: Quel est le record du nombre de hot dog mangé en 10 minutes ?
+        answer: 69
+  
+  -
+    name: Jeux Vidéo
+
+    questions:
+      -
+        statement: Combien y a-t-il de dragons nommés dans Skyrim ?
+        answer: 16
+      -
+        statement: En quelle année est sortie la Nintendo DS en Europe ?
+        answer: 2005
+      -
+        statement: Quelle est la couleur de Kirby ?
+        answer: Rose
+      -
+        statement: De quel jeu vient l’expression The cake is a lie ?
+        answer: Portal
+      -
+        statement: Qui interprète la chanson Video Games sortie en 2012 ?
+        answer: Lana Del Rey
+      -
+        statement: Quelle police de caractères est utilisée par le frère de Sans dans Undertale ?
+        answer: Papyrus
+  
+  - 
+    name: Mites et religions
+
+    questions:
+      -
+        statement: Combien de paires de pattes possède un insecte ?
+        answer: 3
+      -
+        statement: Dans quel habitat vivent des lapins sauvages ?
+        answer: Un terrier
+      -
+        statement: La punaise est un coléoptère. Vrai ou faux ?
+        answer: Faux (hétéroptère)
+      -
+        statement: Dans le film du studio Ghibli, quels insectes sont dans le tombeau ?
+        answer: Des lucioles
+      -
+        statement: De quelle religion est originaire le svastika ?
+        answer: L'hindouïsme
+      -
+        statement: Selon son étymologie, qu’apporte Lucifer ?
+        answer: La lumière (ou le matin, la vérité)
+
+  - 
+    name: Bac et brevet
+
+    questions:
+      -
+        statement: Quel objet a inventé Earl Tupper en 1946 ?
+        answer: Le tupperware
+      -
+        statement: Pendant quelle décennie a été brevetée La Barbie ?
+        answer: Années 60
+      -
+        statement: Que signifie l’expression “Avoir le bocal” ?
+        answer: Avoir la grosse tête, être prétentieux
+      -
+        statement: Le YoYo a été breveté, vrai ou faux ?
+        answer: Vrai
+      -
+        statement: Quel est l’objet de la quête des chevaliers de la Table ronde ?
+        answer: Le Graal
+      -
+        statement: Quelle entreprise a breveté une cage pour ses employés ?
+        answer: Amazon
+
+  - 
+    name: Bac à sable
+
+    questions:
+      -
+        statement: Quel est le mâle de l’oie ?
+        answer: Le jars
+      -
+        statement: Dans la cour de récré, que sont les mammouths et les callots ?
+        answer: Des billes
+      -
+        statement: Quels sont les deux os longs de l’avant-bras ?
+        answer: Radius et cubitus
+      -
+        statement: De quel animal le blanchon est-il l’enfant ?
+        answer: Le phoque
+      -
+        statement: Quel est l’arrondi de 7.546 au centième près ?
+        answer: 7.55
+      -
+        statement: Comment dit-on Angleterre en anglais ?
+        answer: England
+
+  -
+    name: Netflix and chili
+
+    questions:
+      -
+        statement: En quelle année est sortie la première saison de la Casa de Papel ?
+        answer: 2017
+      -
+        statement: En quelle année est apparue l'expression "Netflix and Chill" ?
+        answer: 2009
+      -
+        statement: Qui incarne Assane Diop dans la série française Lupin ?
+        answer: Omar Sy
+      -
+        statement: À quel réalisateur doit-on les films Psychose et Sueurs froides ?
+        answer: Alfred Hitchcock
+      -
+        statement: Comment se prénomme Dr House incarné par Hugh Laurie dans la série du même nom ?
+        answer: Gregory
+      -
+        statement: En Suisse, quelle est la langue la plus parlée dans la région du Tessin ?
+        answer: L'italien
+
+  - 
+    name: Sport
+
+    questions:
+      -
+        statement: Au tennis de table, quel est le nom donné au coup joué du côté droit pour un droitier ?
+        answer: Coup droit
+      -
+        statement: Que concerne la loi 11 du football ?
+        answer: Le hors jeu
+      -
+        statement: Quelle est traditionnellement la première épreuve d’un concours complet d’équitation ?
+        answer: Le dressage
+      -
+        statement: En comptant 2024, combien de fois Paris a-t-elle accueilli les JO ?
+        answer: 3
+      -
+        statement: Quel est le meilleur temps d’Usain Bolt au 100 mètres ?
+        answer: 9s58
+      -
+        statement: Au tennis, que vient après 0, 15 et 30 ?
+        answer: 40
+
+  - 
+    name: Face à Tamère
+
+    questions:
+      -
+        statement: Quel maire de Levallois-Perret est impliqué dans l'affaire de fraude Bygmalion en 2012 ?
+        answer: Patrick balkany
+      -
+        statement: Quelle personnalité apparaissant dans La Roue de la Fortune a réalisé des publicités pour les canapés Château d’Ax ?
+        answer: Victoria Silvstedt
+      -
+        statement: De quelle couleur est le canapé des Simpsons ?
+        answer: Marron
+      -
+        statement: Combien y a-t-il de E dans “Mer Méditerranée" ?
+        answer: 5
+      -
+        statement: Quelle mer est citée par un candidat culte de Questions pour un champion ?
+        answer: La mer noire
+      -
+        statement: Qui est la petite-fille de l’arrière-grand-père de mon frère ?
+        answer: Ta mère (ou ta tante)
+
+  - 
+    name: Acronymes
+
+    questions:
+      -
+        statement: Que signifie SDF ?
+        answer: Sans domicile fixe
+      -
+        statement: Quel est l'acronyme d'un Fournisseur De Poutre ?
+        answer: FDP
+      -
+        statement: Que signifie OPA ?
+        answer: Ordre Public d'Achat
+      -
+        statement: Que signifie CILF ?
+        answer: Conseil International de la Langue Française
+      -
+        statement: Que signifie UNICEF ?
+        answer: United Nations International Children’s Emergency Fund
+      -
+        statement: Quel est l'acronyme d'un Pacte Civil de Solidarité ?
+        answer: PACS
+
