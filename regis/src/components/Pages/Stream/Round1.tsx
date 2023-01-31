@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +5,6 @@ import { db } from '../../../firebase';
 import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
-import { updateQuestion } from '../../Services/QuestionService';
 import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
 
 const Round1 = () => {

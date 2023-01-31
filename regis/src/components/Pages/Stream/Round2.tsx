@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { db } from '../../../firebase';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
-import TopicDTO, { NTopic } from '../../Classes/Topic';
+import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -46,14 +46,7 @@ const Round2 = () => {
     );
 
     onSnapshot(q, (querySnapshot) => {
-      const topics: TopicDTO[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().name,
-        status: doc.data().status,
-        questions: doc.data().questions,
-        gold: doc.data().gold,
-        current: doc.data().current,
-      }));
+      const topics: TopicDTO[] = querySnapshot.docs.map(extractTopic);
 
       if (currentRound.current) {
         setCurrentTopic(

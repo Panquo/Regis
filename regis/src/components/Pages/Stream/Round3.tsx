@@ -1,24 +1,23 @@
-import { Grid, Paper, styled } from '@mui/material';
 import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { db } from '../../../firebase';
 import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
-import TopicDTO, { NTopic } from '../../Classes/Topic';
+import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
 import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
+
+interface TeamsQuestion {
+  question: QuestionDTO;
+  team: TeamDTO | undefined | null;
+}
 
 const Round3 = () => {
   const [allTopics, setAllTopics] = useState<TopicDTO[]>([]);
   const [allTeams, setAllTeams] = useState<TeamDTO[]>([]);
   const [allQuestions, setAllQuestions] = useState<QuestionDTO[][]>([]);
 
-  const [teamsQuestion, setTeamsQuestion] = useState<
-    {
-      question: QuestionDTO;
-      team: TeamDTO | undefined | null;
-    }[]
-  >([]);
+  const [teamsQuestion, setTeamsQuestion] = useState<TeamsQuestion[]>([]);
 
   const [currentQuestions, setCurrentQuestions] = useState<QuestionDTO[]>([]);
 
@@ -64,14 +63,7 @@ const Round3 = () => {
     );
 
     onSnapshot(q, (querySnapshot) => {
-      const topics: TopicDTO[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().name,
-        status: doc.data().status,
-        questions: doc.data().questions,
-        gold: doc.data().gold,
-        current: doc.data().current,
-      }));
+      const topics: TopicDTO[] = querySnapshot.docs.map(extractTopic);
 
       if (currentRound.current) {
         setCurrentTopic(
@@ -148,7 +140,7 @@ const Round3 = () => {
     <>
       <div className='display-teams-stream'>
         {currentTeams.map((team: TeamDTO) => {
-          if (!teamsQuestion.find((item: any) => item.team === team))
+          if (!teamsQuestion.find((item: TeamsQuestion) => item.team === team))
             return (
               <div key={team.id} className={'team-item col'}>
                 <div className='team-name-div'>

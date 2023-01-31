@@ -15,6 +15,7 @@ export interface TopicData {
   current: string;
   index: number;
   teamId: TeamID;
+  gold?: boolean;
 }
 
 interface TopicDTO {
@@ -25,6 +26,7 @@ interface TopicDTO {
   current: QuestionID;
   index: number;
   teamId: TeamID;
+  gold?: boolean;
 }
 
 interface Topic extends TopicData {
@@ -34,6 +36,7 @@ interface Topic extends TopicData {
 class NTopic implements Topic {
   id = '';
   name = '';
+  gold = false;
   status = 0;
   questions = [];
   current = '';
@@ -42,7 +45,7 @@ class NTopic implements Topic {
 }
 
 export const extractTopic = (doc: DocumentData): TopicDTO => {
-  const { name, status, questions, current, index, teamId } = doc.data() satisfies TopicDTO;
+  const { name, status, questions, current, index, teamId, gold } = doc.data() satisfies TopicDTO;
 
   return {
     id: doc.id,
@@ -52,5 +55,6 @@ export const extractTopic = (doc: DocumentData): TopicDTO => {
     current,
     index,
     teamId,
+    gold,
   };
 };

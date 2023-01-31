@@ -1,28 +1,15 @@
-import { Button } from '@mui/material';
-import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
-import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
-import { updateQuestion } from '../../Services/QuestionService';
-import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import HeartBrokenRoundedIcon from '@mui/icons-material/HeartBrokenRounded';
 
-const Round1 = () => {
-  const navigate = useNavigate();
-
+const Round25 = () => {
   const [allTeams, setAllTeams] = useState<TeamDTO[]>([]);
-  const [allQuestions, setAllQuestions] = useState<QuestionDTO[]>([]);
 
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
-
-  const currentQuestion: QuestionDTO = useMemo(() => {
-    return allQuestions[currentQuestionIndex] || new NQuestion();
-  }, [allQuestions, currentQuestionIndex]);
 
   const initRound = () => {
     const q = query(collection(db, 'rounds'), where('index', '==', 1));
@@ -42,17 +29,6 @@ const Round1 = () => {
     });
   };
 
-  const initQuestions = (currentRound: RoundDTO) => {
-    const q = query(
-      collection(db, 'questions'),
-      where(documentId(), 'in', currentRound.questions || ['5CCFsRQqEtRRMhv1x1BN']),
-    );
-
-    onSnapshot(q, (querySnapshot) => {
-      setAllQuestions(querySnapshot.docs.map(extractQuestion));
-    });
-  };
-
   const phaseTeams = useMemo(() => {
     console.log(allTeams);
     return allTeams.filter((team) => team.eliminated);
@@ -62,12 +38,6 @@ const Round1 = () => {
     initRound();
     initTeams();
   }, []);
-
-  useEffect(() => {
-    if (currentRound.questions?.length) {
-      initQuestions(currentRound);
-    }
-  }, [currentRound]);
 
   return (
     <>
@@ -97,4 +67,4 @@ const Round1 = () => {
   );
 };
 
-export default Round1;
+export default Round25;

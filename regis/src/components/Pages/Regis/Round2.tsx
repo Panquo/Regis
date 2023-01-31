@@ -152,7 +152,7 @@ const Round2 = () => {
 
       if (topic) {
         topic.status = 1;
-        topic.current = topic.questions[0];
+        topic.current = topic.questions[0].id;
         updateTopic(topic);
       }
     }
