@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
 import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
-import TeamDTO from '../../Classes/Team';
+import TeamDTO, { extractTeam } from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
 import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
+import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import HeartBrokenRoundedIcon from '@mui/icons-material/HeartBrokenRounded';
 
 const Round1 = () => {
   const navigate = useNavigate();
@@ -16,13 +18,11 @@ const Round1 = () => {
   const [allQuestions, setAllQuestions] = useState<QuestionDTO[]>([]);
 
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
   const currentQuestion: QuestionDTO = useMemo(() => {
-    return (
-      allQuestions.find((question: QuestionDTO) => question.id === currentRound.current) ||
-      new NQuestion()
-    );
-  }, [allQuestions, currentRound.current]);
+    return allQuestions[currentQuestionIndex] || new NQuestion();
+  }, [allQuestions, currentQuestionIndex]);
 
   const initRound = () => {
     const q = query(collection(db, 'rounds'), where('index', '==', 1));
@@ -38,15 +38,7 @@ const Round1 = () => {
     const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
-      setAllTeams(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          eliminated: doc.data().eliminated,
-          score: doc.data().score,
-          phase: doc.data().phase,
-        })),
-      );
+      setAllTeams(querySnapshot.docs.map(extractTeam));
     });
   };
 
@@ -62,9 +54,8 @@ const Round1 = () => {
   };
 
   const phaseTeams = useMemo(() => {
-    console.log(currentRound);
-
-    return allTeams.filter((team) => team.phase === currentRound.phase);
+    console.log(allTeams);
+    return allTeams.filter((team) => team.eliminated);
   }, [allTeams, currentRound]);
 
   useEffect(() => {
@@ -81,52 +72,27 @@ const Round1 = () => {
   return (
     <>
       <div className='display-teams-stream'>
-        <div className='display-pool'>
-          <span className='pool-icon'>&#128020;</span>
-          <span className='pool-text'>Poule {currentRound.phase}</span>
-        </div>
         {phaseTeams.map((item: TeamDTO) => {
           return (
             <div
               key={item.id}
-              className={`team-item col ${item.score[0] === 3 ? 'team-selected' : ''}`}
+              className={`team-item col ${item.life === 0 ? 'team-eliminated' : ''}`}
             >
               <div className='team-name-div'>
                 <span className='team-name'>{item.name}</span>
               </div>
-              <div className='team-score'>
-                {Array.from({ length: item.score[0] }, (_, index) => {
-                  return <div key={index} className='valid-point point' />;
+              <div className='team-life'>
+                {Array.from({ length: item.life || 0 }, (_, index) => {
+                  return <FavoriteRoundedIcon key={item.id} className='life-left life' />;
                 })}
-                {Array.from({ length: 3 - item.score[0] }, (_, index) => {
-                  return <div key={index} className='empty-point point' />;
+                {Array.from({ length: 2 - (item.life || 0) }, (_, index) => {
+                  return <HeartBrokenRoundedIcon key={index} className='life-empty life' />;
                 })}
               </div>
             </div>
           );
         })}
       </div>
-      {currentQuestion.status === 1 ? (
-        <div className='display-current-question col'>
-          <div className='question-flavor-div'>
-            <span className='question-flavor'>{currentQuestion.flavor}</span>
-          </div>
-          <span className='question-statement'>{currentQuestion.statement}</span>
-        </div>
-      ) : currentQuestion.status === 2 ? (
-        <div className='display-current-question col'>
-          <div className='question-flavor-div'>
-            <span className='question-flavor'>{currentQuestion.flavor}</span>
-          </div>
-          <span className='question-statement'>{currentQuestion.statement}</span>
-          <div className='question-answer-div'>
-            <span className='question-answer'>
-              <VerifiedRoundedIcon className='answer-icon' />
-              {currentQuestion.answer}
-            </span>
-          </div>
-        </div>
-      ) : null}
     </>
   );
 };

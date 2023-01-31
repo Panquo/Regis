@@ -19,7 +19,9 @@ export function addTeam(team: TeamDTO) {
 export function updateTeam(team: TeamDTO) {
   const taskDocRef = doc(db, TABLE_NAME, team.id);
 
-  if (team.life != undefined && team.life != undefined) {
+  console.log(team);
+
+  if (team.life != undefined && team.life != null) {
     try {
       updateDoc(taskDocRef, {
         life: team.life,

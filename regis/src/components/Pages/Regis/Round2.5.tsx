@@ -180,10 +180,22 @@ const Round1 = () => {
     }
   }
 
+  function eliminateTeams() {
+    if (teams) {
+      const scores = teams.sort((a, b) => {
+        return (a.life || 0) - (b.life || 0);
+      });
+      const winner = scores.splice(-1, 1);
+
+      updateTeam({ ...winner[0], eliminated: false });
+    }
+  }
+
   function handlePreviousRound() {
     navigate('/regis/round2');
   }
   function handleNextRound() {
+    eliminateTeams();
     navigate('/regis/round3');
   }
 

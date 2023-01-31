@@ -16,7 +16,7 @@ import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question'
 import RoundDTO, { NRound } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
-import { updatePhaseRound } from '../../Services/RoundService';
+import { updatePhaseRound, updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 
 const Round1 = () => {
@@ -101,6 +101,7 @@ const Round1 = () => {
   function handleResetQuestion() {
     currentQuestion.status = 0;
     updateQuestion(currentQuestion);
+    updateRound({ ...currentRound, current: currentQuestion.id });
   }
   function handleShowQuestion() {
     currentQuestion.status = 1;
@@ -130,6 +131,14 @@ const Round1 = () => {
     }
   }
 
+  function eliminateTeams() {
+    for (const team of allTeams) {
+      team.score[0] === 3
+        ? updateTeam({ ...team, eliminated: false })
+        : updateTeam({ ...team, eliminated: true });
+    }
+  }
+
   function handlePreviousRound() {
     if (currentRound.phase === 2) {
       updatePhaseRound(1, currentRound);
@@ -139,6 +148,7 @@ const Round1 = () => {
     if (currentRound.phase === 1) {
       updatePhaseRound(2, currentRound);
     } else {
+      eliminateTeams();
       navigate('/regis/round2');
     }
   }

@@ -12,195 +12,149 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
 import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
-import RoundDTO, { extractRound, NRound, Round } from '../../Classes/Round';
-import TeamDTO from '../../Classes/Team';
-import TopicDTO, { extractTopic, NTopic, Topic } from '../../Classes/Topic';
+import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
+import TeamDTO, { extractTeam } from '../../Classes/Team';
+import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
+import { updateQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
+import { updateTeam } from '../../Services/TeamService';
 import { updateTopic } from '../../Services/TopicService';
-import { getScores } from '../../utils/TeamUtils';
-
-const round: Round = {
-  id: '',
-  name: '',
-  topics: [],
-  current: '',
-};
 
 const Round3 = () => {
-  const initState = {
-    round: round,
-    teams: [],
-  };
-  const [selectedQuestion, setSelectedQuestion] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
   const navigate = useNavigate();
 
-  const [teams, setTeams] = useState<TeamDTO[]>();
   const [chosenTopic, setChosenTopic] = useState<string | null>(null);
-  const [topics, setTopics] = useState<TopicDTO[]>([]);
-  const [rounds, setRounds] = useState<RoundDTO[]>();
-  const [questions, setQuestions] = useState<QuestionDTO[]>();
-  const [state, setState] = useState<{
-    round: Round;
-    teams: TeamDTO[];
-  }>(initState);
+  const [allTopics, setAllTopics] = useState<TopicDTO[]>([]);
+  const [allTeams, setAllTeams] = useState<TeamDTO[]>([]);
+  const [allQuestions, setAllQuestions] = useState<QuestionDTO[][]>([]);
 
-  useEffect(() => {
-    initTeams();
-    initQuestions();
-    initRounds();
-    initTopics();
-    setSelectedQuestion('');
-  }, []);
+  const [currentQuestions, setCurrentQuestions] = useState<QuestionDTO[]>([]);
 
-  useEffect(() => {
-    init();
-  }, [teams, questions, rounds]);
+  const [currentRound, setRound] = useState<RoundDTO>(new NRound());
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+  const [currentTopicIndex, setCurrentTopicIndex] = useState<number>(0);
 
-  useEffect(() => {
-    if (rounds && topics && state.round.topics) {
-      const round = rounds.find((item: RoundDTO) => item.id === state.round.id);
-      const topic = topics.find((item: TopicDTO) => item.id === chosenTopic);
+  const currentQuestion: QuestionDTO = useMemo(() => {
+    return currentQuestions[currentQuestionIndex] || new NQuestion();
+  }, [allQuestions, currentQuestionIndex]);
+  const currentTopic: TopicDTO = useMemo(() => {
+    return allTopics[currentTopicIndex] || new NTopic();
+  }, [allQuestions, currentTopicIndex]);
 
-      if (round && topic) {
-        round.current = chosenTopic || '';
-        setSelectedQuestion(topic.current);
-      }
-      console.log(state.round);
+  const initRound = () => {
+    const q = query(collection(db, 'rounds'), where('index', '==', 3));
 
-      updateRound(round || new NRound());
-    }
-  }, [chosenTopic]);
+    onSnapshot(q, (querySnapshot) => {
+      const doc = querySnapshot.docs[0];
 
-  function initTeams() {
+      setRound(extractRound(doc));
+    });
+  };
+
+  const initTeams = () => {
     const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
-      setTeams(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          eliminated: doc.data().eliminated,
-          score: doc.data().score,
-          phase: doc.data().phase,
-        })),
+      setAllTeams(querySnapshot.docs.map(extractTeam));
+    });
+  };
+
+  const initTopics = (currentRound: RoundDTO) => {
+    const q = query(
+      collection(db, 'topics'),
+      where(documentId(), 'in', currentRound.topics || ['5CCFsRQqEtRRMhv1x1BN']),
+    );
+
+    onSnapshot(q, (querySnapshot) => {
+      const topics: TopicDTO[] = querySnapshot.docs.map(extractTopic);
+
+      setAllTopics(topics);
+    });
+  };
+
+  const initAllQuestions = (allTopics: TopicDTO[]) => {
+    const questions: QuestionDTO[][] = [];
+
+    for (const topic of allTopics) {
+      const q = query(
+        collection(db, 'questions'),
+        where(documentId(), 'in', topic.questions || ['5CCFsRQqEtRRMhv1x1BN']),
       );
-    });
-  }
-  function initQuestions() {
-    const q = query(collection(db, 'questions'));
 
-    onSnapshot(q, (querySnapshot) => {
-      setQuestions(querySnapshot.docs.map(extractQuestion));
-    });
-  }
-  function initTopics() {
-    const q = query(collection(db, 'topics'));
+      onSnapshot(q, (querySnapshot) => {
+        const result = querySnapshot.docs.map(extractQuestion);
 
-    onSnapshot(q, (querySnapshot) => {
-      setTopics(querySnapshot.docs.map(extractTopic));
-    });
-  }
-  function initRounds() {
-    const q = query(collection(db, 'rounds'));
-
-    onSnapshot(q, (querySnapshot) => {
-      setRounds(querySnapshot.docs.map(extractRound));
-    });
-  }
-
-  function init() {
-    const rd = rounds?.find((item: RoundDTO) => item.id === 'ZpImBTffpzTI2Tlv0AtE');
-
-    if (topics) {
-      const tpcs =
-        rd?.questions?.map((questionId: string) => {
-          const topic = topics.find((topic: TopicDTO) => topic.id === questionId);
-
-          console.log(topics, questionId, topic);
-          if (topic) {
-            const tpc = {
-              ...topic,
-              questions: topic.questions.map(
-                (topicQuestionId: string) =>
-                  questions?.find((question: QuestionDTO) => topicQuestionId === question.id) ||
-                  new NQuestion(),
-              ),
-            };
-
-            return tpc;
-          } else {
-            return new NTopic();
-          }
-        }) || [];
-      const round: Round = {
-        id: rd?.id || '',
-        name: rd?.name || '',
-        topics: tpcs,
-        current: rd?.current || '',
-      };
-      const tms: TeamDTO[] = teams || [];
-
-      setState({
-        round: round,
-        teams: tms,
+        console.log(result);
+        questions.push(result);
       });
     }
-  }
-  function getIndexOfQuestion(id: string) {
-    if (state.round.topics) {
-      const index = getIndexOfTopic(chosenTopic || '');
-      const question = state.round.topics[index || 0].questions.find((item: any) => item.id === id);
 
-      if (question) return state.round.topics[index || 0].questions.indexOf(question);
+    setAllQuestions(questions);
+  };
+  const initCurrentQuestions = (currentTopic: TopicDTO) => {
+    const q = query(
+      collection(db, 'questions'),
+      where(documentId(), 'in', currentTopic.questions || ['5CCFsRQqEtRRMhv1x1BN']),
+    );
+
+    onSnapshot(q, (querySnapshot) => {
+      setCurrentQuestions(querySnapshot.docs.map(extractQuestion));
+    });
+  };
+
+  const currentTeams = useMemo(
+    () => allTeams.filter((team) => !team.eliminated),
+    [allTeams, currentRound],
+  );
+
+  useEffect(() => {
+    initRound();
+    initTeams();
+  }, []);
+
+  useEffect(() => {
+    if (currentRound.topics?.length) {
+      initTopics(currentRound);
     }
+  }, [currentRound]);
+
+  function handlePreviousTopic() {
+    setCurrentTopicIndex(currentTopicIndex - 1);
+  }
+  function handleNextTopic() {
+    setCurrentTopicIndex(currentTopicIndex + 1);
   }
 
-  function getIndexOfTopic(id: string) {
-    const topic = state.round.topics?.find((item: any) => item.id === id);
-
-    if (topic) return state.round.topics?.indexOf(topic);
-  }
+  useEffect(() => {
+    initAllQuestions(allTopics);
+  }, [allTopics]);
+  useEffect(() => {
+    if (currentTopic.questions?.length) {
+      initCurrentQuestions(currentTopic);
+    }
+  }, [currentTopic]);
 
   function handlePreviousQuestion() {
-    if (state.round.topics) {
-      const actQuestion = getIndexOfQuestion(selectedQuestion);
-      const actTopic = getIndexOfTopic(chosenTopic || '') || 0;
-
-      if (actQuestion && actQuestion !== 0) {
-        setSelectedQuestion(state.round.topics[actTopic].questions[actQuestion - 1].id);
-      }
-    }
+    setCurrentQuestionIndex(currentQuestionIndex - 1);
   }
   function handleNextQuestion() {
-    if (state.round.topics) {
-      const actQuestion = getIndexOfQuestion(selectedQuestion);
-      const actTopic = getIndexOfTopic(chosenTopic || '') || 0;
-
-      if (
-        actQuestion !== null &&
-        actQuestion !== undefined &&
-        actQuestion < state.round.topics.length
-      ) {
-        setSelectedQuestion(state.round.topics[actTopic].questions[actQuestion + 1].id);
-      }
-    }
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
   }
 
   function handleShowTopic() {
-    if (topics) {
-      const topic = topics.find((item: TopicDTO) => item.id === selectedTopic);
+    updateRound({ ...currentRound, current: selectedTopic });
+    if (allTopics) {
+      const topic = allTopics.find((item: TopicDTO) => item.id === selectedTopic);
 
       if (topic) {
-        topic.status = 1;
-        topic.current = topic.questions[0];
-        setSelectedQuestion(topic.current);
-
+        topic.status = 1; // TODO: Use Enum value
+        topic.current = topic.questions[0].id;
         updateTopic(topic);
       }
     }
@@ -208,38 +162,71 @@ const Round3 = () => {
     setSelectedTopic('');
   }
 
-  function handleNextTopic() {
-    if (topics) {
-      const topic = topics.find((item: TopicDTO) => item.id === chosenTopic);
+  function handleNewTopic() {
+    if (allTopics) {
+      const topic = allTopics.find((item: TopicDTO) => item.id === chosenTopic);
 
       if (topic) {
-        topic.status = 2;
+        topic.status = 2; // TODO: Use Enum value
         updateTopic(topic);
         updateTeams();
       }
     }
     setChosenTopic(null);
+    updateRound({ ...currentRound, current: '' });
+  }
+
+  function handleResetQuestion() {
+    currentQuestion.status = 0; // TODO: Use Enum value
+    updateQuestion(currentQuestion);
+    updateTopic({ ...currentTopic, current: currentQuestion.id });
+  }
+  function handleShowQuestion() {
+    currentQuestion.status = 1; // TODO: Use Enum value
+    updateQuestion(currentQuestion);
+  }
+
+  function handleShowAnswer() {
+    currentQuestion.status = 2; // TODO: Use Enum value
+    updateQuestion(currentQuestion);
+  }
+  function handleShowWinner() {
+    updateTeams();
+  }
+  function handleHideQuestion() {
+    currentQuestion.status = 3; // TODO: Use Enum value
+    updateQuestion(currentQuestion);
   }
 
   function updateTeams() {
-    setTeams(
-      teams?.map((team: TeamDTO) => ({
-        ...team,
-        score: [getScores(team.id, state.round), team.score[1], team.score[2], team.score[3]],
-      })),
-    );
+    for (const team of currentTeams) {
+      team.score[1] = allQuestions
+        .map((top: QuestionDTO[]) =>
+          top
+            .filter((item: QuestionDTO) => item.teamId === team.id)
+            .map((item: QuestionDTO) => {
+              const pts = item.points;
+
+              return pts;
+            })
+            .reduce((acc, cur) => acc + cur, 0),
+        )
+        .reduce((acc, cur) => acc + cur, 0);
+
+      updateTeam(team);
+    }
   }
 
-  function handleItemClick(item: any) {
-    if (item.status !== 2) setSelectedTopic(item.id);
+  function handleItemClick(topic: TopicDTO) {
+    if (topic.status !== 2) setSelectedTopic(topic.id);
   }
 
   function handlePreviousRound() {
-    navigate('/regis/round25');
+    navigate('/regis/round1');
   }
 
   function handleNextRound() {
-    // navigate('/regis/endGame');
+    navigate('/regis/round25');
   }
 
   return (
@@ -248,7 +235,7 @@ const Round3 = () => {
         <div className='col content'>
           <button onClick={() => navigate(-1)}>back</button>
           <div className='teams'>
-            {teams?.map((team: TeamDTO) => (
+            {currentTeams.map((team: TeamDTO) => (
               <div key={team.id} className='team-item'>
                 <span>{team.name}</span>
                 <span>{team.score}</span>
@@ -256,7 +243,7 @@ const Round3 = () => {
             ))}
           </div>
 
-          <h1>Ici le {state.round.name}</h1>
+          <h1>Ici le {currentRound.name}</h1>
           <div className='table-content grow1'>
             {chosenTopic ? (
               <TableContainer component={Paper}>
@@ -272,38 +259,33 @@ const Round3 = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {state.round.topics
-                      ?.find((item: Topic) => item.id === chosenTopic)
-                      ?.questions.map((question: QuestionDTO | undefined) => (
-                        <TableRow
-                          key={question?.id}
-                          sx={{
-                            '&:last-child td, &:last-child th': { border: 0 },
-                          }}
-                          selected={selectedQuestion === question?.id}
-                          className={question?.status ? 'answered' : 'not-answered'}
-                        >
-                          <TableCell component='th' scope='row'>
-                            {question?.statement}
-                          </TableCell>
-                          <TableCell align='right'>{question?.answer}</TableCell>
-                          <TableCell align='right'>{question?.flavor}</TableCell>
-                          <TableCell align='right'>{question?.points}</TableCell>
-                          <TableCell align='right'>
-                            {
-                              state.teams.find((item: TeamDTO) => item.id === question?.teamId)
-                                ?.name
-                            }
-                          </TableCell>
-                          <TableCell align='right'>{question?.status}</TableCell>
-                        </TableRow>
-                      ))}
+                    {currentQuestions.map((question: QuestionDTO | undefined) => (
+                      <TableRow
+                        key={question?.id}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 },
+                        }}
+                        selected={currentQuestions[currentQuestionIndex].id === question?.id}
+                        className={question?.status ? 'answered' : 'not-answered'}
+                      >
+                        <TableCell component='th' scope='row'>
+                          {question?.statement}
+                        </TableCell>
+                        <TableCell align='right'>{question?.answer}</TableCell>
+                        <TableCell align='right'>{question?.flavor}</TableCell>
+                        <TableCell align='right'>{question?.points}</TableCell>
+                        <TableCell align='right'>
+                          {currentTeams.find((item: TeamDTO) => item.id === question?.teamId)?.name}
+                        </TableCell>
+                        <TableCell align='right'>{question?.status}</TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </TableContainer>
             ) : (
               <List>
-                {state.round.topics?.map((item: Topic) => {
+                {allTopics.map((item: TopicDTO) => {
                   return (
                     <ListItem
                       key={item.id}
@@ -330,20 +312,62 @@ const Round3 = () => {
           </div>
           <span>Stream</span>
           <div className='nav-question row'>
-            <Button variant='contained' onClick={handlePreviousQuestion} className='nav'>
-              Question Précédente
-            </Button>
-            <div className='grow1 row stream-board-list'>
-              <Button variant='outlined' onClick={handleShowTopic}>
-                Afficher Theme
-              </Button>
-              <Button variant='outlined' onClick={handleNextTopic}>
-                Thème Suivant
-              </Button>
-            </div>
-            <Button variant='contained' onClick={handleNextQuestion} className='nav'>
-              Question Suivante
-            </Button>
+            {chosenTopic ? (
+              <>
+                <div className='nav-question col'>
+                  <div className='grow1 row stream-board-list'>
+                    <Button variant='outlined' onClick={handleResetQuestion}>
+                      Reset Question
+                    </Button>
+                    <Button variant='outlined' onClick={handleShowQuestion}>
+                      Afficher Question
+                    </Button>
+                    <Button variant='outlined' onClick={handleShowAnswer}>
+                      Afficher Réponse
+                    </Button>
+                    <Button variant='outlined' onClick={handleShowWinner}>
+                      Afficher Vainqueur
+                    </Button>
+                    <Button variant='outlined' onClick={handleHideQuestion}>
+                      Cacher Question
+                    </Button>
+                  </div>
+                  <div className='grow1 row'>
+                    <Button
+                      variant='contained'
+                      onClick={handlePreviousQuestion}
+                      className='nav'
+                      disabled={currentQuestionIndex === 0}
+                    >
+                      Question Précédente
+                    </Button>
+                    <Button variant='outlined' onClick={handleNewTopic} className='nav'>
+                      Nouveau Thème
+                    </Button>
+                    <Button
+                      variant='contained'
+                      onClick={handleNextQuestion}
+                      className='nav'
+                      disabled={currentQuestionIndex === currentQuestions.length - 1}
+                    >
+                      Question Suivante
+                    </Button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className='grow1 row stream-board-list'>
+                <Button variant='outlined' onClick={handlePreviousTopic}>
+                  Thème précédent
+                </Button>
+                <Button variant='outlined' onClick={handleShowTopic}>
+                  Afficher Thème
+                </Button>
+                <Button variant='outlined' onClick={handleNextTopic}>
+                  Thème suivant
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <div className='col side-panel'>

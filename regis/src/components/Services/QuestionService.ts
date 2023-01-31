@@ -22,6 +22,8 @@ export function addQuestion(question: QuestionDTO) {
 export function updateQuestion(question: QuestionDTO) {
   const taskDocRef = doc(db, TABLE_NAME, question.id);
 
+  console.log(question);
+
   try {
     updateDoc(taskDocRef, {
       statement: question.statement,
