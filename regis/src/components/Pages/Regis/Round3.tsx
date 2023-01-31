@@ -16,10 +16,10 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../../firebase';
-import QuestionDTO, { NQuestion } from '../../Classes/Question';
-import RoundDTO, { NRound, Round } from '../../Classes/Round';
+import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
+import RoundDTO, { extractRound, NRound, Round } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
-import TopicDTO, { NTopic, Topic } from '../../Classes/Topic';
+import TopicDTO, { extractTopic, NTopic, Topic } from '../../Classes/Topic';
 import { updateRound } from '../../Services/RoundService';
 import { updateTopic } from '../../Services/TopicService';
 import { getScores } from '../../utils/TeamUtils';
@@ -64,7 +64,7 @@ const Round3 = () => {
 
   useEffect(() => {
     if (rounds && topics && state.round.topics) {
-      const round = rounds.find((item: any) => item.id === state.round.id);
+      const round = rounds.find((item: RoundDTO) => item.id === state.round.id);
       const topic = topics.find((item: TopicDTO) => item.id === chosenTopic);
 
       if (round && topic) {
@@ -96,49 +96,21 @@ const Round3 = () => {
     const q = query(collection(db, 'questions'));
 
     onSnapshot(q, (querySnapshot) => {
-      setQuestions(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          statement: doc.data().statement,
-          answer: doc.data().answer,
-          flavor: doc.data().flavor,
-          points: doc.data().points,
-          teamId: doc.data().teamId,
-          status: doc.data().status,
-          index: doc.data().index,
-        })),
-      );
+      setQuestions(querySnapshot.docs.map(extractQuestion));
     });
   }
   function initTopics() {
     const q = query(collection(db, 'topics'));
 
     onSnapshot(q, (querySnapshot) => {
-      setTopics(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          status: doc.data().status,
-          questions: doc.data().questions,
-          current: doc.data().current,
-        })),
-      );
+      setTopics(querySnapshot.docs.map(extractTopic));
     });
   }
   function initRounds() {
     const q = query(collection(db, 'rounds'));
 
     onSnapshot(q, (querySnapshot) => {
-      setRounds(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          status: doc.data().status,
-          questions: doc.data().questions,
-          topics: doc.data().topics,
-          current: doc.data().current,
-        })),
-      );
+      setRounds(querySnapshot.docs.map(extractRound));
     });
   }
 
