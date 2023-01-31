@@ -2,8 +2,7 @@ import { DocumentData } from 'firebase/firestore';
 
 export default QuestionDTO;
 
-interface QuestionDTO {
-  id: string;
+export interface QuestionData {
   statement: string;
   answer: string;
   flavor: string;
@@ -11,6 +10,10 @@ interface QuestionDTO {
   teamId: string;
   status: number;
   index: number;
+}
+
+interface QuestionDTO extends QuestionData {
+  id: string;
 }
 
 export class NQuestion implements QuestionDTO {

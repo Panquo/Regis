@@ -2,13 +2,16 @@ import { DocumentData } from 'firebase/firestore';
 
 export default TeamDTO;
 
-interface TeamDTO {
-  id: string;
+export interface TeamData {
   name: string;
   eliminated: boolean;
   life?: number;
   score: number[];
   phase: 1 | 2;
+}
+
+interface TeamDTO extends TeamData {
+  id: string;
 }
 
 export const extractTeam = (doc: DocumentData): TeamDTO => {
