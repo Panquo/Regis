@@ -1,11 +1,4 @@
-@import 'abstract/color';
-@import 'abstract/fonts';
-
-@import 'base/global';
-
-@import 'components/grid';
-
-@import 'pages/choice';
-@import 'pages/regis';
-@import 'pages/presentator';
-@import 'pages/show';
+@forward 'abstract';
+@forward 'base';
+@forward 'components';
+@forward 'pages';
