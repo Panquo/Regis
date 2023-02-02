@@ -13,8 +13,14 @@ import {
 import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db, ROUNDS_COLLECTION, TEAMS_COLLECTION, TOPICS_COLLECTION } from '../../../firebase';
-import QuestionDTO from '../../Classes/Question';
+import {
+  db,
+  QUESTIONS_COLLECTION,
+  ROUNDS_COLLECTION,
+  TEAMS_COLLECTION,
+  TOPICS_COLLECTION,
+} from '../../../firebase';
+import QuestionDTO, { AnswerStatus, extractQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
@@ -39,7 +45,7 @@ const Round2 = () => {
   const [chosenTopic, setChosenTopic] = useState<string | null>(null);
   const [allTopics, setAllTopics] = useState<TopicDTO[]>([]);
   const [allTeams, setAllTeams] = useState<TeamDTO[]>([]);
-  const [allQuestions, setAllQuestions] = useState<QuestionDTO[][]>([]);
+  const [allQuestions, setAllQuestions] = useState<QuestionDTO[]>([]);
 
   const [currentQuestions, setCurrentQuestions] = useState<QuestionDTO[]>([]);
 
@@ -83,31 +89,22 @@ const Round2 = () => {
     });
   };
 
-  const getTopicQuestions = async (topic: TopicDTO) => {
-    const questions = await Promise.all(
-      (topic.questions as string[])!.map((questionId: string) => fetchQuestion(questionId)),
-    );
+  const initAllQuestions = async (allTopic: TopicDTO[]) => {
+    const q = query(collection(db, QUESTIONS_COLLECTION));
 
-    return questions.sort((q1, q2) => q1.index - q2.index);
+    onSnapshot(q, (querySnapshot) => {
+      setAllQuestions(querySnapshot.docs.map(extractQuestion));
+    });
   };
 
-  const initAllQuestions = async (allTopics: TopicDTO[]) => {
-    const questions: QuestionDTO[][] = [];
-
-    for (const topic of allTopics) {
-      const topicQuestions = await getTopicQuestions(topic);
-
-      questions.push(topicQuestions);
-    }
-    setAllQuestions(questions);
-  };
-
-  const initCurrentQuestions = async (currentTopic: TopicDTO) => {
-    const questions = await Promise.all(
-      (currentTopic.questions as string[])!.map((questionId: string) => fetchQuestion(questionId)),
+  const initCurrentQuestions = (currentTopic: TopicDTO) => {
+    setCurrentQuestions(
+      allQuestions
+        .filter((question: QuestionDTO) =>
+          currentTopic.questions?.find((item: string) => item === question.id),
+        )
+        .sort((q1, q2) => q1.index - q2.index),
     );
-
-    setCurrentQuestions(questions.sort((q1, q2) => q1.index - q2.index));
   };
 
   const currentTeams = useMemo(
@@ -132,12 +129,10 @@ const Round2 = () => {
     initAllQuestions(allTopics);
   }, [allTopics]);
   useEffect(() => {
-    console.log(currentTopic);
-
     if (currentTopic.questions?.length) {
       initCurrentQuestions(currentTopic);
     }
-  }, [currentTopic]);
+  }, [currentTopic, allQuestions]);
 
   function handlePreviousQuestion() {
     setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -181,17 +176,19 @@ const Round2 = () => {
 
   function updateTeams() {
     for (const team of currentTeams) {
-      team.score[1] = allQuestions
-        .map((top: QuestionDTO[]) =>
-          top
-            .filter((item: QuestionDTO) => item.teamId === team.id)
-            .map((item: QuestionDTO) => {
-              const pts = item.points;
+      team.score[1] = allTopics
+        .filter((topic: TopicDTO) => topic.teamId === team.id)
+        .map((top: TopicDTO) => {
+          const result = top.questions
+            .map((questionId: string) => {
+              const q = allQuestions.find((question: QuestionDTO) => question.id === questionId);
 
-              return pts;
+              return AnswerStatus['answered-right'] === q?.answerStatus ? q?.points : 0;
             })
-            .reduce((acc, cur) => acc + cur, 0),
-        )
+            .reduce((acc, cur) => acc + cur, 0);
+
+          return result;
+        })
         .reduce((acc, cur) => acc + cur, 0);
 
       updateTeam(team);
@@ -267,7 +264,7 @@ const Round2 = () => {
                         <TableCell align='right'>{question?.flavor}</TableCell>
                         <TableCell align='right'>{question?.points}</TableCell>
                         <TableCell align='right'>{question?.teamId}</TableCell>
-                        <TableCell align='right'>{question?.status}</TableCell>
+                        <TableCell align='right'>{question?.answerStatus}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

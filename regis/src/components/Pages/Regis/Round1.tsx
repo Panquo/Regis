@@ -90,7 +90,9 @@ const Round1 = () => {
     const q = query(collection(db, QUESTIONS_COLLECTION));
 
     onSnapshot(q, (querySnapshot) => {
-      setAllQuestions(querySnapshot.docs.map(extractQuestion));
+      setAllQuestions(
+        querySnapshot.docs.map(extractQuestion).sort((q1, q2) => q1.index - q2.index),
+      );
     });
   };
 

@@ -1,8 +1,8 @@
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
-import QuestionDTO, { NQuestion } from '../../Classes/Question';
+import { db, QUESTIONS_COLLECTION, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
+import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
 import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
@@ -13,6 +13,7 @@ const Round1 = () => {
 
   const [allTeams, setAllTeams] = useState<TeamDTO[]>([]);
   const [allQuestions, setAllQuestions] = useState<QuestionDTO[]>([]);
+  const [currentQuestions, setCurrentQuestions] = useState<QuestionDTO[]>([]);
 
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
 
@@ -22,6 +23,10 @@ const Round1 = () => {
       new NQuestion()
     );
   }, [allQuestions, currentRound.current]);
+
+  useEffect(() => {
+    initCurrentQuestions();
+  }, [allQuestions]);
 
   const initRound = () => {
     const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 1));
@@ -50,11 +55,19 @@ const Round1 = () => {
   };
 
   const initQuestions = async (currentRound: RoundDTO) => {
-    const questions = await Promise.all(
-      currentRound.questions!.map((questionId: string) => fetchQuestion(questionId)),
-    );
+    const q = query(collection(db, QUESTIONS_COLLECTION));
 
-    setAllQuestions(questions.sort((q1, q2) => q1.index - q2.index));
+    onSnapshot(q, (querySnapshot) => {
+      setAllQuestions(querySnapshot.docs.map(extractQuestion));
+    });
+  };
+
+  const initCurrentQuestions = () => {
+    setCurrentQuestions(
+      allQuestions.filter((question: QuestionDTO) =>
+        currentRound.questions?.find((item: string) => item === question.id),
+      ),
+    );
   };
 
   const phaseTeams = useMemo(() => {
