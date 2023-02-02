@@ -1,13 +1,22 @@
+import { Button } from '@mui/material';
 import { updateContext } from '../../Services/ContextService';
 
 const PlayerDisplaySwitcher = () => {
   return (
-    <>
-      <button onClick={() => updateContext(1)}>Round 1</button>
-      <button onClick={() => updateContext(2)}>Round 2</button>
-      <button onClick={() => updateContext(2.5)}>Round 2.5</button>
-      <button onClick={() => updateContext(3)}>Round 3</button>
-    </>
+    <div className='player-display-switcher'>
+      <Button variant='contained' onClick={() => updateContext(1)} className='nav'>
+        Round 1
+      </Button>
+      <Button variant='contained' onClick={() => updateContext(2)} className='nav'>
+        Round 2
+      </Button>
+      <Button variant='contained' onClick={() => updateContext(2.5)} className='nav'>
+        Round 2.5
+      </Button>
+      <Button variant='contained' onClick={() => updateContext(3)} className='nav'>
+        Round 3
+      </Button>
+    </div>
   );
 };
 

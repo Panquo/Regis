@@ -58,3 +58,17 @@
 .table-content {
   flex-grow: 1;
 }
+
+.player-display-switcher {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+
+  .nav {
+    margin: 20px;
+    border-radius: 20px;
+  }
+}
