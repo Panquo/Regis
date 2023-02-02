@@ -2,7 +2,7 @@ import { Button } from '@mui/material';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../../../firebase';
+import { db, QUESTIONS_COLLECTION, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
 import QuestionDTO, { AnswerStatus, extractQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, Round } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
@@ -54,21 +54,21 @@ const Round1 = () => {
   }, [selected]);
 
   function initTeams() {
-    const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
+    const q = query(collection(db, TEAMS_COLLECTION), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
       setTeams(querySnapshot.docs.map(extractTeam));
     });
   }
   function initQuestions() {
-    const q = query(collection(db, 'questions'));
+    const q = query(collection(db, QUESTIONS_COLLECTION));
 
     onSnapshot(q, (querySnapshot) => {
       setQuestions(querySnapshot.docs.map(extractQuestion));
     });
   }
   function initRounds() {
-    const q = query(collection(db, 'rounds'));
+    const q = query(collection(db, ROUNDS_COLLECTION));
 
     onSnapshot(q, (querySnapshot) => {
       setRounds(querySnapshot.docs.map(extractRound));

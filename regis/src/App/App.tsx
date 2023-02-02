@@ -14,6 +14,7 @@ import {
   PresentatorRound1,
   PresentatorRound2,
   PresentatorRound2Topic,
+  PresentatorRound25,
 } from '../components/Pages/Presentator';
 import {
   Stream,
@@ -37,6 +38,7 @@ function App() {
                 <Route index element={<PresentatorRound2 />} />
                 <Route path=':teamId/topic/:topicId' element={<PresentatorRound2Topic />} />
               </Route>
+              <Route path='round25' element={<PresentatorRound25 />} />
             </Route>
             <Route path='regis'>
               <Route index element={<Regis />} />

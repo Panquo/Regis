@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { default as PresentatorRound1 } from './Round1';
 import { default as PresentatorRound2 } from './Round2';
 import { default as PresentatorRound2Topic } from './Round2Topic';
+import { default as PresentatorRound25 } from './Round25';
 
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HomeIcon from '@mui/icons-material/Home';
@@ -68,4 +69,10 @@ const Presentator = () => {
   );
 };
 
-export { Presentator, PresentatorRound1, PresentatorRound2, PresentatorRound2Topic };
+export {
+  Presentator,
+  PresentatorRound1,
+  PresentatorRound2,
+  PresentatorRound2Topic,
+  PresentatorRound25,
+};

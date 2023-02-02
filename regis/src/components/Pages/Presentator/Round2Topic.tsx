@@ -2,9 +2,9 @@ import { ButtonBase, Grid, IconButton, Typography } from '@mui/material';
 import { collection, documentId, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { db } from '../../../firebase';
-import QuestionDTO, { AnswerStatus, extractQuestion, NQuestion } from '../../Classes/Question';
-import TopicDTO, { extractTopic } from '../../Classes/Topic';
+import { db, TEAMS_COLLECTION, TOPICS_COLLECTION } from '../../../firebase';
+import QuestionDTO, { AnswerStatus, NQuestion } from '../../Classes/Question';
+import { extractTopic, TopicDTO } from '../../Classes/Topic';
 import HomeIcon from '@mui/icons-material/Home';
 import { Box } from '@mui/system';
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -14,7 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import GroupIcon from '@mui/icons-material/Group';
 import _ from 'lodash';
-import { updateQuestion } from '../../Services/QuestionService';
+import { fetchQuestion, updateQuestion } from '../../Services/QuestionService';
 
 const Round2Topic = () => {
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const Round2Topic = () => {
   }, [allQuestions, currentQuestionIndex]);
 
   const initTeam = () => {
-    const q = query(collection(db, 'teams'), where(documentId(), '==', teamId));
+    const q = query(collection(db, TEAMS_COLLECTION), where(documentId(), '==', teamId));
 
     onSnapshot(q, (querySnapshot) => {
       const team = querySnapshot.docs[0];
@@ -43,7 +43,7 @@ const Round2Topic = () => {
   };
 
   const initTopic = () => {
-    const q = query(collection(db, 'topics'), where(documentId(), '==', topicId));
+    const q = query(collection(db, TOPICS_COLLECTION), where(documentId(), '==', topicId));
 
     onSnapshot(q, (querySnapshot) => {
       const topic = querySnapshot.docs[0];
@@ -52,17 +52,12 @@ const Round2Topic = () => {
     });
   };
 
-  const initQuestions = (currentTopic: TopicDTO) => {
-    const q = query(
-      collection(db, 'questions'),
-      where(documentId(), 'in', currentTopic.questions || ['2tQ7pc86xY95eH4prdyM']),
+  const initQuestions = async (currentTopic: TopicDTO) => {
+    const questions = await Promise.all(
+      (currentTopic.questions as string[])!.map((questionId: string) => fetchQuestion(questionId)),
     );
 
-    onSnapshot(q, (querySnapshot) => {
-      const questions = querySnapshot.docs.map(extractQuestion);
-
-      setAllQuestions(questions.sort((q1, q2) => q1.index - q2.index));
-    });
+    setAllQuestions(questions.sort((q1, q2) => q1.index - q2.index));
   };
 
   const nextQuestionIndex = useMemo(() => {
