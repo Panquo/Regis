@@ -8,9 +8,9 @@ import { db } from '../firebase.js';
 import { TopicData } from '../components/Classes/Topic';
 
 const FIREBASE = {
-  QUESTIONS_COLLECTION: 'questions',
-  ROUNDS_COLLECTION: 'rounds',
-  TOPICS_COLLECTION: 'topics',
+  QUESTIONS_COLLECTION: 'questions-test',
+  ROUNDS_COLLECTION: 'rounds-test',
+  TOPICS_COLLECTION: 'topics-test',
 };
 
 const QUESTION_DEFAULT = {

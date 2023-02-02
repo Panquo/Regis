@@ -7,7 +7,7 @@ import { db } from '../firebase.js';
 import { TeamData } from '../components/Classes/Team';
 
 const FIREBASE = {
-  TEAMS_COLLECTION: 'teams',
+  TEAMS_COLLECTION: 'teams-test',
 };
 
 const addTeam = async (team: TeamData): Promise<string> => {
