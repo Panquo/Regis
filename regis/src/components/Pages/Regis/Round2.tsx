@@ -155,7 +155,7 @@ const Round2 = () => {
 
       if (topic) {
         topic.status = 1;
-        topic.current = (topic.questions[0] as QuestionDTO).id;
+        topic.current = topic.questions[0];
         updateTopic(topic);
       }
     }
