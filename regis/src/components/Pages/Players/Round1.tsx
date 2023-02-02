@@ -48,26 +48,29 @@ const Round1 = () => {
 
   return (
     <>
-      {phaseTeams.map((item: TeamDTO) => {
-        return (
-          <div
-            key={item.id}
-            className={`team-item col ${item.score[0] === 3 ? 'team-selected' : ''}`}
-          >
-            <div className='team-name-div'>
-              <span className='team-name'>{item.name}</span>
+      <h1>Manche 1</h1>
+      <div className='players-r1-wrapper'>
+        {phaseTeams.map((item: TeamDTO) => {
+          return (
+            <div
+              key={item.id}
+              className={`players-r1-card col ${item.score[0] === 3 ? 'team-selected' : ''}`}
+            >
+              <div className='team-name-div'>
+                <span className='team-name'>{item.name}</span>
+              </div>
+              <div className='team-score'>
+                {Array.from({ length: item.score[0] }, (_, index) => {
+                  return <div key={index} className='valid-point point' />;
+                })}
+                {Array.from({ length: 3 - item.score[0] }, (_, index) => {
+                  return <div key={index} className='empty-point point' />;
+                })}
+              </div>
             </div>
-            <div className='team-score'>
-              {Array.from({ length: item.score[0] }, (_, index) => {
-                return <div key={index} className='valid-point point' />;
-              })}
-              {Array.from({ length: 3 - item.score[0] }, (_, index) => {
-                return <div key={index} className='empty-point point' />;
-              })}
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </>
   );
 };

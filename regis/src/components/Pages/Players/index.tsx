@@ -42,7 +42,7 @@ const PlayerDisplay = () => {
     }
   };
 
-  return <>{renderDisplay(roundIndex)}</>;
+  return <main className='player-display'>{renderDisplay(roundIndex)}</main>;
 };
 
 export default PlayerDisplay;
