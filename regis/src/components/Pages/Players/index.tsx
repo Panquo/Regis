@@ -4,6 +4,7 @@ import { db } from '../../../firebase';
 import Round1 from './Round1';
 import Round2 from './Round2';
 import Round25 from './Round2.5';
+import Round3 from './Round3';
 
 const PlayerDisplay = () => {
   const [roundIndex, setRoundIndex] = useState(0);
@@ -35,7 +36,7 @@ const PlayerDisplay = () => {
       case 2.5:
         return <Round25 />;
       case 3:
-        return <h1>Round 3</h1>;
+        return <Round3 />;
       default:
         return <h1>Le jeu arrive bientôt :)</h1>;
     }
