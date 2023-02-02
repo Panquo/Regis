@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { db } from '../../../firebase';
 import Round1 from './Round1';
 import Round2 from './Round2';
+import Round25 from './Round2.5';
 
 const PlayerDisplay = () => {
   const [roundIndex, setRoundIndex] = useState(0);
@@ -32,7 +33,7 @@ const PlayerDisplay = () => {
       case 2:
         return <Round2 />;
       case 2.5:
-        return <h1>Round 2.5</h1>;
+        return <Round25 />;
       case 3:
         return <h1>Round 3</h1>;
       default:
