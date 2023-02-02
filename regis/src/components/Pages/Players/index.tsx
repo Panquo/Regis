@@ -1,6 +1,7 @@
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../../../firebase';
+import Round1 from './Round1';
 
 const PlayerDisplay = () => {
   const [roundIndex, setRoundIndex] = useState(0);
@@ -26,7 +27,7 @@ const PlayerDisplay = () => {
   const renderDisplay = (index: number) => {
     switch (index) {
       case 1:
-        return <h1>Round 1</h1>;
+        return <Round1 />;
       case 2:
         return <h1>Round 2</h1>;
       case 2.5:
