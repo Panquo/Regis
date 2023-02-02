@@ -44,6 +44,7 @@ const processFile = async (argv: string[]) => {
 
   console.log(`\nProcessing file 📄 ${file}`);
   await importTeams(file);
+  process.exit(0);
 };
 
 /**

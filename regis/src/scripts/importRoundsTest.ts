@@ -224,6 +224,7 @@ const processFiles = async (argv: string[]) => {
     console.log(`\nProcessing file 📄 ${file}`);
     await importRound(file);
   }
+  process.exit(0);
 };
 
 /**
