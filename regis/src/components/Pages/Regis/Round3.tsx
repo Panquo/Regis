@@ -24,6 +24,7 @@ import { updateQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import { fetchTopic, updateTopic } from '../../Services/TopicService';
+import PlayerDisplaySwitcher from './PlayerDisplaySwitcher';
 
 const Round3 = () => {
   const [selectedTopic, setSelectedTopic] = useState('');
@@ -364,6 +365,7 @@ const Round3 = () => {
               </div>
             )}
           </div>
+          <PlayerDisplaySwitcher />
         </div>
         <div className='col side-panel'>
           <div className='soundboard'></div>

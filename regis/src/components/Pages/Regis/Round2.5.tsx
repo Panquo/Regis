@@ -9,6 +9,7 @@ import TeamDTO, { extractTeam } from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
+import PlayerDisplaySwitcher from './PlayerDisplaySwitcher';
 
 const round: Round = {
   id: '',
@@ -251,6 +252,7 @@ const Round1 = () => {
               Question Suivante
             </Button>
           </div>
+          <PlayerDisplaySwitcher />
         </div>
         <div className='col side-panel'>
           <div className='soundboard'></div>

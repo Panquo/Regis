@@ -18,6 +18,7 @@ import TeamDTO from '../../Classes/Team';
 import { fetchQuestion, updateQuestion } from '../../Services/QuestionService';
 import { updatePhaseRound, updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
+import PlayerDisplaySwitcher from './PlayerDisplaySwitcher';
 
 const Round1 = () => {
   const navigate = useNavigate();
@@ -232,6 +233,9 @@ const Round1 = () => {
               <Button variant='contained' onClick={handleNextQuestion} className='nav'>
                 Question Suivante
               </Button>
+            </div>
+            <div>
+              <PlayerDisplaySwitcher />
             </div>
           </div>
         </div>

@@ -5,16 +5,16 @@ const PlayerDisplaySwitcher = () => {
   return (
     <div className='player-display-switcher'>
       <Button variant='contained' onClick={() => updateContext(1)} className='nav'>
-        Round 1
+        Joueurs Round 1
       </Button>
       <Button variant='contained' onClick={() => updateContext(2)} className='nav'>
-        Round 2
+        Joueurs Round 2
       </Button>
       <Button variant='contained' onClick={() => updateContext(2.5)} className='nav'>
-        Round 2.5
+        Joueurs Round 2.5
       </Button>
       <Button variant='contained' onClick={() => updateContext(3)} className='nav'>
-        Round 3
+        Joueurs Round 3
       </Button>
     </div>
   );
