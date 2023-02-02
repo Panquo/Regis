@@ -1,8 +1,15 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
-import TopicDTO from '../Classes/Topic';
+import { addDoc, collection, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db, TOPICS_COLLECTION } from '../../firebase';
+import TopicDTO, { extractTopic } from '../Classes/Topic';
 
-const TABLE_NAME = 'topics';
+const TABLE_NAME = TOPICS_COLLECTION;
+
+export async function fetchTopic(topicId: string) {
+  const topicDoc = doc(db, TABLE_NAME, topicId);
+  const topic = await getDoc(topicDoc);
+
+  return extractTopic(topic);
+}
 
 export function addTopic(topic: TopicDTO) {
   try {

@@ -1,8 +1,8 @@
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db, TEAMS_COLLECTION } from '../../firebase';
 import TeamDTO from '../Classes/Team';
 
-const TABLE_NAME = 'teams';
+const TABLE_NAME = TEAMS_COLLECTION;
 
 export function addTeam(team: TeamDTO) {
   try {

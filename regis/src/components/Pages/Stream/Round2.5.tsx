@@ -1,6 +1,6 @@
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
-import { db } from '../../../firebase';
+import { db, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
@@ -12,7 +12,7 @@ const Round25 = () => {
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
 
   const initRound = () => {
-    const q = query(collection(db, 'rounds'), where('index', '==', 1));
+    const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 1));
 
     onSnapshot(q, (querySnapshot) => {
       const doc = querySnapshot.docs[0];
@@ -22,7 +22,7 @@ const Round25 = () => {
   };
 
   const initTeams = () => {
-    const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
+    const q = query(collection(db, TEAMS_COLLECTION), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
       setAllTeams(querySnapshot.docs.map(extractTeam));

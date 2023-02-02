@@ -1,11 +1,12 @@
 import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
-import { db } from '../../../firebase';
+import { db, QUESTIONS_COLLECTION, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
 import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
-import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
+import TopicDTO, { NTopic } from '../../Classes/Topic';
 import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
+import { fetchTopic } from '../../Services/TopicService';
 
 interface TeamsQuestion {
   question: QuestionDTO;
@@ -39,7 +40,7 @@ const Round3 = () => {
   }, [currentQuestions, currentTopic.current]);
 
   const initRound = () => {
-    const q = query(collection(db, 'rounds'), where('index', '==', 3));
+    const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 3));
 
     onSnapshot(q, (querySnapshot) => {
       const doc = querySnapshot.docs[0];
@@ -49,29 +50,25 @@ const Round3 = () => {
   };
 
   const initTeams = () => {
-    const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
+    const q = query(collection(db, TEAMS_COLLECTION), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
       setAllTeams(querySnapshot.docs.map(extractTeam));
     });
   };
 
-  const initTopics = (currentRound: RoundDTO) => {
-    const q = query(
-      collection(db, 'topics'),
-      where(documentId(), 'in', currentRound.topics || ['5CCFsRQqEtRRMhv1x1BN']),
+  const initTopics = async (currentRound: RoundDTO) => {
+    const topics = await Promise.all(
+      currentRound.topics!.map((topicId: string) => fetchTopic(topicId)),
     );
 
-    onSnapshot(q, (querySnapshot) => {
-      const topics: TopicDTO[] = querySnapshot.docs.map(extractTopic);
+    if (currentRound.current) {
+      setCurrentTopic(
+        topics.find((topic: TopicDTO) => topic.id === currentRound.current) || new NTopic(),
+      );
+    }
 
-      if (currentRound.current) {
-        setCurrentTopic(
-          topics.find((topic: TopicDTO) => topic.id === currentRound.current) || new NTopic(),
-        );
-      }
-      setAllTopics(topics);
-    });
+    setAllTopics(topics);
   };
 
   const initAllQuestions = (allTopics: TopicDTO[]) => {
@@ -79,7 +76,7 @@ const Round3 = () => {
 
     for (const topic of allTopics) {
       const q = query(
-        collection(db, 'questions'),
+        collection(db, QUESTIONS_COLLECTION),
         where(documentId(), 'in', topic.questions || ['5CCFsRQqEtRRMhv1x1BN']),
       );
 
@@ -94,7 +91,7 @@ const Round3 = () => {
   };
   const initCurrentQuestions = (currentTopic: TopicDTO) => {
     const q = query(
-      collection(db, 'questions'),
+      collection(db, QUESTIONS_COLLECTION),
       where(documentId(), 'in', currentTopic.questions || ['5CCFsRQqEtRRMhv1x1BN']),
     );
 

@@ -13,11 +13,12 @@ import {
 import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../../../firebase';
-import QuestionDTO, { extractQuestion } from '../../Classes/Question';
+import { db, ROUNDS_COLLECTION, TEAMS_COLLECTION, TOPICS_COLLECTION } from '../../../firebase';
+import QuestionDTO from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
+import { fetchQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import { updateTopic } from '../../Services/TopicService';
@@ -46,7 +47,7 @@ const Round2 = () => {
   const [currentTopic, setCurrentTopic] = useState<TopicDTO>(new NTopic());
 
   const initRound = () => {
-    const q = query(collection(db, 'rounds'), where('index', '==', 2));
+    const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 2));
 
     onSnapshot(q, (querySnapshot) => {
       const doc = querySnapshot.docs[0];
@@ -56,7 +57,7 @@ const Round2 = () => {
   };
 
   const initTeams = () => {
-    const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
+    const q = query(collection(db, TEAMS_COLLECTION), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
       setAllTeams(querySnapshot.docs.map(extractTeam));
@@ -65,7 +66,7 @@ const Round2 = () => {
 
   const initTopics = (currentRound: RoundDTO) => {
     const q = query(
-      collection(db, 'topics'),
+      collection(db, TOPICS_COLLECTION),
       where(documentId(), 'in', currentRound.topics || ['5CCFsRQqEtRRMhv1x1BN']),
     );
 
@@ -81,30 +82,31 @@ const Round2 = () => {
     });
   };
 
-  const initAllQuestions = (allTopics: TopicDTO[]) => {
+  const getTopicQuestions = async (topic: TopicDTO) => {
+    const questions = await Promise.all(
+      (topic.questions as string[])!.map((questionId: string) => fetchQuestion(questionId)),
+    );
+
+    return questions.sort((q1, q2) => q1.index - q2.index);
+  };
+
+  const initAllQuestions = async (allTopics: TopicDTO[]) => {
     const questions: QuestionDTO[][] = [];
 
     for (const topic of allTopics) {
-      const q = query(
-        collection(db, 'questions'),
-        where(documentId(), 'in', topic.questions || ['5CCFsRQqEtRRMhv1x1BN']),
-      );
+      const topicQuestions = await getTopicQuestions(topic);
 
-      onSnapshot(q, (querySnapshot) => {
-        questions.push(querySnapshot.docs.map(extractQuestion));
-      });
+      questions.push(topicQuestions);
     }
     setAllQuestions(questions);
   };
-  const initCurrentQuestions = (currentTopic: TopicDTO) => {
-    const q = query(
-      collection(db, 'questions'),
-      where(documentId(), 'in', currentTopic.questions || ['5CCFsRQqEtRRMhv1x1BN']),
+
+  const initCurrentQuestions = async (currentTopic: TopicDTO) => {
+    const questions = await Promise.all(
+      (currentTopic.questions as string[])!.map((questionId: string) => fetchQuestion(questionId)),
     );
 
-    onSnapshot(q, (querySnapshot) => {
-      setCurrentQuestions(querySnapshot.docs.map(extractQuestion));
-    });
+    setCurrentQuestions(questions.sort((q1, q2) => q1.index - q2.index));
   };
 
   const currentTeams = useMemo(
@@ -152,7 +154,7 @@ const Round2 = () => {
 
       if (topic) {
         topic.status = 1;
-        topic.current = topic.questions[0].id;
+        topic.current = (topic.questions[0] as QuestionDTO).id;
         updateTopic(topic);
       }
     }

@@ -12,17 +12,17 @@ export interface TopicData {
   name: string;
   status: number;
   questions: QuestionData[];
-  current: string;
+  current: QuestionID;
   index: number;
   teamId: TeamID;
   gold?: boolean;
 }
 
-interface TopicDTO {
+export interface TopicDTO {
   id: string;
   name: string;
   status: number;
-  questions: QuestionDTO[];
+  questions: QuestionDTO[] | QuestionID[];
   current: QuestionID;
   index: number;
   teamId: TeamID;

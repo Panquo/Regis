@@ -1,8 +1,8 @@
 import { addDoc, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db, ROUNDS_COLLECTION } from '../../firebase';
 import RoundDTO from '../Classes/Round';
 
-const TABLE_NAME = 'rounds';
+const TABLE_NAME = ROUNDS_COLLECTION;
 
 export function addRound(round: RoundDTO) {
   try {

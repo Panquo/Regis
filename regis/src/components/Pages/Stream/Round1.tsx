@@ -1,11 +1,12 @@
-import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../../../firebase';
-import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
+import { db, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
+import QuestionDTO, { NQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO from '../../Classes/Team';
 import VerifiedRoundedIcon from '@mui/icons-material/VerifiedRounded';
+import { fetchQuestion } from '../../Services/QuestionService';
 
 const Round1 = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Round1 = () => {
   }, [allQuestions, currentRound.current]);
 
   const initRound = () => {
-    const q = query(collection(db, 'rounds'), where('index', '==', 1));
+    const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 1));
 
     onSnapshot(q, (querySnapshot) => {
       const doc = querySnapshot.docs[0];
@@ -33,7 +34,7 @@ const Round1 = () => {
   };
 
   const initTeams = () => {
-    const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
+    const q = query(collection(db, TEAMS_COLLECTION), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
       setAllTeams(
@@ -48,15 +49,12 @@ const Round1 = () => {
     });
   };
 
-  const initQuestions = (currentRound: RoundDTO) => {
-    const q = query(
-      collection(db, 'questions'),
-      where(documentId(), 'in', currentRound.questions || ['5CCFsRQqEtRRMhv1x1BN']),
+  const initQuestions = async (currentRound: RoundDTO) => {
+    const questions = await Promise.all(
+      currentRound.questions!.map((questionId: string) => fetchQuestion(questionId)),
     );
 
-    onSnapshot(q, (querySnapshot) => {
-      setAllQuestions(querySnapshot.docs.map(extractQuestion));
-    });
+    setAllQuestions(questions.sort((q1, q2) => q1.index - q2.index));
   };
 
   const phaseTeams = useMemo(() => {
