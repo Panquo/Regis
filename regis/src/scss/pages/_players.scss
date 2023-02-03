@@ -3,9 +3,8 @@
 .player-display {
   display: grid;
   place-items: center;
-  width: 100%;
-  height: 100%;
-  padding: 6rem 0;
+  width: 100vw;
+  height: 100vh;
 }
 
 .players-r1-wrapper {
@@ -70,5 +69,68 @@
         background-color: #253a57;
       }
     }
+  }
+}
+
+.players-topics {
+  display: grid;
+  place-items: center;
+
+  .players-topic-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 2rem;
+
+    .players-topic {
+      display: grid;
+      place-items: center;
+      font-family: 'Oxanium', cursive;
+      font-weight: 500;
+      color: $darker-blue;
+      padding: 2rem;
+      border-radius: 10px;
+      font-size: 3rem;
+      background-image: radial-gradient(ellipse at left top, #5881b9 20%, #456ea8 100%);
+      box-shadow: 1px 2px 2px 2px rgba(0, 0, 0, 0.2);
+
+      &__answered {
+        background-image: radial-gradient(ellipse at left top, $dark-blue 20%, $darker-blue 100%);
+        box-shadow: none;
+        color: #816616;
+      }
+
+      &__mistery {
+        background-image: radial-gradient(ellipse at left top, #dab239 20%, #a88418 100%);
+        box-shadow: 3px 6px 2px 1px rgba(0, 0, 0, 0.2);
+        color: $dark-blue;
+      }
+
+      &__chosen {
+        border-width: 3px;
+        border-color: $gold;
+        color: $gold;
+        font-weight: 800;
+      }
+    }
+  }
+
+  .players-current-topic {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 1px 2px 2px 2px rgba(0, 0, 0, 0.2);
+    background-image: radial-gradient(ellipse at left top, #dab239 20%, #d3a92a 100%);
+    border-radius: 2rem;
+    font-family: 'Oxanium', cursive;
+    font-size: 8rem;
+    border-color: #3f6293;
+    border-width: 1rem;
+    padding: 3rem 4rem;
+    color: $blue;
+    font-weight: 800;
+    text-shadow: .5rem .5rem 0 rgba(0, 0, 0, 0.2);
+    z-index: 100;
   }
 }

@@ -1,9 +1,8 @@
 import { Grid, Paper, styled } from '@mui/material';
-import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
-import { useEffect, useMemo, useState } from 'react';
-import { db, ROUNDS_COLLECTION, TEAMS_COLLECTION, TOPICS_COLLECTION } from '../../../firebase';
+import { collection, documentId, onSnapshot, query, where } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { db, ROUNDS_COLLECTION, TOPICS_COLLECTION } from '../../../firebase';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
-import TeamDTO, { extractTeam } from '../../Classes/Team';
 import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -61,44 +60,35 @@ const Round2 = () => {
   }, [currentRound]);
 
   return (
-    <div className='display-topics-stream'>
-      {currentRound.current ? (
-        <>
-          <div className='stream-current-topic'>
-            <div>{currentTopic.name}</div>
+    <>
+      <h1>Manche 2</h1>
+      <div className='players-topics'>
+        {currentRound.current ? (
+          <div className='players-current-topic' data-topic={currentTopic.name}>
+            {currentTopic.name}
           </div>
-          <div className='stream-current-topic-top'>
-            <div>{currentTopic.name}</div>
-          </div>
-        </>
-      ) : null}
-      <Grid
-        className={currentRound.current ? 'stream-topics' : ''}
-        container
-        rowSpacing={1}
-        columnSpacing={{ xs: 1, sm: 2, md: 1 }}
-      >
-        {allTopics.map((item: TopicDTO) => {
-          return (
-            <Grid key={item.id} item xs={4}>
-              <Item
+        ) : (
+          <div className='players-topic-grid'>
+            {allTopics.map((item: TopicDTO) => (
+              <div
+                key={item.id}
                 className={
                   item.status === 2
-                    ? 'stream-answered-topic'
+                    ? 'players-topic players-topic__answered'
                     : item.id === currentRound.current
-                    ? 'stream-chosen-topic'
+                    ? 'players-topic players-topic__chosen'
                     : item.gold
-                    ? 'stream-mystery-topic'
-                    : ''
+                    ? 'players-topic players-topic__mistery'
+                    : 'players-topic players-topic__default'
                 }
               >
                 {item.name}
-              </Item>
-            </Grid>
-          );
-        })}
-      </Grid>
-    </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
