@@ -23,6 +23,7 @@ import {
   StreamRound25,
   StreamRound3,
 } from '../components/Pages/Stream';
+import PlayerDisplay from '../components/Pages/Players';
 
 function App() {
   return (
@@ -54,6 +55,9 @@ function App() {
               <Route path='round25' element={<StreamRound25 />} />
               <Route path='round3' element={<StreamRound3 />} />
             </Route>
+          </Route>
+          <Route path='/players'>
+            <Route index element={<PlayerDisplay />} />
           </Route>
         </Routes>
       </RouterContainer>

@@ -10,6 +10,7 @@ export const Choice = () => {
         <button onClick={() => navigate('/presentator')}>Les Présentateurs</button>
         <button onClick={() => navigate('/regis')}>La Régie</button>
         <button onClick={() => navigate('/show')}>Le Stream</button>
+        <button onClick={() => navigate('/players')}>Les Joueurs</button>
       </div>
     </div>
   );

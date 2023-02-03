@@ -22,6 +22,7 @@ import { fetchQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import { updateTopic } from '../../Services/TopicService';
+import PlayerDisplaySwitcher from './PlayerDisplaySwitcher';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -321,6 +322,7 @@ const Round2 = () => {
               </div>
             )}
           </div>
+          <PlayerDisplaySwitcher />
         </div>
         <div className='col side-panel'>
           <div className='soundboard'></div>
