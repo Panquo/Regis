@@ -41,17 +41,16 @@ const Round25 = () => {
 
   return (
     <>
-      <div className='display-teams-stream'>
+      <h1>Manche 2.5</h1>
+      <div className='players-retake'>
         {phaseTeams.map((item: TeamDTO) => {
           return (
             <div
               key={item.id}
-              className={`team-item col ${item.life === 0 ? 'team-eliminated' : ''}`}
+              className={`players-retake--item col ${item.life === 0 ? 'team-eliminated' : ''}`}
             >
-              <div className='team-name-div'>
-                <span className='team-name'>{item.name}</span>
-              </div>
-              <div className='team-life'>
+              <div className='players-retake--item__name'>{item.name}</div>
+              <div className='players-retake--item__lives'>
                 {Array.from({ length: item.life || 0 }, (_, index) => {
                   return <FavoriteRoundedIcon key={item.id} className='life-left life' />;
                 })}
