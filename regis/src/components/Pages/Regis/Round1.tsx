@@ -156,14 +156,6 @@ const Round1 = () => {
       <div className='row wrapper'>
         <div className='col content'>
           <button onClick={() => navigate(-1)}>back</button>
-          <div className='teams'>
-            {allTeams?.map((team: TeamDTO) => (
-              <div key={team.id} className='team-item'>
-                <span>{team.name}</span>
-                <span>{team.score}</span>
-              </div>
-            ))}
-          </div>
 
           <h1>
             Ici le {currentRound.name} (Phase {currentRound.phase})
@@ -244,6 +236,14 @@ const Round1 = () => {
           <div className='nav-panel'>
             <Button onClick={handlePreviousRound}>Manche Précédente</Button>
             <Button onClick={handleNextRound}>Manche Suivante</Button>
+          </div>
+          <div className='teams'>
+            {allTeams?.map((team: TeamDTO) => (
+              <div key={team.id} className='team-item'>
+                <span>{team.name}</span>
+                <span>{team.score}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
