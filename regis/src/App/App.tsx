@@ -16,13 +16,7 @@ import {
   PresentatorRound2Topic,
   PresentatorRound25,
 } from '../components/Pages/Presentator';
-import {
-  Stream,
-  StreamRound1,
-  StreamRound2,
-  StreamRound25,
-  StreamRound3,
-} from '../components/Pages/Stream';
+import Stream from '../components/Pages/Stream';
 import PlayerDisplay from '../components/Pages/Players';
 
 function App() {
@@ -50,10 +44,6 @@ function App() {
             </Route>
             <Route path='show'>
               <Route index element={<Stream />} />
-              <Route path='round1' element={<StreamRound1 />} />
-              <Route path='round2' element={<StreamRound2 />} />
-              <Route path='round25' element={<StreamRound25 />} />
-              <Route path='round3' element={<StreamRound3 />} />
             </Route>
           </Route>
           <Route path='/players'>
