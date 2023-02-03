@@ -1,10 +1,10 @@
 import { Grid, Paper, styled } from '@mui/material';
 import { collection, documentId, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
-import { db } from '../../../firebase';
+import { db, ROUNDS_COLLECTION, TEAMS_COLLECTION, TOPICS_COLLECTION } from '../../../firebase';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
-import TopicDTO, { NTopic } from '../../Classes/Topic';
+import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -22,7 +22,7 @@ const Round2 = () => {
   const [currentTopic, setCurrentTopic] = useState<TopicDTO>(new NTopic());
 
   const initRound = () => {
-    const q = query(collection(db, 'rounds'), where('index', '==', 2));
+    const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 2));
 
     onSnapshot(q, (querySnapshot) => {
       const doc = querySnapshot.docs[0];
@@ -32,7 +32,7 @@ const Round2 = () => {
   };
 
   const initTeams = () => {
-    const q = query(collection(db, 'teams'), orderBy('name', 'asc'));
+    const q = query(collection(db, TEAMS_COLLECTION), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
       setAllTeams(querySnapshot.docs.map(extractTeam));
@@ -41,21 +41,12 @@ const Round2 = () => {
 
   const initTopics = (currentRound: RoundDTO) => {
     const q = query(
-      collection(db, 'topics'),
+      collection(db, TOPICS_COLLECTION),
       where(documentId(), 'in', currentRound.topics || ['5CCFsRQqEtRRMhv1x1BN']),
     );
 
     onSnapshot(q, (querySnapshot) => {
-      const topics: TopicDTO[] = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().name,
-        status: doc.data().status,
-        questions: doc.data().questions,
-        index: doc.data().index,
-        teamId: doc.data().teamId,
-        gold: doc.data().gold,
-        current: doc.data().current,
-      }));
+      const topics: TopicDTO[] = querySnapshot.docs.map(extractTopic);
 
       if (currentRound.current) {
         setCurrentTopic(

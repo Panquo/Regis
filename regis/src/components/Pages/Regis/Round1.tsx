@@ -14,8 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import { db, QUESTIONS_COLLECTION, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
 import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { NRound } from '../../Classes/Round';
-import TeamDTO from '../../Classes/Team';
-import { fetchQuestion, updateQuestion } from '../../Services/QuestionService';
+import TeamDTO, { extractTeam } from '../../Classes/Team';
+import { updateQuestion } from '../../Services/QuestionService';
 import { updatePhaseRound, updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import PlayerDisplaySwitcher from './PlayerDisplaySwitcher';
@@ -74,15 +74,7 @@ const Round1 = () => {
     const q = query(collection(db, TEAMS_COLLECTION), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
-      setAllTeams(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          eliminated: doc.data().eliminated,
-          score: doc.data().score,
-          phase: doc.data().phase,
-        })),
-      );
+      setAllTeams(querySnapshot.docs.map(extractTeam));
     });
   };
 
@@ -118,6 +110,7 @@ const Round1 = () => {
     updateQuestion(currentQuestion);
     updateRound({ ...currentRound, current: currentQuestion.id });
   }
+
   function handleShowQuestion() {
     currentQuestion.status = 1;
     updateQuestion(currentQuestion);
@@ -127,13 +120,16 @@ const Round1 = () => {
     currentQuestion.status = 2;
     updateQuestion(currentQuestion);
   }
+
   function handleShowWinner() {
     updateTeams();
   }
+
   function handleHideQuestion() {
     currentQuestion.status = 3;
     updateQuestion(currentQuestion);
   }
+
   function updateTeams() {
     for (const team of phaseTeams) {
       team.score[0] = allQuestions

@@ -113,6 +113,7 @@ const Round3 = () => {
   useEffect(() => {
     initAllQuestions(allTopics);
   }, [allTopics]);
+
   useEffect(() => {
     if (currentTopic.questions?.length) {
       initCurrentQuestions(currentTopic);
@@ -133,6 +134,7 @@ const Round3 = () => {
       initTopics(currentRound);
     }
   }, [currentRound]);
+
   return (
     <>
       <div className='display-teams-stream'>
@@ -152,48 +154,13 @@ const Round3 = () => {
       </div>
       {currentRound.current ? (
         <>
-          {currentTopic.current ? (
-            currentQuestion.status === 1 ? (
-              <div className='display-round3-question'>
-                <div className='display-round-3-topic-div'>
-                  <span className='display-round-3-topic'>{currentTopic.name}</span>
-                </div>
-                <div className='display-round-3-strength-div'>
-                  <span className='display-round-3-strength'>{`Question ${
-                    currentQuestions.indexOf(currentQuestion) + 1
-                  }`}</span>
-                </div>
-                <span className='display-round-3-statement'>{currentQuestion.statement}</span>
-              </div>
-            ) : currentQuestion.status === 2 ? (
-              <div className='display-round3-question'>
-                <div className='display-round-3-topic-div'>
-                  <span className='display-round-3-topic'>{currentTopic.name}</span>
-                </div>
-                <div className='display-round-3-strength-div'>
-                  <span className='display-round-3-strength'>{`Question ${
-                    currentQuestions.indexOf(currentQuestion) + 1
-                  }`}</span>
-                </div>
-                <span className='question-statement'>{currentQuestion.statement}</span>
-                <div className='question-answer-div'>
-                  <span className='question-answer'>
-                    <VerifiedRoundedIcon className='answer-icon' />
-                    {currentQuestion.answer}
-                  </span>
-                </div>
-              </div>
-            ) : null
-          ) : (
-            <div className='display-round3-topic'>
-              <div className='display-round-3'>
-                <div>{currentTopic.name}</div>
-              </div>
-              <div className='display-round-3-top'>
-                <div>{currentTopic.name}</div>
-              </div>
-            </div>
-          )}
+          {
+            <QuestionDisplay
+              currentQuestions={currentQuestions}
+              currentQuestion={currentQuestion}
+              currentTopic={currentTopic}
+            />
+          }
           <div className='display-gauge-stream'>
             {Array.from({ length: 6 }, (_, index) => {
               return (
@@ -219,6 +186,67 @@ const Round3 = () => {
       ) : null}
     </>
   );
+};
+
+const QuestionDisplay = (props: {
+  currentTopic: TopicDTO;
+  currentQuestion: QuestionDTO;
+  currentQuestions: QuestionDTO[];
+}) => {
+  const { currentTopic, currentQuestion, currentQuestions } = props;
+
+  if (!currentTopic.current) {
+    return (
+      <div className='display-round3-topic'>
+        <div className='display-round-3'>
+          <div>{currentTopic.name}</div>
+        </div>
+        <div className='display-round-3-top'>
+          <div>{currentTopic.name}</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentQuestion.status === 1) {
+    return (
+      <div className='display-round3-question'>
+        <div className='display-round-3-topic-div'>
+          <span className='display-round-3-topic'>{currentTopic.name}</span>
+        </div>
+        <div className='display-round-3-strength-div'>
+          <span className='display-round-3-strength'>{`Question ${
+            currentQuestions.indexOf(currentQuestion) + 1
+          }`}</span>
+        </div>
+        <span className='display-round-3-statement'>{currentQuestion.statement}</span>
+      </div>
+    );
+  }
+
+  if (currentQuestion.status === 2) {
+    return (
+      <div className='display-round3-question'>
+        <div className='display-round-3-topic-div'>
+          <span className='display-round-3-topic'>{currentTopic.name}</span>
+        </div>
+        <div className='display-round-3-strength-div'>
+          <span className='display-round-3-strength'>{`Question ${
+            currentQuestions.indexOf(currentQuestion) + 1
+          }`}</span>
+        </div>
+        <span className='question-statement'>{currentQuestion.statement}</span>
+        <div className='question-answer-div'>
+          <span className='question-answer'>
+            <VerifiedRoundedIcon className='answer-icon' />
+            {currentQuestion.answer}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 };
 
 export default Round3;
