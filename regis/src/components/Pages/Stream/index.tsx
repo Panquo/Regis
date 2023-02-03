@@ -1,4 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+import { collection, onSnapshot, query } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { db } from '../../../firebase';
 
 import { default as StreamRound1 } from './Round1';
 import { default as StreamRound2 } from './Round2';
@@ -6,18 +8,38 @@ import { default as StreamRound25 } from './Round2.5';
 import { default as StreamRound3 } from './Round3';
 
 const Stream = () => {
-  const navigate = useNavigate();
+  const [roundIndex, setRoundIndex] = useState(0);
 
-  return (
-    <>
-      <h1>Ici le Show !</h1>
-      <button onClick={() => navigate(-1)}>back</button>
-      <button onClick={() => navigate('./round1')}>Round 1</button>
-      <button onClick={() => navigate('./round2')}>Round 2</button>
-      <button onClick={() => navigate('./round25')}>Round 2.5</button>
-      <button onClick={() => navigate('./round3')}>Round 3</button>
-    </>
-  );
+  const changeRoundIndex = () => {
+    const q = query(collection(db, 'context'));
+
+    onSnapshot(q, (querySnapshot) => {
+      const { roundIndex } = querySnapshot.docs[0].data();
+
+      setRoundIndex(roundIndex);
+    });
+  };
+
+  useEffect(() => {
+    changeRoundIndex();
+  }, [roundIndex]);
+
+  const renderStream = (index: number) => {
+    switch (index) {
+      case 1:
+        return <StreamRound1 />;
+      case 2:
+        return <StreamRound2 />;
+      case 2.5:
+        return <StreamRound25 />;
+      case 3:
+        return <StreamRound3 />;
+      default:
+        return <h1>Le jeu arrive bientôt :)</h1>;
+    }
+  };
+
+  return <>{renderStream(roundIndex)}</>;
 };
 
-export { Stream, StreamRound1, StreamRound2, StreamRound25, StreamRound3 };
+export default Stream;
