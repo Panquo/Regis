@@ -22,7 +22,7 @@ export interface TopicDTO {
   id: string;
   name: string;
   status: number;
-  questions: QuestionDTO[] | QuestionID[];
+  questions: QuestionID[];
   current: QuestionID;
   index: number;
   teamId: TeamID;

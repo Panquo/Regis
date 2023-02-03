@@ -32,7 +32,6 @@
     "read-excel-file": "^5.5.3",
     "sass": "^1.56.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.9.3",
     "web-vitals": "^2.1.4",
     "yaml": "^2.2.1"
   },
@@ -77,6 +76,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "^2.8.0"
+    "prettier": "^2.8.0",
+    "typescript": "^4.9.5"
   }
 }

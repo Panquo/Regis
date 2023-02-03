@@ -11,11 +11,11 @@ import {
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
-import QuestionDTO, { NQuestion } from '../../Classes/Question';
+import { db, QUESTIONS_COLLECTION, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
+import QuestionDTO, { extractQuestion, NQuestion } from '../../Classes/Question';
 import RoundDTO, { NRound } from '../../Classes/Round';
-import TeamDTO from '../../Classes/Team';
-import { fetchQuestion, updateQuestion } from '../../Services/QuestionService';
+import TeamDTO, { extractTeam } from '../../Classes/Team';
+import { updateQuestion } from '../../Services/QuestionService';
 import { updatePhaseRound, updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import PlayerDisplaySwitcher from './PlayerDisplaySwitcher';
@@ -29,9 +29,11 @@ const Round1 = () => {
   const [currentRound, setRound] = useState<RoundDTO>(new NRound());
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
+  const [currentQuestions, setCurrentQuestions] = useState<QuestionDTO[]>([]);
+
   const currentQuestion: QuestionDTO = useMemo(() => {
-    return allQuestions[currentQuestionIndex] || new NQuestion();
-  }, [allQuestions, currentQuestionIndex]);
+    return currentQuestions[currentQuestionIndex] || new NQuestion();
+  }, [currentQuestions, currentQuestionIndex]);
 
   const phaseTeams = useMemo(() => {
     return allTeams.filter((team) => team.phase === currentRound.phase);
@@ -47,6 +49,10 @@ const Round1 = () => {
       initQuestions(currentRound);
     }
   }, [currentRound]);
+
+  useEffect(() => {
+    initCurrentQuestions();
+  }, [allQuestions]);
 
   const initRound = () => {
     const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 1));
@@ -68,32 +74,35 @@ const Round1 = () => {
     const q = query(collection(db, TEAMS_COLLECTION), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
-      setAllTeams(
-        querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name,
-          eliminated: doc.data().eliminated,
-          score: doc.data().score,
-          phase: doc.data().phase,
-        })),
-      );
+      setAllTeams(querySnapshot.docs.map(extractTeam));
     });
   };
 
   const initQuestions = async (currentRound: RoundDTO) => {
-    const questions = await Promise.all(
-      currentRound.questions!.map((questionId: string) => fetchQuestion(questionId)),
-    );
+    const q = query(collection(db, QUESTIONS_COLLECTION));
 
-    setAllQuestions(questions.sort((q1, q2) => q1.index - q2.index));
+    onSnapshot(q, (querySnapshot) => {
+      setAllQuestions(
+        querySnapshot.docs.map(extractQuestion).sort((q1, q2) => q1.index - q2.index),
+      );
+    });
+  };
+
+  const initCurrentQuestions = () => {
+    setCurrentQuestions(
+      allQuestions.filter((question: QuestionDTO) =>
+        currentRound.questions?.find((item: string) => item === question.id),
+      ),
+    );
   };
 
   function handlePreviousQuestion() {
-    setCurrentQuestionIndex(currentQuestionIndex - 1);
+    if (currentQuestionIndex !== 0) setCurrentQuestionIndex(currentQuestionIndex - 1);
   }
 
   function handleNextQuestion() {
-    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    if (currentQuestionIndex !== currentQuestions.length)
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
   }
 
   function handleResetQuestion() {
@@ -101,6 +110,7 @@ const Round1 = () => {
     updateQuestion(currentQuestion);
     updateRound({ ...currentRound, current: currentQuestion.id });
   }
+
   function handleShowQuestion() {
     currentQuestion.status = 1;
     updateQuestion(currentQuestion);
@@ -110,13 +120,16 @@ const Round1 = () => {
     currentQuestion.status = 2;
     updateQuestion(currentQuestion);
   }
+
   function handleShowWinner() {
     updateTeams();
   }
+
   function handleHideQuestion() {
     currentQuestion.status = 3;
     updateQuestion(currentQuestion);
   }
+
   function updateTeams() {
     for (const team of phaseTeams) {
       team.score[0] = allQuestions
@@ -182,13 +195,13 @@ const Round1 = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {allQuestions.map((question: QuestionDTO | undefined) => (
+                  {currentQuestions.map((question: QuestionDTO | undefined) => (
                     <TableRow
                       key={question?.id}
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       selected={
-                        allQuestions
-                          ? allQuestions[currentQuestionIndex || 0].id === question?.id
+                        currentQuestions
+                          ? currentQuestions[currentQuestionIndex || 0].id === question?.id
                           : false
                       }
                       className={question?.status ? 'answered' : 'not-answered'}
