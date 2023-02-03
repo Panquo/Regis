@@ -1,17 +1,8 @@
-import { Grid, Paper, styled } from '@mui/material';
 import { collection, documentId, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db, ROUNDS_COLLECTION, TOPICS_COLLECTION } from '../../../firebase';
 import RoundDTO, { extractRound, NRound } from '../../Classes/Round';
 import TopicDTO, { extractTopic, NTopic } from '../../Classes/Topic';
-
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
 
 const Round2 = () => {
   const [allTopics, setAllTopics] = useState<TopicDTO[]>([]);
