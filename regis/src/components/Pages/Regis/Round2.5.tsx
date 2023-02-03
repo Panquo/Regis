@@ -207,27 +207,32 @@ const Round1 = () => {
     }
   }
 
+  function handleAddLife(team: TeamDTO) {
+    if (team.life) {
+      team.life += 1;
+      updateTeam(team);
+    }
+  }
+
   return (
     <>
       <div className='row wrapper'>
         <div className='col content'>
           <button onClick={() => navigate(-1)}>back</button>
-          <div className='teams'>
-            {teams?.map((team: TeamDTO) => (
-              <div key={team.id} className='team-item'>
-                <span>{team.name}</span>
-                <span>{team.score}</span>
-              </div>
-            ))}
-          </div>
 
           <h1>Ici le {state.round.name}</h1>
           <div className='table-content grow1'>
-            <div>
+            <div className='remove-life'>
               {state.teams.map((item: TeamDTO) => (
-                <div key={item.id}>
+                <div key={item.id} className='remove-life--item'>
+                  <span className='remove-life--item--name'>{item.name}</span>
                   <span>Vies : {item.life}</span>
-                  <Button onClick={() => handleRemoveLife(item)}>-</Button>
+                  <Button className='remove-life--button' onClick={() => handleRemoveLife(item)}>
+                    -
+                  </Button>
+                  <Button className='remove-life--button' onClick={() => handleAddLife(item)}>
+                    +
+                  </Button>
                 </div>
               ))}
             </div>
@@ -259,6 +264,14 @@ const Round1 = () => {
           <div className='nav-panel'>
             <Button onClick={handlePreviousRound}>Manche Précédente</Button>
             <Button onClick={handleNextRound}>Manche Suivante</Button>
+          </div>
+          <div className='teams'>
+            {teams?.map((team: TeamDTO) => (
+              <div key={team.id} className='team-item'>
+                <span>{team.name}</span>
+                <span>{team.score}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

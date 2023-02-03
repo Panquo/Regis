@@ -20,10 +20,6 @@
   height: 40vh;
 }
 
-.teams {
-  position: absolute;
-}
-
 .answered {
   background-color: white;
 }
@@ -70,5 +66,35 @@
   .nav {
     margin: 20px;
     border-radius: 20px;
+  }
+}
+
+.remove-life {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.5rem;
+
+  &--item {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    background-color: $blue;
+    padding: 1rem;
+    border-radius: 1rem;
+
+    &--name {
+      color: $gold;
+      font-weight: 800;
+    }
+
+    Button {
+      color: black;
+      border: 1px solid black;
+      font-weight: 800;
+    }
   }
 }

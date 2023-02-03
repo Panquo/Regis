@@ -216,11 +216,11 @@ const Round3 = () => {
   }
 
   function handlePreviousRound() {
-    navigate('/regis/round1');
+    navigate('/regis/round25');
   }
 
   function handleNextRound() {
-    navigate('/regis/round25');
+    navigate('/regis/round1');
   }
 
   return (
@@ -228,14 +228,6 @@ const Round3 = () => {
       <div className='row wrapper'>
         <div className='col content'>
           <button onClick={() => navigate(-1)}>back</button>
-          <div className='teams'>
-            {currentTeams.map((team: TeamDTO) => (
-              <div key={team.id} className='team-item'>
-                <span>{team.name}</span>
-                <span>{team.score}</span>
-              </div>
-            ))}
-          </div>
 
           <h1>Ici le {currentRound.name}</h1>
           <div className='table-content grow1'>
@@ -370,6 +362,14 @@ const Round3 = () => {
           <div className='nav-panel'>
             <Button onClick={handlePreviousRound}>Manche Précédente</Button>
             <Button onClick={handleNextRound}>Manche Suivante</Button>
+          </div>
+          <div className='teams'>
+            {currentTeams.map((team: TeamDTO) => (
+              <div key={team.id} className='team-item'>
+                <span>{team.name}</span>
+                <span>{team.score}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
