@@ -207,6 +207,13 @@ const Round1 = () => {
     }
   }
 
+  function handleAddLife(team: TeamDTO) {
+    if (team.life) {
+      team.life += 1;
+      updateTeam(team);
+    }
+  }
+
   return (
     <>
       <div className='row wrapper'>
@@ -215,11 +222,17 @@ const Round1 = () => {
 
           <h1>Ici le {state.round.name}</h1>
           <div className='table-content grow1'>
-            <div>
+            <div className='remove-life'>
               {state.teams.map((item: TeamDTO) => (
-                <div key={item.id}>
+                <div key={item.id} className='remove-life--item'>
+                  <span className='remove-life--item--name'>{item.name}</span>
                   <span>Vies : {item.life}</span>
-                  <Button onClick={() => handleRemoveLife(item)}>-</Button>
+                  <Button className='remove-life--button' onClick={() => handleRemoveLife(item)}>
+                    -
+                  </Button>
+                  <Button className='remove-life--button' onClick={() => handleAddLife(item)}>
+                    +
+                  </Button>
                 </div>
               ))}
             </div>
