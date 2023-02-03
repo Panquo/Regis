@@ -62,20 +62,19 @@ const Round3 = () => {
 
   return (
     <>
-      <h1>
-        {currentTopic.name ? 'Thème : ' : ''}
-        {currentTopic.name}
-      </h1>
-      <div className='display-teams-stream'>
+      <div className='players-r3-header'>
+        <h1>LA FINALE</h1>
+        <h1>
+          {currentTopic.name ? 'Thème : ' : ''}
+          {currentTopic.name}
+        </h1>
+      </div>
+      <div className='players-r3-wrapper'>
         {currentTeams.map((team: TeamDTO) => {
           return (
-            <div key={team.id} className={'team-item col'}>
-              <div className='team-name-div'>
-                <span className='team-name'>{team.name}</span>
-              </div>
-              <div className='team-score'>
-                <div className='team-round3'>{team.score[3]}</div>
-              </div>
+            <div key={team.id} className='players-r3-card'>
+              <div className='players-r3-card--title'>{team.name}</div>
+              <div className='players-r3-card--score'>{team.score[3]}</div>
             </div>
           );
         })}

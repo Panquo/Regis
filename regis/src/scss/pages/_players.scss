@@ -185,3 +185,56 @@
     }
   }
 }
+
+.players-r3-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.players-r3-wrapper {
+  display: grid;
+  place-items: center;
+  grid-template-columns: repeat(3, 1fr);
+  width: 80%;
+  gap: 2rem;
+
+  .players-r3-card {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 2.5rem;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.4);
+    background-color: #3f6293;
+    padding: 2rem;
+    background-image: radial-gradient(ellipse at left top, #3f6293 20%, #335381 100%);
+    transition: margin 0.2s 1s;
+
+    &--title {
+      font-size: 3rem;
+      font-family: 'Kalam', cursive;
+      color: #dab239;
+      text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      font-weight: 800;
+    }
+
+    &--score {
+      width: 80%;
+      text-align: center;
+      box-shadow: inset 1px 1px 1px 3px rgba(0, 0, 0, 0.2);
+      font-family: 'Kalam', cursive;
+      font-size: 4rem;
+      color: $gold;
+      height: 6rem;
+      border-radius: 3rem;
+    }
+  }
+}
