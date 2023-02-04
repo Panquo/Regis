@@ -168,11 +168,12 @@ const importRound3 = async (data: FileData) => {
       const { statement, answer } = question;
 
       return {
+        ...QUESTION_DEFAULT,
         index,
         statement,
         answer,
         flavor: '',
-        ...QUESTION_DEFAULT,
+        points: index + 1,
       };
     });
 
