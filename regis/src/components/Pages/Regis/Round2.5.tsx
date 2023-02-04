@@ -6,24 +6,18 @@ import { db, QUESTIONS_COLLECTION, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '.
 import QuestionDTO, { AnswerStatus, extractQuestion } from '../../Classes/Question';
 import RoundDTO, { extractRound, NRound, Round } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
-import { updateQuestion } from '../../Services/QuestionService';
-import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import PlayerDisplaySwitcher from './PlayerDisplaySwitcher';
 
 const Round25 = () => {
-  const [selected, setSelected] = useState('');
   const navigate = useNavigate();
 
   const [allTeams, setAllTeams] = useState<TeamDTO[]>();
   const [round, setRound] = useState<RoundDTO>(new NRound());
-  const [questions, setQuestions] = useState<QuestionDTO[]>();
 
   useEffect(() => {
     initTeams();
-    initQuestions();
     initRound();
-    setSelected('');
   }, []);
 
   function initTeams() {
@@ -33,16 +27,9 @@ const Round25 = () => {
       setAllTeams(querySnapshot.docs.map(extractTeam));
     });
   }
-  function initQuestions() {
-    const q = query(collection(db, QUESTIONS_COLLECTION));
-
-    onSnapshot(q, (querySnapshot) => {
-      setQuestions(querySnapshot.docs.map(extractQuestion));
-    });
-  }
 
   const initRound = () => {
-    const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 2));
+    const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 2.5));
 
     onSnapshot(q, (querySnapshot) => {
       const doc = querySnapshot.docs[0];
@@ -50,76 +37,6 @@ const Round25 = () => {
       setRound(extractRound(doc));
     });
   };
-
-  function getIndexOfQuestion(id: string) {
-    const question = round.questions?.find((item: any) => item.id === id);
-
-    if (question) return round.questions?.indexOf(question);
-  }
-
-  function handlePreviousQuestion() {
-    if (questions) {
-      const actQuestion = getIndexOfQuestion(selected) || 0;
-
-      if (actQuestion !== 0) {
-        setSelected(questions[actQuestion - 1].id);
-      }
-    }
-  }
-  function handleNextQuestion() {
-    if (questions) {
-      const actQuestion = getIndexOfQuestion(selected) || 0;
-
-      if (actQuestion < questions.length) {
-        setSelected(questions[actQuestion + 1].id);
-      }
-    }
-  }
-
-  function handleShowQuestion() {
-    if (questions) {
-      const question = questions[getIndexOfQuestion(selected) || 0];
-
-      if (question) {
-        question.status = 1;
-        updateQuestion(question);
-      }
-    }
-  }
-  function handleShowAnswer() {
-    if (questions) {
-      const question = questions[getIndexOfQuestion(selected) || 0];
-
-      if (question) {
-        question.status = 2;
-        updateQuestion(question);
-      }
-    }
-  }
-  function handleShowWinner() {
-    if (round.questions) {
-      const question = questions![getIndexOfQuestion(selected) || 0];
-
-      if (question && question.teamId) {
-        question.status = 3;
-        updateQuestion(question);
-        updateTeams();
-      }
-    }
-  }
-  function updateTeams() {
-    if (questions) {
-      for (const team of allTeams!) {
-        team.score[0] = questions
-          .filter((item: QuestionDTO) => item.teamId === team.id)
-          .map((item: QuestionDTO) => item.points)
-          .reduce((acc, cur) => {
-            return acc + cur;
-          }, 0);
-        updateTeam(team);
-      }
-    }
-  }
 
   function eliminateTeams() {
     if (allTeams) {
