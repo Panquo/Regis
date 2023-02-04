@@ -1,64 +1,36 @@
 import { Button } from '@mui/material';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db, QUESTIONS_COLLECTION, ROUNDS_COLLECTION, TEAMS_COLLECTION } from '../../../firebase';
 import QuestionDTO, { AnswerStatus, extractQuestion } from '../../Classes/Question';
-import RoundDTO, { extractRound, Round } from '../../Classes/Round';
+import RoundDTO, { extractRound, NRound, Round } from '../../Classes/Round';
 import TeamDTO, { extractTeam } from '../../Classes/Team';
 import { updateQuestion } from '../../Services/QuestionService';
 import { updateRound } from '../../Services/RoundService';
 import { updateTeam } from '../../Services/TeamService';
 import PlayerDisplaySwitcher from './PlayerDisplaySwitcher';
 
-const round: Round = {
-  id: '',
-  name: '',
-  topics: [],
-  current: '',
-};
-
-const Round1 = () => {
-  const initState = {
-    round: round,
-    teams: [],
-  };
+const Round25 = () => {
   const [selected, setSelected] = useState('');
   const navigate = useNavigate();
 
-  const [teams, setTeams] = useState<TeamDTO[]>();
-  const [rounds, setRounds] = useState<RoundDTO[]>();
+  const [allTeams, setAllTeams] = useState<TeamDTO[]>();
+  const [round, setRound] = useState<RoundDTO>(new NRound());
   const [questions, setQuestions] = useState<QuestionDTO[]>();
-  const [state, setState] = useState<{
-    round: Round;
-    teams: TeamDTO[];
-  }>(initState);
 
   useEffect(() => {
     initTeams();
     initQuestions();
-    initRounds();
+    initRound();
     setSelected('');
   }, []);
-
-  useEffect(() => {
-    init();
-  }, [teams, questions, rounds]);
-
-  useEffect(() => {
-    if (rounds) {
-      const round = rounds[0];
-
-      round.current = selected;
-      updateRound(round);
-    }
-  }, [selected]);
 
   function initTeams() {
     const q = query(collection(db, TEAMS_COLLECTION), orderBy('name', 'asc'));
 
     onSnapshot(q, (querySnapshot) => {
-      setTeams(querySnapshot.docs.map(extractTeam));
+      setAllTeams(querySnapshot.docs.map(extractTeam));
     });
   }
   function initQuestions() {
@@ -68,77 +40,45 @@ const Round1 = () => {
       setQuestions(querySnapshot.docs.map(extractQuestion));
     });
   }
-  function initRounds() {
-    const q = query(collection(db, ROUNDS_COLLECTION));
+
+  const initRound = () => {
+    const q = query(collection(db, ROUNDS_COLLECTION), where('index', '==', 2));
 
     onSnapshot(q, (querySnapshot) => {
-      setRounds(querySnapshot.docs.map(extractRound));
+      const doc = querySnapshot.docs[0];
+
+      setRound(extractRound(doc));
     });
-  }
-
-  function init() {
-    const rd = rounds?.find((item: RoundDTO) => item.id === '5Jv20rWadBAd4ZmKxNBq');
-
-    const qst: QuestionDTO = {
-      id: '',
-      statement: '',
-      answer: '',
-      flavor: '',
-      points: 0,
-      teamId: '',
-      status: 0,
-      index: -1,
-      answerStatus: AnswerStatus['not-answered'],
-    };
-
-    if (questions) {
-      const qsts =
-        rd?.questions?.map(
-          (item: string) => questions.find((question: QuestionDTO) => question.id === item) || qst,
-        ) || [];
-      const tms: TeamDTO[] = teams || [];
-      const round: Round = {
-        id: rd?.id || '',
-        name: rd?.name || '',
-        questions: qsts,
-        current: rd?.current || '',
-      };
-
-      setState({
-        round: round,
-        teams: tms,
-      });
-    }
-  }
+  };
 
   function getIndexOfQuestion(id: string) {
-    const question = state.round.questions?.find((item: any) => item.id === id);
+    const question = round.questions?.find((item: any) => item.id === id);
 
-    if (question) return state.round.questions?.indexOf(question);
+    if (question) return round.questions?.indexOf(question);
   }
 
   function handlePreviousQuestion() {
-    if (state.round.questions) {
+    if (questions) {
       const actQuestion = getIndexOfQuestion(selected) || 0;
 
       if (actQuestion !== 0) {
-        setSelected(state.round.questions[actQuestion - 1].id);
+        setSelected(questions[actQuestion - 1].id);
       }
     }
   }
   function handleNextQuestion() {
-    if (state.round.questions) {
+    if (questions) {
       const actQuestion = getIndexOfQuestion(selected) || 0;
 
-      if (actQuestion < state.round.questions.length) {
-        setSelected(state.round.questions[actQuestion + 1].id);
+      if (actQuestion < questions.length) {
+        setSelected(questions[actQuestion + 1].id);
       }
     }
   }
 
   function handleShowQuestion() {
-    if (state.round.questions) {
-      const question = state.round.questions[getIndexOfQuestion(selected) || 0];
+    if (questions) {
+      const question = questions[getIndexOfQuestion(selected) || 0];
 
       if (question) {
         question.status = 1;
@@ -147,8 +87,8 @@ const Round1 = () => {
     }
   }
   function handleShowAnswer() {
-    if (state.round.questions) {
-      const question = state.round.questions[getIndexOfQuestion(selected) || 0];
+    if (questions) {
+      const question = questions[getIndexOfQuestion(selected) || 0];
 
       if (question) {
         question.status = 2;
@@ -157,8 +97,8 @@ const Round1 = () => {
     }
   }
   function handleShowWinner() {
-    if (state.round.questions) {
-      const question = state.round.questions[getIndexOfQuestion(selected) || 0];
+    if (round.questions) {
+      const question = questions![getIndexOfQuestion(selected) || 0];
 
       if (question && question.teamId) {
         question.status = 3;
@@ -168,9 +108,9 @@ const Round1 = () => {
     }
   }
   function updateTeams() {
-    if (state.round.questions) {
-      for (const team of state.teams) {
-        team.score[0] = state.round.questions
+    if (questions) {
+      for (const team of allTeams!) {
+        team.score[0] = questions
           .filter((item: QuestionDTO) => item.teamId === team.id)
           .map((item: QuestionDTO) => item.points)
           .reduce((acc, cur) => {
@@ -182,8 +122,8 @@ const Round1 = () => {
   }
 
   function eliminateTeams() {
-    if (teams) {
-      const scores = teams.sort((a, b) => {
+    if (allTeams) {
+      const scores = allTeams.sort((a, b) => {
         return (a.life || 0) - (b.life || 0);
       });
       const winner = scores.splice(-1, 1);
@@ -220,42 +160,24 @@ const Round1 = () => {
         <div className='col content'>
           <button onClick={() => navigate(-1)}>back</button>
 
-          <h1>Ici le {state.round.name}</h1>
+          <h1>Ici le {round.name}</h1>
           <div className='table-content grow1'>
             <div className='remove-life'>
-              {state.teams.map((item: TeamDTO) => (
-                <div key={item.id} className='remove-life--item'>
-                  <span className='remove-life--item--name'>{item.name}</span>
-                  <span>Vies : {item.life}</span>
-                  <Button className='remove-life--button' onClick={() => handleRemoveLife(item)}>
-                    -
-                  </Button>
-                  <Button className='remove-life--button' onClick={() => handleAddLife(item)}>
-                    +
-                  </Button>
-                </div>
-              ))}
+              {allTeams
+                ?.filter((team) => team.eliminated)
+                .map((item: TeamDTO) => (
+                  <div key={item.id} className='remove-life--item'>
+                    <span className='remove-life--item--name'>{item.name}</span>
+                    <span>Vies : {item.life}</span>
+                    <Button className='remove-life--button' onClick={() => handleRemoveLife(item)}>
+                      -
+                    </Button>
+                    <Button className='remove-life--button' onClick={() => handleAddLife(item)}>
+                      +
+                    </Button>
+                  </div>
+                ))}
             </div>
-          </div>
-          <span>Stream</span>
-          <div className='nav-question row'>
-            <Button variant='contained' onClick={handlePreviousQuestion} className='nav'>
-              Question Précédente
-            </Button>
-            <div className='grow1 row stream-board-list'>
-              <Button variant='outlined' onClick={handleShowQuestion}>
-                Afficher Question
-              </Button>
-              <Button variant='outlined' onClick={handleShowAnswer}>
-                Afficher Réponse
-              </Button>
-              <Button variant='outlined' onClick={handleShowWinner}>
-                Afficher Vainqueur
-              </Button>
-            </div>
-            <Button variant='contained' onClick={handleNextQuestion} className='nav'>
-              Question Suivante
-            </Button>
           </div>
           <PlayerDisplaySwitcher />
         </div>
@@ -266,7 +188,7 @@ const Round1 = () => {
             <Button onClick={handleNextRound}>Manche Suivante</Button>
           </div>
           <div className='teams'>
-            {teams?.map((team: TeamDTO) => (
+            {allTeams?.map((team: TeamDTO) => (
               <div key={team.id} className='team-item'>
                 <span>{team.name}</span>
                 <span>{team.score}</span>
@@ -279,4 +201,4 @@ const Round1 = () => {
   );
 };
 
-export default Round1;
+export default Round25;
