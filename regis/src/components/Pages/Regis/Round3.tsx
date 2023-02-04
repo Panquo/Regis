@@ -227,7 +227,7 @@ const Round3 = () => {
                   </TableHead>
                   <TableBody>
                     {currentQuestions
-                      .sort((q1, q2) => q1.index - q2.index)
+                      .sort((q1, q2) => q2.index - q1.index)
                       .map((question: QuestionDTO | undefined) => (
                         <TableRow
                           key={question?.id}

@@ -99,10 +99,12 @@ const Round3 = () => {
       const result = querySnapshot.docs.map(extractQuestion);
 
       setTeamsQuestion(
-        result.map((question: QuestionDTO) => ({
-          question: question,
-          team: currentTeams.find((team: TeamDTO) => team.id === question.teamId),
-        })),
+        result
+          .map((question: QuestionDTO) => ({
+            question: question,
+            team: currentTeams.find((team: TeamDTO) => team.id === question.teamId),
+          }))
+          .sort((tq1, tq2) => tq2.question.index - tq1.question.index),
       );
       console.log(result);
 
@@ -154,13 +156,11 @@ const Round3 = () => {
       </div>
       {currentRound.current ? (
         <>
-          {
-            <QuestionDisplay
-              currentQuestions={currentQuestions}
-              currentQuestion={currentQuestion}
-              currentTopic={currentTopic}
-            />
-          }
+          <QuestionDisplay
+            currentQuestions={currentQuestions}
+            currentQuestion={currentQuestion}
+            currentTopic={currentTopic}
+          />
           <div className='display-gauge-stream'>
             {Array.from({ length: 6 }, (_, index) => {
               return (
@@ -195,7 +195,7 @@ const QuestionDisplay = (props: {
 }) => {
   const { currentTopic, currentQuestion, currentQuestions } = props;
 
-  if (!currentTopic.current) {
+  if (currentTopic.current) {
     return (
       <div className='display-round3-topic'>
         <div className='display-round-3'>
