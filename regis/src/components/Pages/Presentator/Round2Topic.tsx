@@ -83,6 +83,8 @@ const Round2Topic = () => {
     }
   }, [currentTopic]);
 
+  const [recap, setRecap] = useState<boolean>(false);
+
   return (
     <Grid
       container
@@ -110,165 +112,231 @@ const Round2Topic = () => {
           </IconButton>
         </Grid>
       </Grid>
-
-      <Grid
-        item
-        container
-        sx={{
-          alignItems: 'center',
-          color: 'black',
-          justifyContent: 'center',
-          fontSize: 20,
-          gap: 2,
-        }}
-      >
-        <Grid item sx={{ justifyContent: 'center' }}>
-          <Box
+      {recap && (
+        <>
+          <Grid
+            item
+            container
+            direction='column'
             sx={{
-              height: 60,
-              width: 400,
-              backgroundColor: 'lightgray',
-              borderRadius: 4,
               alignItems: 'center',
-              display: 'flex',
-              paddingX: 2,
+              color: 'black',
+              justifyContent: 'center',
+              fontSize: 20,
               gap: 2,
             }}
           >
-            <GroupIcon />
-            {currentTeam?.name}
-          </Box>
-        </Grid>
-        <Grid item sx={{ justifyContent: 'center' }}>
-          <Box
+            {allQuestions.map((question: QuestionDTO) => (
+              <Grid container item direction='column' key={question.id}>
+                <Box
+                  sx={{
+                    backgroundColor:
+                      question?.answerStatus === AnswerStatus['answered-right']
+                        ? 'lightgreen'
+                        : question?.answerStatus === AnswerStatus['answered-wrong']
+                        ? 'salmon'
+                        : 'lightgray',
+                    borderRadius: 4,
+                    fontSize: 24,
+                    padding: 2,
+                    minHeight: 60,
+                    alignContent: 'center',
+                    flexWrap: 'wrap',
+                    display: 'flex',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <Grid item sx={{ width: '100%' }}>
+                    {question?.statement}
+                  </Grid>
+                  <Grid item sx={{ fontWeight: 'bold' }}>
+                    {question?.answer}
+                  </Grid>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
+      {!recap && (
+        <>
+          <Grid
+            item
+            container
             sx={{
-              height: 60,
-              width: 100,
-              backgroundColor: 'lightgray',
-              borderRadius: 4,
               alignItems: 'center',
-              display: 'flex',
+              color: 'black',
               justifyContent: 'center',
+              fontSize: 20,
               gap: 2,
             }}
           >
-            <DoneIcon />
-            {_.countBy(
-              allQuestions,
-              (question) => question.answerStatus === AnswerStatus['answered-right'],
-            ).true || 0}
-          </Box>
-        </Grid>
-      </Grid>
+            <Grid item sx={{ justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  height: 60,
+                  width: 400,
+                  backgroundColor: 'lightgray',
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  display: 'flex',
+                  paddingX: 2,
+                  gap: 2,
+                }}
+              >
+                <GroupIcon />
+                {currentTeam?.name}
+              </Box>
+            </Grid>
+            <Grid item sx={{ justifyContent: 'center' }}>
+              <Box
+                sx={{
+                  height: 60,
+                  width: 100,
+                  backgroundColor: 'lightgray',
+                  borderRadius: 4,
+                  alignItems: 'center',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: 2,
+                }}
+              >
+                <DoneIcon />
+                {_.countBy(
+                  allQuestions,
+                  (question) => question.answerStatus === AnswerStatus['answered-right'],
+                ).true || 0}
+              </Box>
+            </Grid>
+          </Grid>
 
-      <Grid
-        item
-        container
-        direction='column'
-        alignItems='stretch'
-        sx={{ gap: 1, paddingX: 4, display: 'flex', flexGrow: 1 }}
-      >
-        <Grid item>
-          <Box sx={{ fontSize: 20, color: 'white' }}>Question n°{currentQuestion?.index}</Box>
-        </Grid>
-        <Grid item>
-          <Box
+          <Grid
+            item
+            container
+            direction='column'
+            alignItems='stretch'
+            sx={{ gap: 1, paddingX: 4, display: 'flex', flexGrow: 1 }}
+          >
+            <Grid item>
+              <Box sx={{ fontSize: 20, color: 'white' }}>Question n°{currentQuestion?.index}</Box>
+            </Grid>
+            <Grid item>
+              <Box
+                sx={{
+                  backgroundColor: 'lightgray',
+                  borderRadius: 4,
+                  fontSize: 24,
+                  padding: 2,
+                  height: 120,
+                  alignContent: 'center',
+                  flexWrap: 'wrap',
+                  display: 'flex',
+                  lineHeight: 1.5,
+                }}
+              >
+                {currentQuestion?.statement}
+              </Box>
+            </Grid>
+            <Grid item>
+              <Box
+                sx={{
+                  borderRadius: 4,
+                  padding: 2,
+                  gap: 2,
+                  justifyContent: 'center',
+                  display: 'flex',
+                  fontWeight: 800,
+                  minHeight: 24,
+                  backgroundColor: 'lightgreen',
+                  fontSize: 24,
+                }}
+              >
+                <VerifiedIcon />
+                {currentQuestion?.answer}
+              </Box>
+            </Grid>
+          </Grid>
+
+          <Grid
+            item
+            container
+            direction='row'
+            justifyContent='space-around'
+            alignItems='stretch'
             sx={{
-              backgroundColor: 'lightgray',
-              borderRadius: 4,
-              fontSize: 24,
               padding: 2,
-              height: 120,
-              alignContent: 'center',
-              flexWrap: 'wrap',
-              display: 'flex',
-              lineHeight: 1.5,
             }}
           >
-            {currentQuestion?.statement}
-          </Box>
-        </Grid>
-        <Grid item>
-          <Box
-            sx={{
-              borderRadius: 4,
-              padding: 2,
-              gap: 2,
-              justifyContent: 'center',
-              display: 'flex',
-              fontWeight: 800,
-              minHeight: 24,
-              backgroundColor: 'lightgreen',
-              fontSize: 24,
-            }}
-          >
-            <VerifiedIcon />
-            {currentQuestion?.answer}
-          </Box>
-        </Grid>
-      </Grid>
+            <ButtonBase
+              onClick={() => {
+                currentQuestion.answerStatus = AnswerStatus['answered-wrong'];
+                currentQuestion.teamId = currentTeam?.id || '';
+                updateQuestion(currentQuestion);
+                setCurrentQuestionIndex(nextQuestionIndex);
+              }}
+              sx={{
+                height: 150,
+                width: 150,
+                backgroundColor: 'salmon',
+                borderRadius: 2,
+                padding: 1,
+              }}
+            >
+              <CloseIcon
+                sx={{
+                  fontSize: 60,
+                }}
+              />
+            </ButtonBase>
 
-      <Grid
-        item
-        container
-        direction='row'
-        justifyContent='space-around'
-        alignItems='stretch'
-        sx={{
-          padding: 2,
-        }}
-      >
-        <ButtonBase
-          onClick={() => {
-            currentQuestion.answerStatus = AnswerStatus['answered-wrong'];
-            currentQuestion.teamId = currentTeam?.id || '';
-            updateQuestion(currentQuestion);
-            setCurrentQuestionIndex(nextQuestionIndex);
-          }}
-          sx={{
-            height: 150,
-            width: 150,
-            backgroundColor: 'salmon',
-            borderRadius: 2,
-            padding: 1,
-          }}
-        >
-          <CloseIcon
-            sx={{
-              fontSize: 60,
-            }}
-          />
-        </ButtonBase>
-        <ButtonBase
-          onClick={() => {
-            currentQuestion.answerStatus = AnswerStatus['answered-right'];
-            currentQuestion.teamId = currentTeam?.id || '';
-            updateQuestion(currentQuestion);
-            if (
-              (_.countBy(
-                allQuestions,
-                (question) => question.answerStatus === AnswerStatus['answered-right'],
-              ).true || 0) === allQuestions.length
-            ) {
-              navigate('/presentator/round2');
-            }
-            setCurrentQuestionIndex(nextQuestionIndex);
-          }}
-          sx={{
-            height: 150,
-            width: 150,
-            backgroundColor: 'lightgreen',
-            borderRadius: 2,
-            padding: 1,
-          }}
-        >
-          <DoneIcon
-            sx={{
-              fontSize: 60,
-            }}
-          />
-        </ButtonBase>
-      </Grid>
+            <ButtonBase
+              onClick={() => {
+                setRecap(true);
+              }}
+              sx={{
+                height: 100,
+                width: 150,
+                backgroundColor: 'lightgray',
+                borderRadius: 2,
+                padding: 1,
+                fontSize: 24,
+              }}
+            >
+              Recap
+            </ButtonBase>
+
+            <ButtonBase
+              onClick={() => {
+                currentQuestion.answerStatus = AnswerStatus['answered-right'];
+                currentQuestion.teamId = currentTeam?.id || '';
+                updateQuestion(currentQuestion);
+                if (
+                  (_.countBy(
+                    allQuestions,
+                    (question) => question.answerStatus === AnswerStatus['answered-right'],
+                  ).true || 0) === allQuestions.length
+                ) {
+                  navigate('/presentator/round2');
+                }
+                setCurrentQuestionIndex(nextQuestionIndex);
+              }}
+              sx={{
+                height: 150,
+                width: 150,
+                backgroundColor: 'lightgreen',
+                borderRadius: 2,
+                padding: 1,
+              }}
+            >
+              <DoneIcon
+                sx={{
+                  fontSize: 60,
+                }}
+              />
+            </ButtonBase>
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 };
