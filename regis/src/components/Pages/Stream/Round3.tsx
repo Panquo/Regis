@@ -172,9 +172,6 @@ const Round3 = () => {
                         <div className='team-name-div'>
                           <span className='team-name'>{teamsQuestion[index].team?.name}</span>
                         </div>
-                        <div className='team-score'>
-                          <div>{teamsQuestion[index].team?.score[3]}</div>
-                        </div>
                       </div>
                     ) : null}
                   </div>
