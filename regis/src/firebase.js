@@ -15,13 +15,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Database names
-const testSuffix = '-test';
-
-export const QUESTIONS_COLLECTION = `questions${testSuffix}`,
-  ROUNDS_COLLECTION = `rounds${testSuffix}`,
-  TOPICS_COLLECTION = `topics${testSuffix}`,
-  TEAMS_COLLECTION = `teams${testSuffix}`,
+export const QUESTIONS_COLLECTION = 'questions',
+  ROUNDS_COLLECTION = 'rounds',
+  TOPICS_COLLECTION = 'topics',
+  TEAMS_COLLECTION = 'teams',
   CONTEXT = 'context';
 
 export { db };
